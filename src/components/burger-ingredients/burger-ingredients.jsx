@@ -13,7 +13,6 @@ function selectIngredientCategory(current, data){
 
 const BurgerIngredients = ( { data } ) => {
   const [current, setCurrent] = React.useState('buns');
-  console.log(current);
 
   return (
     <section className={styles.container}>

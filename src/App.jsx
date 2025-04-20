@@ -5,6 +5,16 @@ import BurgerIngredients from './components/burger-ingredients/burger-ingredient
 import BurgerConstructor from './components/burger-constructor/burger-constructor';
 import { useEffect, useState } from 'react';
 
+function UpdateCountersInResponse(response, selectedBun, selectedOtherIngredients){
+    return response.map(item => {
+      if(item._id === selectedBun._id || selectedOtherIngredients.some(ingredient => ingredient._id === item._id)) {
+        item.count = 1;
+      }
+
+      return item;
+    });
+}
+
 function App() {
   const [response, setResponse] = useState({success: false, data : []});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,6 +33,11 @@ function App() {
   }, []);
 
   const hasData = response.success;
+  const bun = response.data.find(item => item.type === 'bun');
+
+  const mains = response.data.filter(item => item.type === 'main');
+
+  const shownIngredientsWithCounters = UpdateCountersInResponse(response.data, bun, mains);
 
   return (
     <div className="App">
@@ -34,10 +49,10 @@ function App() {
       <div className="App-Body">
         {hasData ? (
             <>
-              <BurgerIngredients data={response.data} />
+              <BurgerIngredients data={shownIngredientsWithCounters} />
               <BurgerConstructor
-                bun={response.data.find(item => item.type === 'bun')}
-                ingredients={response.data.filter(item => item.type === 'main')}
+                bun={bun}
+                ingredients={mains}
                 isModalOpen={isModalOpen}
                 setIsModelOpen={setIsModalOpen}
                 orderInformation={orderInformation}

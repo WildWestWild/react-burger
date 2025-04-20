@@ -1,0 +1,1 @@
+export const ingredientsJsonLink = "https://norma.nomoreparties.space/api/ingredients";

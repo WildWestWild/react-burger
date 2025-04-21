@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientCategory from './ingredient-category/ingredient-category';
 import styles from './burger-ingredients.module.css';
@@ -12,7 +12,7 @@ function selectIngredientCategory(current, data){
 }
 
 const BurgerIngredients = ( { data } ) => {
-  const [current, setCurrent] = React.useState('buns');
+  const [current, setCurrent] = useState('buns');
 
   return (
     <section className={styles.container}>

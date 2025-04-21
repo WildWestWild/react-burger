@@ -33,11 +33,12 @@ function App() {
   }, []);
 
   const hasData = response.success;
+
   const bun = response.data.find(item => item.type === 'bun');
 
   const mains = response.data.filter(item => item.type === 'main');
 
-  const shownIngredientsWithCounters = UpdateCountersInResponse(response.data, bun, mains);
+  const showIngredientsWithCounters = UpdateCountersInResponse(response.data, bun, mains);
 
   return (
     <div className="App">
@@ -49,7 +50,7 @@ function App() {
       <div className="App-Body">
         {hasData ? (
             <>
-              <BurgerIngredients data={shownIngredientsWithCounters} />
+              <BurgerIngredients data={showIngredientsWithCounters} />
               <BurgerConstructor
                 bun={bun}
                 ingredients={mains}

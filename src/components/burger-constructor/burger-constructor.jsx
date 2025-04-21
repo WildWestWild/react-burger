@@ -2,6 +2,7 @@ import { ConstructorElement, DragIcon, Button, CurrencyIcon } from '@ya.praktiku
 import styles from './burger-constructor.module.css';
 import Modal from '../model/model';
 import OrderDetails from '../order-details/order-defails';
+import PropTypes from 'prop-types';
 
 const BurgerConstructor = ({ bun, ingredients, isModalOpen, setIsModelOpen, orderInformation }) => {
 
@@ -61,5 +62,28 @@ const BurgerConstructor = ({ bun, ingredients, isModalOpen, setIsModelOpen, orde
     </section>
   );
 };
+
+BurgerConstructor.propTypes = {
+  bun: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    image: PropTypes.string.isRequired,
+  }).isRequired,
+  ingredients: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      price: PropTypes.number.isRequired,
+      image: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  isModalOpen: PropTypes.bool.isRequired,
+  setIsModelOpen: PropTypes.func.isRequired,
+  orderInformation: PropTypes.shape({
+    number: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    info: PropTypes.string.isRequired,
+  }).isRequired,
+}
 
 export default BurgerConstructor;

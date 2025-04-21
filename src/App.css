@@ -45,6 +45,8 @@
   align-items: center;
   gap: 50px;
   flex-wrap: wrap;
+  align-items: stretch;
+  height: 100%;
 }
 
 .App-link {

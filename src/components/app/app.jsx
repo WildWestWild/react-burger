@@ -19,17 +19,19 @@ function App() {
   const [response, setResponse] = useState({success: false, data : []});
   const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
-    const getProductData = async () => {
-      try {
-        const res = await fetch(ingredientsJsonLink);
-        const data = await res.json();
-        setResponse(data);
-      } catch (error) {
-        console.log(error);
-      } 
-    }
+    fetch(ingredientsJsonLink)
+      .then(res => {
+          if (!res.ok) {
+            return Promise.reject(`Ошибка ${res.status}`);
+          }
 
-    getProductData();
+          return res.json();
+        }
+      )
+      .then(data => {
+        setResponse(data);
+      })
+      .catch(error => console.log(error));
   }, []);
 
   const hasData = response.success;

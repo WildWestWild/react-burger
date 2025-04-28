@@ -29,7 +29,9 @@ const BurgerIngredients = ( { data } ) => {
       </div>
 
       <div className={styles.scrollable}>
-        {selectIngredientCategory(current, data)}
+        {selectIngredientCategory("buns", data)}
+        {selectIngredientCategory("sauces", data)}
+        {selectIngredientCategory("mains", data)}
       </div>
     </section>
   );

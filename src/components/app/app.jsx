@@ -1,8 +1,8 @@
-import './App.css';
-import { ingredientsJsonLink, orderInformation } from './Constants'
-import AppHeader from './components/app-header/app-header';
-import BurgerIngredients from './components/burger-ingredients/burger-ingredients';
-import BurgerConstructor from './components/burger-constructor/burger-constructor';
+import styles from './app.module.css';
+import { ingredientsJsonLink, orderInformation } from '../../Constants'
+import AppHeader from '../app-header/app-header';
+import BurgerIngredients from '../burger-ingredients/burger-ingredients';
+import BurgerConstructor from '../burger-constructor/burger-constructor';
 import { useEffect, useState } from 'react';
 
 function UpdateCountersInResponse(response, selectedBun, selectedOtherIngredients){
@@ -41,13 +41,13 @@ function App() {
   const showIngredientsWithCounters = UpdateCountersInResponse(response.data, bun, mains);
 
   return (
-    <div className="App">
+    <div className={styles.App}>
       <AppHeader/>
-      <div className="App-h1">
+      <div className={styles["App-h1"]}>
           <h1 className="text text_type_main-large mt-10 mb-5">Соберите бургер</h1>
       </div>
       
-      <div className="App-Body">
+      <div className={styles["App-Body"]}>
         {hasData ? (
             <>
               <BurgerIngredients data={showIngredientsWithCounters} />

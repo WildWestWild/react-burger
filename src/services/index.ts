@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { burgerIngredientSlice } from './burger-ingredients/slice';
 import { burgerConstructorSlice } from './burger-constructor/slice';
+import { orderDetailsSlice } from './order-details/slice';
 
 export const store = configureStore({
     reducer: {
       burgerIngredient: burgerIngredientSlice.reducer,
-      burgerConstructor: burgerConstructorSlice.reducer
+      burgerConstructor: burgerConstructorSlice.reducer,
+      orderDetails: orderDetailsSlice.reducer
     }
   });
 

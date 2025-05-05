@@ -72,7 +72,7 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
         </Button>
         {isModalOpen && (
           <Modal title="" onClose={() => setIsModelOpen(false)}>
-            <OrderDetails number={orderInformation.number} status={orderInformation.status} info={orderInformation.info}/>
+            <OrderDetails ingredients={[burgerBun, burgerPickedIngredients ? burgerPickedIngredients : []]} number={orderInformation.number} status={orderInformation.status} info={orderInformation.info}/>
           </Modal>
         )}
       </div>

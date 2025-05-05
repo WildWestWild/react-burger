@@ -27,12 +27,6 @@ function App() {
 
   const { burgerIngredients, isLoading } = useAppSelector(store => store.burgerIngredient);
 
-  const bun = !isLoading && burgerIngredients.find(item => item.type === 'bun');
-
-  const mains = !isLoading && burgerIngredients.filter(item => item.type === 'main');
-
-  const showIngredientsWithCounters = !isLoading && UpdateCountersInResponse(burgerIngredients, bun, mains);
-
   return (
     <div className={styles.App}>
       <AppHeader/>
@@ -43,10 +37,8 @@ function App() {
       <div className={styles["App-Body"]}>
         {!isLoading ? (
             <>
-              <BurgerIngredients data={showIngredientsWithCounters} />
+              <BurgerIngredients data={burgerIngredients} />
               <BurgerConstructor
-                bun={bun}
-                ingredients={mains}
                 isModalOpen={isModalOpen}
                 setIsModelOpen={setIsModalOpen}
                 orderInformation={orderInformation}

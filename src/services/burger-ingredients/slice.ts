@@ -17,13 +17,13 @@ export type BurgerIngredient = {
 };
 
 export type BurgerIngredientState = {
-  burgerIngredients: BurgerIngredient[] | null;
+  burgerIngredients: BurgerIngredient[] | [];
   isLoading: boolean;
   error: string;
 };
 
 export const initialState: BurgerIngredientState = {
-  burgerIngredients: null,
+  burgerIngredients: [],
   isLoading: true,
   error: '',
 };
@@ -41,7 +41,7 @@ export const burgerIngredientSlice = createSlice({
         state.error = '';
       })
       .addCase(getBurgerIngredients.rejected, (state, { error }) => {
-        state.burgerIngredients = null;
+        state.burgerIngredients = [];
         state.isLoading = true;
         state.error = error.message ?? 'Что-то пошло не так';
       })

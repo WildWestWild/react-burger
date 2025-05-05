@@ -20,7 +20,7 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
         const bun = burgerIngredients.find(item => item.type === 'bun');
         dispatcher(setBun(bun));
       }
-  }, [isLoading]);
+  }, [isLoading, burgerIngredients, burgerItems.bun, dispatcher]);
 
   return (burgerBun &&
 

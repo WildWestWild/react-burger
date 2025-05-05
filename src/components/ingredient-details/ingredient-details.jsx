@@ -1,8 +1,21 @@
 import styles from './ingredient-details.module.css';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useAppDispatch } from '../../services';
+import { setIngredientDetails } from '../../services/ingredient-details/slice';
 
 const IngredientDetails = ({ ingredient}) => {
+  const dispatcher = useAppDispatch();
+  
+  dispatcher(setIngredientDetails({
+    image_large: ingredient.image_large,
+    name: ingredient.name,
+    calories: ingredient.calories,
+    proteins: ingredient.proteins,
+    fat: ingredient.fat,
+    carbohydrates: ingredient.carbohydrates,
+  }));
+
   return (
     <div className={styles.modal}>
       <img src={ingredient.image_large} alt={ingredient.name} className="mb-4" />

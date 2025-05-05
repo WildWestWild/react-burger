@@ -4,11 +4,13 @@ import styles from './ingredient-card.module.css';
 import Modal from '../../model/model';
 import IngredientDetails from '../../ingredient-details/ingredient-details';
 import PropTypes from 'prop-types';
+import  { useAppDispatch } from '../../../services';
+import { clearIngredientDetails } from '../../../services/ingredient-details/slice';
 
 
 const IngredientCard = ({ item }) => {
   const { image, name, price, count = 0 } = item;
-
+  const dispatcher = useAppDispatch();
   const [selectedIngredient, setSelectedIngredient] = useState(false);
   let divState = true;
   return (
@@ -18,9 +20,16 @@ const IngredientCard = ({ item }) => {
       <div className={styles.price}>
         <span className="text text_type_digits-default mr-2">{price}</span>
         <CurrencyIcon type="primary" />
-        { selectedIngredient ? (<Modal onClose={() => { divState = false; setSelectedIngredient(false)}} title="Детали ингредиента">
-          <IngredientDetails ingredient={item} />
-        </Modal>) : null}
+        { selectedIngredient ? (
+          <Modal onClose={() => 
+              { 
+                divState = false; 
+                setSelectedIngredient(false); 
+                dispatcher(clearIngredientDetails())
+              }
+            } title="Детали ингредиента">
+            <IngredientDetails ingredient={item} />
+          </Modal>) : null}
       </div>
       <p className="text text_type_main-default mt-1">{name}</p>
     </div>

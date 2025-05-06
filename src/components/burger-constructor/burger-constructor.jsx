@@ -4,8 +4,14 @@ import Modal from '../model/model';
 import OrderDetails from '../order-details/order-defails';
 import PropTypes from 'prop-types';
 import { useAppSelector, useAppDispatch } from '../../services';
-import { setBun } from '../../services/burger-constructor/slice'; 
+import { setBun, addIngredient, removeIngredient } from '../../services/burger-constructor/slice'; 
 import { useEffect } from 'react';
+import { useDrop } from 'react-dnd';
+import { decreaseIngredientCount, incrementIngredientCount, pickBunCounter } from '../../services/burger-ingredients/slice';
+
+const getRandomInt = (min = 1, max = 100000) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
 
@@ -13,18 +19,32 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
   const { burgerItems } = useAppSelector(store => store.burgerConstructor);
   const burgerPickedIngredients = burgerItems.ingredients;
   const burgerBun = burgerItems.bun;
-  const dispatcher = useAppDispatch();
+  const dispatch = useAppDispatch();
+  console.log(burgerPickedIngredients);
 
   useEffect(() => {
       if (!isLoading && !burgerItems.bun) {
         const bun = burgerIngredients.find(item => item.type === 'bun');
-        dispatcher(setBun(bun));
+        dispatch(setBun(bun));
+        dispatch(pickBunCounter(bun._id));
       }
-  }, [isLoading, burgerIngredients, burgerItems.bun, dispatcher]);
+  }, [isLoading, burgerIngredients, burgerItems.bun, dispatch]);
+
+  const [, dropRef] = useDrop({
+    accept: 'ingredient',
+    drop: (item) => {
+      if (item.type === 'bun') {
+        dispatch(setBun(item));
+        dispatch(pickBunCounter(item._id));
+      } else {
+        dispatch(addIngredient(item));
+        dispatch(incrementIngredientCount(item._id));
+      }
+    },
+  });
 
   return (burgerBun &&
-
-    <section className={styles.container} aria-label="Конструктор бургера">
+    <section ref ={dropRef} className={styles.container} aria-label="Конструктор бургера">
       <ul className={styles.list}>
 
         {/* Верхняя булка */}
@@ -41,12 +61,17 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
         {/* Начинки */}
         <ul className={styles.scrollable}>
           {burgerPickedIngredients.map((item) => (
-            <li key={item._id} className={styles.item}>
+            <li key={item._id + getRandomInt()} className={styles.item}>
               <DragIcon type="primary" />
               <ConstructorElement
                 text={item.name}
                 price={item.price}
                 thumbnail={item.image}
+                handleClose={() => 
+                  { 
+                    dispatch(removeIngredient(item._id)) 
+                    dispatch(decreaseIngredientCount(item._id));
+                  }}
               />
             </li>
           ))}

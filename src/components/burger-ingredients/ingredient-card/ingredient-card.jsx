@@ -6,15 +6,25 @@ import IngredientDetails from '../../ingredient-details/ingredient-details';
 import PropTypes from 'prop-types';
 import  { useAppDispatch } from '../../../services';
 import { clearIngredientDetails } from '../../../services/ingredient-details/slice';
+import { useDrag } from 'react-dnd';
 
 
 const IngredientCard = ({ item }) => {
   const { image, name, price, count = 0 } = item;
+
+  const [, dragRef] = useDrag({
+    type: 'ingredient',
+    item: item,
+  });
+
   const dispatcher = useAppDispatch();
+
   const [selectedIngredient, setSelectedIngredient] = useState(false);
+
   let divState = true;
+  
   return (
-    <div className={styles.card} onClick={() => setSelectedIngredient(divState)}>
+    <div ref={dragRef} className={styles.card} onClick={() => setSelectedIngredient(divState)}>
       {count > 0 && <Counter count={count} size="default" />}
       <img src={image} alt={name} className={styles.image} />
       <div className={styles.price}>

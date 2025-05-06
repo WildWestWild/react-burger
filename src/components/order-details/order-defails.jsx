@@ -8,7 +8,7 @@ import { getOrderDetails } from '../../services/order-details/thunks';
 
 const OrderDetails = ({ingredients, status, info}) => {
   const dispatcher = useAppDispatch();
-  const { orderDetails, isLoading } = useAppSelector(store => store.orderDetails);
+  const { orderDetails } = useAppSelector(store => store.orderDetails);
   const number = orderDetails && orderDetails.order && orderDetails.order.number;
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const OrderDetails = ({ingredients, status, info}) => {
     dispatcher(getOrderDetails({ ingredients: ids }));
   }, [ingredients, dispatcher]);
 
-  return (!isLoading &&
+  return (
     <div className={styles.wrapper}>
       <p className="text text_type_digits-large mt-4 mb-8 glowNumber">{number}</p>
       <p className="text text_type_main-medium">идентификатор заказа</p>

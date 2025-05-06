@@ -13,6 +13,11 @@ export const getBurgerIngredients = createAsyncThunk<BurgerIngredient[]>(
 
         const json = await response.json();
   
-        return (json.data) as BurgerIngredient[];
+        return (json.data.map((item: { count: number; }) => 
+            { 
+                item.count = 0; 
+                return item;
+            }
+        )) as BurgerIngredient[];
     }
   );

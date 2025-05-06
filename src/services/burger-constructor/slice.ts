@@ -32,10 +32,13 @@ export const burgerConstructorSlice = createSlice({
     initialState,
     reducers: {
         addIngredient: (state, action) => {
+            console.log("addIngredient", action.payload);
             state.burgerItems.ingredients.push(action.payload);
         },
         removeIngredient: (state, action) => {
-            const index = state.burgerItems.ingredients.findIndex(item => item._id === action.payload._id);
+            console.log("removeIngredient", action.payload);
+            const index = state.burgerItems.ingredients.findIndex(item => item._id === action.payload);
+            console.log("index", index);
             if (index !== -1) {
                 state.burgerItems.ingredients.splice(index, 1);
             }

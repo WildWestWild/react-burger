@@ -1,10 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getBurgerIngredients } from './thunks';
 
+export const BURGER_INGREDIENT_TYPES = {
+  BUN: 'bun',
+  SAUCE: 'sauce',
+  MAIN: 'main',
+} as const;
+
+export type BurgerIngredientType = typeof BURGER_INGREDIENT_TYPES[keyof typeof BURGER_INGREDIENT_TYPES];
+
 export type BurgerIngredient = {
     _id: string,
     name: string,
-    type: string,
+    type: BurgerIngredientType,
     proteins: number,
     fat: number,
     carbohydrates: number,
@@ -13,6 +21,7 @@ export type BurgerIngredient = {
     image: string,
     image_mobile: string,
     image_large: string,
+    count: number | 0,
     __v: number
 };
 
@@ -32,6 +41,31 @@ export const burgerIngredientSlice = createSlice({
   name: 'burgerIngredient',
   initialState,
   reducers: {
+    incrementIngredientCount: (state, action) => {
+      const ingredient = state.burgerIngredients.find(item => item._id === action.payload);
+      if (ingredient) {
+        ingredient.count += 1;
+      }
+    },
+    decreaseIngredientCount: (state, action) => {
+      const ingredient = state.burgerIngredients.find(item => item._id === action.payload);
+      if (ingredient && ingredient.count > 0) {
+        ingredient.count -= 1;
+      }
+    },
+    pickBunCounter: (state, action) => {
+      state.burgerIngredients = state.burgerIngredients.map(item => {
+        console.log("map:", item._id, action.payload);
+        if (item.type === BURGER_INGREDIENT_TYPES.BUN && item._id === action.payload ) {
+          item.count = 1;
+          console.log(item._id, action.payload, item.count);
+        } else if (item.type === BURGER_INGREDIENT_TYPES.BUN && item._id !== action.payload) {
+          item.count = 0;
+          console.log(item._id, action.payload, item.count);
+        }
+        return item;
+      })
+    }
   },
   extraReducers: builder => {
     builder
@@ -47,3 +81,5 @@ export const burgerIngredientSlice = createSlice({
       })
   },
 });
+
+export const { incrementIngredientCount, decreaseIngredientCount, pickBunCounter } = burgerIngredientSlice.actions;

@@ -54,17 +54,15 @@ export const burgerIngredientSlice = createSlice({
       }
     },
     pickBunCounter: (state, action) => {
-      state.burgerIngredients = state.burgerIngredients.map(item => {
-        console.log("map:", item._id, action.payload);
+      state.burgerIngredients.map(item => {
         if (item.type === BURGER_INGREDIENT_TYPES.BUN && item._id === action.payload ) {
           item.count = 1;
-          console.log(item._id, action.payload, item.count);
         } else if (item.type === BURGER_INGREDIENT_TYPES.BUN && item._id !== action.payload) {
           item.count = 0;
-          console.log(item._id, action.payload, item.count);
         }
+        
         return item;
-      })
+      });
     }
   },
   extraReducers: builder => {

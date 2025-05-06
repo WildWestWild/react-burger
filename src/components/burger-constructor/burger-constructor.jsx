@@ -14,21 +14,17 @@ const getRandomInt = (min = 1, max = 100000) => {
 };
 
 const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
-
   const { burgerIngredients, isLoading } = useAppSelector(store => store.burgerIngredient);
-  const { burgerItems } = useAppSelector(store => store.burgerConstructor);
-  const burgerPickedIngredients = burgerItems.ingredients;
-  const burgerBun = burgerItems.bun;
+  const burgerPickedIngredients = useAppSelector(store => store.burgerConstructor.burgerItems.ingredients);
+  const burgerBun = useAppSelector(store => store.burgerConstructor.burgerItems.bun);
   const dispatch = useAppDispatch();
-  console.log(burgerPickedIngredients);
 
   useEffect(() => {
-      if (!isLoading && !burgerItems.bun) {
-        const bun = burgerIngredients.find(item => item.type === 'bun');
-        dispatch(setBun(bun));
-        dispatch(pickBunCounter(bun._id));
+      if (!isLoading && !burgerBun) {
+        const firstBun = burgerIngredients.find(item => item.type === 'bun');
+        dispatch(setBun(firstBun));
       }
-  }, [isLoading, burgerIngredients, burgerItems.bun, dispatch]);
+  }, [isLoading, burgerBun, burgerIngredients, dispatch]);
 
   const [, dropRef] = useDrop({
     accept: 'ingredient',

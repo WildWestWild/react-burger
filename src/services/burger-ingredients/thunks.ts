@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { BurgerIngredient } from './slice';
+import { BURGER_INGREDIENT_TYPES, BurgerIngredient } from './slice';
 import { ingredientsJsonLink } from "../../Constants";
 
 
@@ -12,10 +12,16 @@ export const getBurgerIngredients = createAsyncThunk<BurgerIngredient[]>(
         }
 
         const json = await response.json();
-  
-        return (json.data.map((item: { count: number; }) => 
+        let isSetCounterFirstBun = false;
+        return (json.data.map((item: { count: number; type: string; }) => 
             { 
-                item.count = 0; 
+                if (item.type === BURGER_INGREDIENT_TYPES.BUN && !isSetCounterFirstBun) {
+                    item.count = 1; 
+                    isSetCounterFirstBun = true;
+                } else {
+                    item.count = 0; 
+                }
+                
                 return item;
             }
         )) as BurgerIngredient[];

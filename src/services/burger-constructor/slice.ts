@@ -5,6 +5,7 @@ type Item = {
   text: string;
   price: number;
   image: string;
+  key: string | '';
 }
 
 type BurgerContractor = {
@@ -27,13 +28,22 @@ export const initialState: BurgerConstructorState = {
     error: '',
 };
 
+const getRandomInt = (min = 1, max = 100000) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
 export const burgerConstructorSlice = createSlice({
     name: 'burgerConstructor',
     initialState,
     reducers: {
         addIngredient: (state, action) => {
             console.log("addIngredient", action.payload);
-            state.burgerItems.ingredients.push(action.payload);
+            state.burgerItems.ingredients.push(
+                { 
+                    ...action.payload,  
+                    key : action.payload._id + getRandomInt()
+                }
+            );
         },
         removeIngredient: (state, action) => {
             console.log("removeIngredient", action.payload);
@@ -48,8 +58,15 @@ export const burgerConstructorSlice = createSlice({
         },
         clearBurgerConstructor: (state) => {
             state.burgerItems = initialState.burgerItems;
-        }
+        },
+        sortIngredients: (state, action) => {
+            const { fromIndex, toIndex } = action.payload;
+            const draggedItem = state.burgerItems.ingredients[fromIndex];
+            
+            state.burgerItems.ingredients.splice(fromIndex, 1);
+            state.burgerItems.ingredients.splice(toIndex, 0, draggedItem);
+        }      
     }
 });
 
-export const { addIngredient, removeIngredient, setBun, clearBurgerConstructor } = burgerConstructorSlice.actions;
+export const { addIngredient, removeIngredient, setBun, clearBurgerConstructor, sortIngredients } = burgerConstructorSlice.actions;

@@ -1,20 +1,17 @@
-import { ConstructorElement, DragIcon, Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { ConstructorElement, Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './burger-constructor.module.css';
 import Modal from '../model/model';
 import OrderDetails from '../order-details/order-defails';
 import PropTypes from 'prop-types';
 import { useAppSelector, useAppDispatch } from '../../services';
-import { setBun, addIngredient, removeIngredient } from '../../services/burger-constructor/slice'; 
+import { setBun, addIngredient, sortIngredients } from '../../services/burger-constructor/slice'; 
 import { useEffect } from 'react';
 import { useDrop } from 'react-dnd';
+import { DraggableConstructorIngredient } from './draggable-constructor-ingredient/draggable-constructor-ingredient';
 import { getOrderDetails } from '../../services/order-details/thunks';
-import { decreaseIngredientCount, incrementIngredientCount, pickBunCounter } from '../../services/burger-ingredients/slice';
+import { incrementIngredientCount, pickBunCounter } from '../../services/burger-ingredients/slice';
 import { clearOrderDetails } from '../../services/order-details/slice';
 
-
-const getRandomInt = (min = 1, max = 100000) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
 
 const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
   const { burgerIngredients, isLoading } = useAppSelector(store => store.burgerIngredient);
@@ -42,6 +39,20 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
     },
   });
 
+  const moveIngredient = (fromIndex, toIndex) => {
+    dispatch(sortIngredients({ fromIndex, toIndex }));
+  };
+
+  const totalPrice = burgerBun && burgerPickedIngredients && burgerBun.price * 2 + burgerPickedIngredients.reduce((acc, i) => acc + i.price, 0)
+
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const ids = [burgerBun, burgerPickedIngredients ? burgerPickedIngredients : []]
+    .map(item => item._id);
+
+    dispatch(getOrderDetails({ ingredients: ids }));
+  }, [isModalOpen, burgerBun, burgerPickedIngredients, dispatch]);
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -71,20 +82,12 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
 
         {/* Начинки */}
         <ul className={styles.scrollable}>
-          {burgerPickedIngredients.map((item) => (
-            <li key={item._id + getRandomInt()} className={styles.item}>
-              <DragIcon type="primary" />
-              <ConstructorElement
-                text={item.name}
-                price={item.price}
-                thumbnail={item.image}
-                handleClose={() => 
-                  { 
-                    dispatch(removeIngredient(item._id)) 
-                    dispatch(decreaseIngredientCount(item._id));
-                  }}
-              />
-            </li>
+          {burgerPickedIngredients.map((item, index) => (
+            <DraggableConstructorIngredient
+              item={item}
+              index={index}
+              moveIngredient={moveIngredient}
+            />
           ))}
         </ul>
 
@@ -101,7 +104,7 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
       </ul>
 
       <div className={styles.footer}>
-        <span className="text text_type_digits-medium mr-2">{burgerBun.price * 2 + burgerPickedIngredients.reduce((acc, i) => acc + i.price, 0)}</span>
+        <span className="text text_type_digits-medium mr-2">{totalPrice}</span>
         <CurrencyIcon type="primary" />
         <Button htmlType="button" type="primary" size="medium" extraClass="ml-10" onClick={() => setIsModelOpen(true)}>
           Оформить заказ

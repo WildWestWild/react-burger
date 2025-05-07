@@ -7,7 +7,10 @@ import { useAppSelector, useAppDispatch } from '../../services';
 import { setBun, addIngredient, removeIngredient } from '../../services/burger-constructor/slice'; 
 import { useEffect } from 'react';
 import { useDrop } from 'react-dnd';
+import { getOrderDetails } from '../../services/order-details/thunks';
 import { decreaseIngredientCount, incrementIngredientCount, pickBunCounter } from '../../services/burger-ingredients/slice';
+import { clearOrderDetails } from '../../services/order-details/slice';
+
 
 const getRandomInt = (min = 1, max = 100000) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -38,6 +41,18 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
       }
     },
   });
+
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const ids = [burgerBun, burgerPickedIngredients ? burgerPickedIngredients : []]
+    .map(item => item._id);
+
+    dispatch(getOrderDetails({ ingredients: ids }));
+  }, [isModalOpen]);
+
+  const { orderDetails } = useAppSelector(store => store.orderDetails);
+  const number = orderDetails && orderDetails.order && orderDetails.order.number;
 
   return (burgerBun &&
     <section ref ={dropRef} className={styles.container} aria-label="Конструктор бургера">
@@ -91,9 +106,14 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
         <Button htmlType="button" type="primary" size="medium" extraClass="ml-10" onClick={() => setIsModelOpen(true)}>
           Оформить заказ
         </Button>
-        {isModalOpen && (
-          <Modal title="" onClose={() => setIsModelOpen(false)}>
-            <OrderDetails ingredients={[burgerBun, burgerPickedIngredients ? burgerPickedIngredients : []]} number={orderInformation.number} status={orderInformation.status} info={orderInformation.info}/>
+        {isModalOpen && number && (
+          <Modal title="" onClose={() => 
+            {
+              setIsModelOpen(false);
+              dispatch(clearOrderDetails());
+            }
+          }>
+            <OrderDetails number={number} status={orderInformation.status} info={orderInformation.info}/>
           </Modal>
         )}
       </div>

@@ -7,16 +7,6 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../services';
 import { getBurgerIngredients } from '../../services/burger-ingredients/thunks';
 
-function UpdateCountersInResponse(response, selectedBun, selectedOtherIngredients){
-    return response.map(item => {
-      if(item._id === selectedBun._id || selectedOtherIngredients.some(ingredient => ingredient._id === item._id)) {
-        //item.count = 1;
-      }
-
-      return item;
-    });
-}
-
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatcher = useAppDispatch();

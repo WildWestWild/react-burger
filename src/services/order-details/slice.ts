@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getOrderDetails } from './thunks';
-import { clear } from 'console';
 
 type Order = {
     number: number;

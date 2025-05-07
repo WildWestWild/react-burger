@@ -49,7 +49,7 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
     .map(item => item._id);
 
     dispatch(getOrderDetails({ ingredients: ids }));
-  }, [isModalOpen]);
+  }, [isModalOpen, burgerBun, burgerPickedIngredients, dispatch]);
 
   const { orderDetails } = useAppSelector(store => store.orderDetails);
   const number = orderDetails && orderDetails.order && orderDetails.order.number;

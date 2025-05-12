@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
 type Item = {
   _id: string;
@@ -28,22 +29,18 @@ export const initialState: BurgerConstructorState = {
     error: '',
 };
 
-const getRandomInt = (min = 1, max = 100000) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
-
 export const burgerConstructorSlice = createSlice({
     name: 'burgerConstructor',
     initialState,
     reducers: {
-        addIngredient: (state, action) => {
-            console.log("addIngredient", action.payload);
-            state.burgerItems.ingredients.push(
-                { 
-                    ...action.payload,  
-                    key : action.payload._id + getRandomInt()
-                }
-            );
+        addIngredient: {
+              reducer: (state, action: PayloadAction<Item>) => {
+                console.log("addIngredient", action.payload);
+                state.burgerItems.ingredients.push(action.payload);
+              },
+              prepare: (ingredient: Item) => {
+                return { payload: { ...ingredient, key: uuidv4() } };
+              }
         },
         removeIngredient: (state, action) => {
             console.log("removeIngredient", action.payload);

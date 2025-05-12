@@ -15,7 +15,7 @@ function App() {
     dispatcher(getBurgerIngredients());
   }, [dispatcher]);
 
-  const { burgerIngredients, isLoading } = useAppSelector(store => store.burgerIngredient);
+  const { isLoading } = useAppSelector(store => store.burgerIngredient);
 
   return (
     <div className={styles.App}>
@@ -27,7 +27,7 @@ function App() {
       <div className={styles["App-Body"]}>
         {!isLoading ? (
             <>
-              <BurgerIngredients data={burgerIngredients} />
+              <BurgerIngredients />
               <BurgerConstructor
                 isModalOpen={isModalOpen}
                 setIsModelOpen={setIsModalOpen}

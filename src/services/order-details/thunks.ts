@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { OrderDetails } from './slice';
 import { BASE_URL } from '../../Constants';
+import { checkResponse } from '../../utils/checkResponse';
 
 export type IngredientIdetificators = {
     ingredients: string[];
@@ -17,11 +18,7 @@ export const getOrderDetails = createAsyncThunk<OrderDetails, IngredientIdetific
         body: JSON.stringify(ingredientsIdenitificators),
     });
 
-    if (!response.ok) {
-        throw new Error('Response error!');
-    }
-
-    const json = await response.json();
+    const json = await checkResponse(response);
 
     return json as OrderDetails;
   }

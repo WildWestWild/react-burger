@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { BURGER_INGREDIENT_TYPES, BurgerIngredient } from './slice';
-import { ingredientsJsonLink } from "../../Constants";
+import { BASE_URL } from "../../Constants";
 
 
 export const getBurgerIngredients = createAsyncThunk<BurgerIngredient[]>(
     'burgerIngredients/getBurgerIngredients',
     async () => {
-        const response = await fetch(ingredientsJsonLink);
+        const response = await fetch(BASE_URL + '/ingredients');
         if(!response.ok){
             throw new Error('Response error!');
         }

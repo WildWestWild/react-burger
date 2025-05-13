@@ -73,15 +73,19 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
             </li>
 
             {/* Начинки */}
-            <ul className={styles.scrollable}>
-              {burgerPickedIngredients.map((item, index) => (
-                <DraggableConstructorIngredient
-                  item={item}
-                  index={index}
-                  moveIngredient={moveIngredient}
-                />
-              ))}
-            </ul>
+            <li>
+              <ul className={styles.scrollable}>
+                {burgerPickedIngredients.map((item, index) => (
+                  <li key={item.uuid}>
+                    <DraggableConstructorIngredient
+                      item={item}
+                      index={index}
+                      moveIngredient={moveIngredient}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </li>
 
             {/* Нижняя булка */}
             <li className={styles.locked}>

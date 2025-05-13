@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useAppSelector } from '../../services';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientCategory from './ingredient-category/ingredient-category';
 import styles from './burger-ingredients.module.css';
@@ -10,7 +11,7 @@ const BurgerIngredients = () => {
   const containerRef = useRef(null);
   const bunsRef = useRef(null);
   const saucesRef = useRef(null);
-  const mainsRef = useRef(null);
+  const mainsRef = useRef(null);      
 
   const handleScroll = () => {
     const containerTop = containerRef.current?.getBoundingClientRect().top;

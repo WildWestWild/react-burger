@@ -45,7 +45,7 @@ export const burgerConstructorSlice = createSlice({
     },
     removeIngredient: (state, action) => {
       const index = state.burgerItems.ingredients.findIndex(
-        (item) => item._id === action.payload
+        (item) => item.uuid === action.payload
       );
       if (index !== -1) {
         state.burgerItems.ingredients.splice(index, 1);

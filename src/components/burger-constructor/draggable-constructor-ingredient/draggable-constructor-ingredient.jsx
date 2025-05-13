@@ -10,14 +10,6 @@ export const DraggableConstructorIngredient = ({ item, index, moveIngredient }) 
   const dispatch = useAppDispatch();
   const ref = useRef(null);
 
-  const [{ isDragging }, drag] = useDrag({
-    type: 'constructor-ingredient',
-    item: { index },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
   const [, drop] = useDrop({
     accept: 'constructor-ingredient',
     drop(draggedItem) {
@@ -26,21 +18,31 @@ export const DraggableConstructorIngredient = ({ item, index, moveIngredient }) 
     },
   });
 
+  const [{ isDragging }, drag] = useDrag({
+    type: 'constructor-ingredient',
+    item: { index, id: item.uuid },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
   drag(drop(ref));
-  console.log('item', item);
 
   return (
-    <div key={item.key} className={styles.item}>
+    <div
+      ref={ref}
+      className={styles.item}
+      style={{ opacity: isDragging ? 0.5 : 1 }}
+    >
       <DragIcon type="primary" />
       <ConstructorElement
         text={item.name}
         price={item.price}
         thumbnail={item.image}
-        handleClose={() => 
-          { 
-            dispatch(removeIngredient(item._id)) 
-            dispatch(decreaseIngredientCount(item._id));
-          }}
+        handleClose={() => {
+          dispatch(removeIngredient(item.uuid));
+          dispatch(decreaseIngredientCount(item._id));
+        }}
       />
     </div>
   );

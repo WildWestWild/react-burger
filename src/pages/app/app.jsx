@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styles from "./app.module.css";
 import AppMain from "../../components/app-main/app-main";
 import AppHeader from "../../components/app-header/app-header";
-import Login from "../login/login";
+import Register from "../register/register";
 
 export function App() {
   return (
@@ -11,8 +11,8 @@ export function App() {
       <Router>
         <Routes>
           <Route path="/" element={<AppMain />} />
-          <Route path="/login" element={<Login />}/>
-          <Route path="/register" />
+          <Route path="/login" />
+          <Route path="/register" element={<Register />}/>
           <Route path="/forgot-password" />
           <Route path="/reset-password" />
           <Route path="/profile" />

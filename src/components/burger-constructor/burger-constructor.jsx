@@ -17,14 +17,7 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
   const burgerPickedIngredients = useAppSelector(store => store.burgerConstructor.burgerItems.ingredients);
   const burgerBun = useAppSelector(store => store.burgerConstructor.burgerItems.bun);
   const dispatch = useAppDispatch();
-
-  // useEffect(() => {
-  //   if (!isLoading && !burgerBun) {
-  //     const firstBun = burgerIngredients.find(item => item.type === 'bun');
-  //     dispatch(setBun(firstBun));
-  //   }
-  // }, [isLoading, burgerBun, burgerIngredients, dispatch]);
-
+  
   const [, dropRef] = useDrop({
     accept: 'ingredient',
     drop: (item) => {

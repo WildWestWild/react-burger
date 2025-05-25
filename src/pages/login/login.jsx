@@ -1,5 +1,6 @@
 import { Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import {useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './login.module.css';
 
 
@@ -11,7 +12,7 @@ function Login() {
     alert('Icon Click Callback');
   };
   return (
-    <div className={styles.ImputMargin}>
+    <div className={styles.container}>
         <h1 className="text text_type_main-medium mb-6">Регистрация</h1>
         <Input 
             type={'text'}
@@ -25,6 +26,7 @@ function Login() {
             onIconClick={onIconClick}
             errorText={'Ошибка'}
             size={'default'}
+            extraClass={styles.input}
             />
         <Input 
             type={'text'}
@@ -38,6 +40,7 @@ function Login() {
             onIconClick={onIconClick}
             errorText={'Ошибка'}
             size={'default'}
+            extraClass={styles.input}
             />
         <Input 
             type={'text'}
@@ -51,10 +54,14 @@ function Login() {
             onIconClick={onIconClick}
             errorText={'Ошибка'}
             size={'default'}
+            extraClass={styles.input}
             />
         <Button htmlType="button" type="primary" size="medium">
             Зарегистрироваться
         </Button>
+        <p className="text text_type_main-default text_color_inactive ml-2 mt-20">
+            Уже зарегистрированы? <Link className={styles.link}>Войти</Link>
+        </p>
     </div>
   );
 }

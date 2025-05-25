@@ -1,10 +1,22 @@
 import styles from "./profile.module.css";
 import { useState, useRef } from "react";
-import { Input, PasswordInput } from "@ya.praktikum/react-developer-burger-ui-components";
+import {
+  Input,
+  PasswordInput,
+} from "@ya.praktikum/react-developer-burger-ui-components";
+import { NavLink } from "react-router-dom";
+
+const disableDecorationWithInherit = { textDecoration: 'none', color: 'inherit' };
+const disableDecoration = { textDecoration: 'none' };
 
 function Profile() {
+  const mainText = "text text_type_main-medium mb-8";
+  const smallText = "text text_type_main-medium text_color_inactive mt-2";
   const [value, setValue] = useState("");
   const inputRef = useRef(null);
+  const [isWithInheritProfile, setisWithInheritProfile] = useState(true);
+  const [isWithInheritProfileOrders, setisWithInheritProfileOrders] = useState(true);
+  
   const onIconClick = () => {
     setTimeout(() => inputRef.current.focus(), 0);
     alert("Icon Click Callback");
@@ -13,10 +25,30 @@ function Profile() {
     <div>
       <div className={styles.container}>
         <div className={styles.innerContent}>
-          <h1 className="text text_type_main-medium mb-8">Профиль</h1>
-          <p className="text text_type_main-medium text_color_inactive mb-8">
+          <NavLink
+            to="/profile"
+            style={isWithInheritProfile ? disableDecorationWithInherit : disableDecoration}
+            className={({ isActive }) =>  
+                {
+                    setisWithInheritProfile(isActive);
+                    return  isActive ? `${mainText}` : `${smallText}` + " mb-8"
+                }
+            }
+          >
+            Профиль
+          </NavLink>
+          <NavLink
+            to="/profile/orders"
+            style={isWithInheritProfileOrders ? disableDecorationWithInherit : disableDecoration}
+            className={({ isActive }) =>  
+                {
+                    setisWithInheritProfileOrders(isActive);
+                    return  isActive ? `${mainText}` : `${smallText}` + " mb-8"
+                }
+            }
+          >
             История заказов
-          </p>
+          </NavLink>
           <p className="text text_type_main-medium text_color_inactive mb-20">
             Выход
           </p>
@@ -57,7 +89,7 @@ function Profile() {
             extraClass={styles.input}
             placeholder="Пароль"
             icon={"EditIcon"}
-        />
+          />
         </div>
       </div>
       <div className={styles.containerSmalltext}>

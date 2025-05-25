@@ -1,5 +1,6 @@
 import { Logo, BurgerIcon, ListIcon, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './app-header.module.css'
+import { Link } from 'react-router-dom';
 
 function AppHeader() {
   return (
@@ -21,7 +22,7 @@ function AppHeader() {
         <div className={styles.right}>
           <div className={styles.menuItem}>
             <ProfileIcon type="secondary" />
-            <p className="text text_type_main-default text_color_inactive ml-2">Личный кабинет</p>
+            <Link style={{ textDecoration: 'none' }} className="text text_type_main-default text_color_inactive ml-2" to='/profile'>Личный кабинет</Link>
           </div>
         </div>
       </nav>

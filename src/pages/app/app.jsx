@@ -6,19 +6,20 @@ import Registration from "../registration/registration";
 import Login from "../login/login";
 import ForgotPassword from "../forgot-password/forgot-password";
 import ResetPassword from "../reset-password/reset-password";
+import Profile from "../profile/profile";
 
 export function App() {
   return (
     <div className={styles.App}>
-      <AppHeader />
       <Router>
+        <AppHeader />
         <Routes>
           <Route path="/" element={<AppMain />} />
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Registration />}/>
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword/>}/>
-          <Route path="/profile" />
+          <Route path="/profile" element={<Profile/>}/>
           <Route path="/ingredients/:id" />
           <Route path="*" />
         </Routes>

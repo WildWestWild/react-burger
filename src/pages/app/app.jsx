@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styles from "./app.module.css";
 import AppMain from "../../components/app-main/app-main";
 import AppHeader from "../../components/app-header/app-header";
-import Register from "../register/register";
+import Registration from "../registration/registration";
+import Login from "../login/login";
 
 export function App() {
   return (
@@ -11,8 +12,8 @@ export function App() {
       <Router>
         <Routes>
           <Route path="/" element={<AppMain />} />
-          <Route path="/login" />
-          <Route path="/register" element={<Register />}/>
+          <Route path="/login" element={<Login/>}/>
+          <Route path="/register" element={<Registration />}/>
           <Route path="/forgot-password" />
           <Route path="/reset-password" />
           <Route path="/profile" />

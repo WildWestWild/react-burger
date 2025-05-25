@@ -1,6 +1,7 @@
 import {
   Input,
   Button,
+  PasswordInput,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
@@ -16,19 +17,12 @@ function ResetPassword() {
   return (
     <div className={styles.container}>
       <h1 className="text text_type_main-medium mb-6">Восстановление пароля</h1>
-      <Input
-        type={"text"}
-        placeholder={"Введите новый пароль"}
-        onChange={(e) => setValue(e.target.value)}
-        icon={""}
+      <PasswordInput
+        onChange={onIconClick}
         value={value}
-        name={"name"}
-        error={false}
-        ref={inputRef}
-        onIconClick={onIconClick}
-        errorText={"Ошибка"}
-        size={"default"}
+        name={"password"}
         extraClass={styles.input}
+        placeholder="Введите новый пароль"
       />
       <Input
         type={"text"}

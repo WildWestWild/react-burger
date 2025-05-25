@@ -1,6 +1,6 @@
 import styles from "./profile.module.css";
 import { useState, useRef } from "react";
-import { Input } from "@ya.praktikum/react-developer-burger-ui-components";
+import { Input, PasswordInput } from "@ya.praktikum/react-developer-burger-ui-components";
 
 function Profile() {
   const [value, setValue] = useState("");
@@ -50,20 +50,14 @@ function Profile() {
             size={"default"}
             extraClass={styles.input}
           />
-          <Input
-            type={"text"}
-            placeholder={"Пароль"}
+          <PasswordInput
             onChange={(e) => setValue(e.target.value)}
-            icon={"EditIcon"}
             value={value}
-            name={"name"}
-            error={false}
-            ref={inputRef}
-            onIconClick={onIconClick}
-            errorText={"Ошибка"}
-            size={"default"}
+            name={"password"}
             extraClass={styles.input}
-          />
+            placeholder="Пароль"
+            icon={"EditIcon"}
+        />
         </div>
       </div>
       <div className={styles.containerSmalltext}>

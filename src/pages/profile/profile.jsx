@@ -9,9 +9,10 @@ import { NavLink } from "react-router-dom";
 const disableDecorationWithInherit = { textDecoration: 'none', color: 'inherit' };
 const disableDecoration = { textDecoration: 'none' };
 
+const mainText = "text text_type_main-medium mb-8";
+const smallText = "text text_type_main-medium text_color_inactive mt-2";
+
 function Profile() {
-  const mainText = "text text_type_main-medium mb-8";
-  const smallText = "text text_type_main-medium text_color_inactive mt-2";
   const [value, setValue] = useState("");
   const inputRef = useRef(null);
   const [isWithInheritProfile, setisWithInheritProfile] = useState(true);
@@ -31,7 +32,8 @@ function Profile() {
             className={({ isActive }) =>  
                 {
                     setisWithInheritProfile(isActive);
-                    return  isActive ? `${mainText}` : `${smallText}` + " mb-8"
+                    let result = isActive ? `${mainText}` : `${smallText}`
+                    return `${result} mb-8`
                 }
             }
           >
@@ -43,7 +45,8 @@ function Profile() {
             className={({ isActive }) =>  
                 {
                     setisWithInheritProfileOrders(isActive);
-                    return  isActive ? `${mainText}` : `${smallText}` + " mb-8"
+                    let result = isActive ? `${mainText}` : `${smallText}`
+                    return `${result} mb-8`
                 }
             }
           >

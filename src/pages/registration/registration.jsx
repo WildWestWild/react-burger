@@ -60,7 +60,7 @@ function Registration() {
             Зарегистрироваться
         </Button>
         <p className="text text_type_main-default text_color_inactive ml-2 mt-20">
-            Уже зарегистрированы? <Link className={styles.link}>Войти</Link>
+            Уже зарегистрированы? <Link to='/login' className={styles.link}>Войти</Link>
         </p>
     </div>
   );

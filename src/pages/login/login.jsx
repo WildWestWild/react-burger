@@ -46,10 +46,10 @@ function Login() {
             Зарегистрироваться
         </Button>
         <p className="text text_type_main-default text_color_inactive ml-2 mt-20">
-            Вы - новый пользователь? <Link className={styles.link}>Зарегистрироваться</Link>
+            Вы - новый пользователь? <Link to='/register' className={styles.link}>Зарегистрироваться</Link>
         </p>
         <p className="text text_type_main-default text_color_inactive ml-2 mt-2">
-            Забыли пароль? <Link className={styles.link}>Восстановить пароль</Link>
+            Забыли пароль? <Link to='/forgot-password' className={styles.link}>Восстановить пароль</Link>
         </p>
     </div>
   );

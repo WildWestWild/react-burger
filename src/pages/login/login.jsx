@@ -22,7 +22,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const buttonDisabled = !(password && isEmailValid);
+  const buttonDisabled = !(password && isEmailValid && !isLogin);
 
   const onLoginClick = () => {
     if (buttonDisabled) {
@@ -67,6 +67,7 @@ function Login() {
         placeholder="Пароль"
       />
       <Button
+        disabled={buttonDisabled}
         htmlType="button"
         type="primary"
         size="medium"

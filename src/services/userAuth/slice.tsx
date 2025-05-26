@@ -3,7 +3,8 @@ import { registrationUser, loginUser, logoutUser } from './thunks';
 
 export type User = {
     email : string,
-    name: string
+    name: string,
+    password?: string, // Optional for registration
 }
 
 export type UserState = {

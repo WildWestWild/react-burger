@@ -1,72 +1,106 @@
 import styles from "./profile.module.css";
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Input,
   PasswordInput,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { NavLink } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../services";
+import { getUserInfo, logoutUser } from "../../services/userAuth/thunks";
 
-const disableDecorationWithInherit = { textDecoration: 'none', color: 'inherit' };
-const disableDecoration = { textDecoration: 'none' };
+const disableDecorationWithInherit = {
+  textDecoration: "none",
+  color: "inherit",
+};
+const disableDecoration = { textDecoration: "none" };
 
 const mainText = "text text_type_main-medium mb-8";
 const smallText = "text text_type_main-medium text_color_inactive mt-2";
 
 function Profile() {
-  const [value, setValue] = useState("");
-  const inputRef = useRef(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const [isWithInheritProfile, setisWithInheritProfile] = useState(true);
   const [isWithInheritProfileOrders, setisWithInheritProfileOrders] = useState(true);
-  
-  const onIconClick = () => {
-    setTimeout(() => inputRef.current.focus(), 0);
-    alert("Icon Click Callback");
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((store) => store.userAuth.user);
+  useEffect(() => {
+    if (name === "" && email === "" && user) {
+      setName(user.name);
+      setEmail(user.email);
+    }
+  }, [user, name, email]);
+
+  const onLogout = () => {
+    dispatch(logoutUser());
   };
+
+  useEffect(() => {
+    dispatch(getUserInfo());
+  }, [dispatch]);
+
   return (
     <div>
       <div className={styles.container}>
         <div className={styles.innerContent}>
           <NavLink
             to="/profile"
-            style={isWithInheritProfile ? disableDecorationWithInherit : disableDecoration}
-            className={({ isActive }) =>  
-                {
-                    setisWithInheritProfile(isActive);
-                    let result = isActive ? `${mainText}` : `${smallText}`
-                    return `${result} mb-8`
-                }
+            style={
+              isWithInheritProfile
+                ? disableDecorationWithInherit
+                : disableDecoration
             }
+            className={({ isActive }) => {
+              setisWithInheritProfile(isActive);
+              let result = isActive ? `${mainText}` : `${smallText}`;
+              return `${result} mb-8`;
+            }}
           >
             Профиль
           </NavLink>
           <NavLink
             to="/profile/orders"
-            style={isWithInheritProfileOrders ? disableDecorationWithInherit : disableDecoration}
-            className={({ isActive }) =>  
-                {
-                    setisWithInheritProfileOrders(isActive);
-                    let result = isActive ? `${mainText}` : `${smallText}`
-                    return `${result} mb-8`
-                }
+            style={
+              isWithInheritProfileOrders
+                ? disableDecorationWithInherit
+                : disableDecoration
             }
+            className={({ isActive }) => {
+              setisWithInheritProfileOrders(isActive);
+              let result = isActive ? `${mainText}` : `${smallText}`;
+              return `${result} mb-8`;
+            }}
           >
             История заказов
           </NavLink>
-          <p className="text text_type_main-medium text_color_inactive mb-20">
+          <NavLink
+            to="/register"
+            onClick={onLogout}
+            style={
+              isWithInheritProfileOrders
+                ? disableDecorationWithInherit
+                : disableDecoration
+            }
+            className={({ isActive }) => {
+              setisWithInheritProfileOrders(isActive);
+              let result = isActive ? `${mainText}` : `${smallText}`;
+              return `${result} mb-20`;
+            }}
+          >
             Выход
-          </p>
+          </NavLink>
         </div>
         <div className={styles.innerContent}>
           <Input
             type={"text"}
             placeholder={"Имя"}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             icon={"EditIcon"}
-            value={value}
+            value={name}
             name={"name"}
             error={false}
-            ref={inputRef}
-            onIconClick={onIconClick}
             errorText={"Ошибка"}
             size={"default"}
             extraClass={styles.input}
@@ -74,20 +108,18 @@ function Profile() {
           <Input
             type={"text"}
             placeholder={"Логин"}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             icon={"EditIcon"}
-            value={value}
+            value={email}
             name={"name"}
             error={false}
-            ref={inputRef}
-            onIconClick={onIconClick}
             errorText={"Ошибка"}
             size={"default"}
             extraClass={styles.input}
           />
           <PasswordInput
-            onChange={(e) => setValue(e.target.value)}
-            value={value}
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
             name={"password"}
             extraClass={styles.input}
             placeholder="Пароль"

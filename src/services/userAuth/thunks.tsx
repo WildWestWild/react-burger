@@ -4,6 +4,7 @@ import { checkResponse } from "../../utils/checkResponse";
 import { UserState } from "./slice";
 import Cookie from "js-cookie";
 import { saveTokensInCookie } from "../../utils/tokens";
+import { getBearerAccessTokenFromCookie } from "../../utils/tokens";
 
 export type RegisterUser = {
   email: string;
@@ -22,8 +23,7 @@ export const registrationUser = createAsyncThunk<UserState, RegisterUser>(
       body: JSON.stringify(registerUser),
     });
 
-    const json = await checkResponse(response);
-    saveTokensInCookie(json);
+    const json = await checkResponse(response); 
     return json as UserState;
   }
 );
@@ -55,6 +55,7 @@ export const logoutUser = createAsyncThunk<UserState>(
   async () => {
     let token = Cookie.get("refreshToken");
     if (!token) {
+      console.error("No refresh token found");
       throw new Error("No refresh token found");
     }
 
@@ -63,7 +64,7 @@ export const logoutUser = createAsyncThunk<UserState>(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ "refreshToken": token }),
+      body: JSON.stringify({ "token": token }),
     });
 
     const json = await checkResponse(response);
@@ -106,6 +107,39 @@ export const refreshToken = createAsyncThunk<UserState>(
     return {
         accessToken: json.accessToken
       } as UserState;
+  }
+);
+
+export const getUserInfo = createAsyncThunk<UserState>(
+  "user/getUser",
+  async () => {
+    const response = await fetch(BASE_URL + "/auth/user", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": getBearerAccessTokenFromCookie(),
+      },
+    });
+
+    const json = await checkResponse(response);
+    return json as UserState;
+  }
+);
+
+export const updateUserInfo = createAsyncThunk<UserState, RegisterUser>(
+  "user/updateUser",
+  async (updateUser) => {
+    const response = await fetch(BASE_URL + "/auth/user", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": getBearerAccessTokenFromCookie(),
+      },
+      body: JSON.stringify(updateUser),
+    });
+
+    const json = await checkResponse(response);
+    return json as UserState;
   }
 );
 

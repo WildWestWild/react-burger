@@ -11,12 +11,11 @@ export function saveTokensInCookie(tokens) {
   }
 }
 
-export function getAccessTokenFromCookie() {
+export function getBearerAccessTokenFromCookie() {
   const accessToken = Cookies.get("accessToken");
   if (accessToken) {
-    return accessToken;
+    return "Bearer " + accessToken;
   } else {
-    console.error("Access token not found in cookies");
-    return null;
+    throw new Error("Access token not found in cookies");
   }
 }

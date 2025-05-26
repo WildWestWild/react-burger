@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { registrationUser, loginUser } from './thunks';
+import { registrationUser, loginUser, logoutUser } from './thunks';
 
 export type User = {
     email : string,
@@ -57,6 +57,16 @@ export const userSlice = createSlice({
                 state.refreshToken = '';
                 state.user = null;
                 state.error = action.error.message || 'Login failed';
-            });
+            })
+            .addCase(logoutUser.fulfilled, (state, action: PayloadAction<UserState>) => {
+                state.isLoading = false;
+                state.accessToken = action.payload.accessToken;
+                state.refreshToken = action.payload.refreshToken;
+                state.user = action.payload.user;
+                console.log('Logout successful:', action.payload);
+            })
+            .addCase(logoutUser.rejected, (state, action) => {
+                console.error('Logout failed:', action.error.message);
+            })
     }
 });

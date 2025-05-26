@@ -4,55 +4,90 @@ import {
   EmailInput,
   PasswordInput,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../services";
+import { registrationUser } from "../../services/user/thunks";
+import { useNavigate } from "react-router-dom";
 import styles from "./registration.module.css";
 
 function Registration() {
-  const [value, setValue] = useState("");
-  const inputRef = useRef(null);
-  const onIconClick = () => {
-    setTimeout(() => inputRef.current.focus(), 0);
-    alert("Icon Click Callback");
-  };
-  const onChange = (e) => {
-    setValue(e.target.value);
-  };
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const user = useAppSelector((store) => store.userAuth);
+  const isLoading = user.isLoading;
+  const error = user.error;
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isRegistration, setIsRegistration] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const buttonDisabled = !(name && password && isEmailValid);
+
+  const onRegistrationClick = () => {
+    if (buttonDisabled) {
+      return;
+    }
+    
+    dispatch(registrationUser({ name, email, password }));
+    setIsRegistration(true);
+  }
+
+  useEffect(() => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setIsEmailValid(emailPattern.test(email));
+  }, [email]);
+
+  useEffect(() => {
+    if (isRegistration && !isLoading) {
+      setIsRegistration(false);
+      navigate("/");
+      setTimeout(() => {
+        setEmail("");
+        setName("");
+        setPassword("");
+      }, 3000);
+    }
+  }, [isRegistration, isLoading, navigate]);
+
   return (
     <div className={styles.container}>
       <h1 className="text text_type_main-medium mb-6">Регистрация</h1>
       <Input
         type={"text"}
         placeholder={"Имя"}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => setName(e.target.value)}
         icon={""}
-        value={value}
+        value={name}
         name={"name"}
         error={false}
-        ref={inputRef}
-        onIconClick={onIconClick}
         errorText={"Ошибка"}
         size={"default"}
         extraClass={styles.input}
       />
       <EmailInput
-        onChange={onChange}
-        value={value}
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
         name={"email"}
         placeholder="E-mail"
         isIcon={false}
         extraClass={styles.input}
       />
       <PasswordInput
-        onChange={onChange}
-        value={value}
+        onChange={(e) => setPassword(e.target.value)}
+        value={password}
         name={"password"}
         extraClass={styles.input}
         placeholder="Пароль"
       />
-      <Button htmlType="button" type="primary" size="medium">
+      <Button disabled={buttonDisabled} htmlType="button" type="primary" size="medium" onClick={onRegistrationClick}>
         Зарегистрироваться
       </Button>
+      {error && (
+        <p className="text text_type_main-default text_color_error mt-2">
+          {error}
+        </p>
+      )}
       <p className="text text_type_main-default text_color_inactive ml-2 mt-20">
         Уже зарегистрированы?{" "}
         <Link to="/login" className={styles.link}>

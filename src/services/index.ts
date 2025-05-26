@@ -4,13 +4,15 @@ import { burgerIngredientSlice } from './burger-ingredients/slice';
 import { burgerConstructorSlice } from './burger-constructor/slice';
 import { orderDetailsSlice } from './order-details/slice';
 import { ingredientDetailsSlice } from './ingredient-details/slice';
+import { userSlice } from './user/slice';
 
 export const store = configureStore({
     reducer: {
       burgerIngredient: burgerIngredientSlice.reducer,
       burgerConstructor: burgerConstructorSlice.reducer,
       orderDetails: orderDetailsSlice.reducer,
-      ingredientDetails: ingredientDetailsSlice.reducer
+      ingredientDetails: ingredientDetailsSlice.reducer,
+      userAuth: userSlice.reducer,
     }
   });
 

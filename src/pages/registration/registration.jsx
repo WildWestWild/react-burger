@@ -42,11 +42,11 @@ function Registration() {
     if (isRegistration && !isLoading) {
       setIsRegistration(false);
       navigate("/login");
-      setTimeout(() => {
+      return (() => {
         setEmail("");
         setName("");
         setPassword("");
-      }, 3000);
+      });
     }
   }, [isRegistration, isLoading, navigate]);
 

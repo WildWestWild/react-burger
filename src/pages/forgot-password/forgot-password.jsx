@@ -9,6 +9,7 @@ import { checkEmail } from "../../utils/checkEmail";
 import { useAppDispatch, useAppSelector } from "../../services";
 import { sendResetEmail } from "../../services/userReset/thunks";
 import { useNavigate } from "react-router-dom";
+import { clearReset } from "../../services/userReset/slice";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function ForgotPassword() {
   const userReset = useAppSelector((store) => store.userReset);
   const error =
     userReset.error ||
-    (userReset.userReset && userReset.userReset.success
+    (userReset.userReset && !userReset.userReset.success
       ? userReset.userReset.message
       : null);
 
@@ -33,9 +34,10 @@ function ForgotPassword() {
         if (userReset.userReset && userReset.userReset.success) {
             setEmail("");
             setIsEmailValid(false);
+            dispatch(clearReset());
         }
     }
-  }, [email, userReset.userReset]);
+  }, [email, userReset.userReset, dispatch]);
   return (
     <div className={styles.container}>
       <h1 className="text text_type_main-medium mb-6">Восстановление пароля</h1>
@@ -57,7 +59,7 @@ function ForgotPassword() {
         Восстановить
       </Button>
       {error && (
-        <p className="text text_type_main-default text_color_inactive ml-2 mt-20">
+        <p className="text text_type_main-default text_color_error mt-2">
           {error}
         </p>
       )}

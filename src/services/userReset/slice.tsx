@@ -13,7 +13,7 @@ export type UserResetState = {
 }
 
 export const initalState : UserResetState = {
-    isLoading: true,
+    isLoading: false,
     error: null,
     userReset: null
 }
@@ -21,7 +21,13 @@ export const initalState : UserResetState = {
 export const userResetSlice = createSlice({
     name: 'userReset',
     initialState: initalState,
-    reducers:{},
+    reducers:{
+        clearReset: (state) => {
+            state.isLoading = false;
+            state.error = null;
+            state.userReset = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(sendResetEmail.fulfilled, (state, action: PayloadAction<UserResetState>) => {
@@ -48,3 +54,5 @@ export const userResetSlice = createSlice({
             });
     }
 });
+
+export const { clearReset } = userResetSlice.actions;

@@ -41,10 +41,10 @@ function Login() {
     if (isLogin && !isLoading) {
       setIsLogin(false);
       navigate("/");
-      setTimeout(() => {
+      return () => {
         setEmail("");
         setPassword("");
-      }, 3000);
+      }
     }
   }, [isLogin, isLoading, navigate]);
 
@@ -76,7 +76,7 @@ function Login() {
         Войти
       </Button>
         {error && (
-            <p className="text text_type_main-default text_color_inactive ml-2 mt-20">
+            <p className="text text_type_main-default text_color_error mt-2">
             {error}
             </p>
         )}

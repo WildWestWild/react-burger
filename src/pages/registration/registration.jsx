@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../services";
 import { registrationUser } from "../../services/user/thunks";
 import { useNavigate } from "react-router-dom";
 import styles from "./registration.module.css";
+import { checkEmail } from "../../utils/checkEmail";
 
 function Registration() {
   const dispatch = useAppDispatch();
@@ -34,14 +35,13 @@ function Registration() {
   }
 
   useEffect(() => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    setIsEmailValid(emailPattern.test(email));
+    setIsEmailValid(checkEmail(email));
   }, [email]);
 
   useEffect(() => {
     if (isRegistration && !isLoading) {
       setIsRegistration(false);
-      navigate("/");
+      navigate("/login");
       setTimeout(() => {
         setEmail("");
         setName("");

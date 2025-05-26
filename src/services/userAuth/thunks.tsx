@@ -83,3 +83,30 @@ export const logoutUser = createAsyncThunk<UserState>(
     }
   }
 );
+
+export const refreshToken = createAsyncThunk<UserState>(
+  "user/refreshToken",
+  async () => {
+    let token = Cookie.get("refreshToken");
+    if (!token) {
+      throw new Error("No refresh token found");
+    }
+
+    const response = await fetch(BASE_URL + "/auth/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ "refreshToken": token }),
+    });
+
+    const json = await checkResponse(response);
+
+    saveTokensInCookie({accessToken: json.accessToken, refreshToken: token});
+    return {
+        accessToken: json.accessToken
+      } as UserState;
+  }
+);
+
+

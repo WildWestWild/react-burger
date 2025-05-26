@@ -4,7 +4,8 @@ import { burgerIngredientSlice } from './burger-ingredients/slice';
 import { burgerConstructorSlice } from './burger-constructor/slice';
 import { orderDetailsSlice } from './order-details/slice';
 import { ingredientDetailsSlice } from './ingredient-details/slice';
-import { userSlice } from './user/slice';
+import { userSlice } from './userAuth/slice';
+import { userResetSlice } from './userReset/slice';
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
       orderDetails: orderDetailsSlice.reducer,
       ingredientDetails: ingredientDetailsSlice.reducer,
       userAuth: userSlice.reducer,
+      userReset: userResetSlice.reducer
     }
   });
 

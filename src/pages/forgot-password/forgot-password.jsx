@@ -1,31 +1,72 @@
-import { EmailInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import {useState } from 'react';
-import { Link } from 'react-router-dom';
-import styles from './forgot-passwrod.module.css';
-
+import {
+  EmailInput,
+  Button,
+} from "@ya.praktikum/react-developer-burger-ui-components";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import styles from "./forgot-passwrod.module.css";
+import { checkEmail } from "../../utils/checkEmail";
+import { useAppDispatch, useAppSelector } from "../../services";
+import { sendResetEmail } from "../../services/userReset/thunks";
+import { useNavigate } from "react-router-dom";
 
 function ForgotPassword() {
-  const [value, setValue] = useState('')
-  const onChange = e => {
-    setValue(e.target.value)
-  }
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const dispatch = useAppDispatch();
+  const userReset = useAppSelector((store) => store.userReset);
+  const error =
+    userReset.error ||
+    (userReset.userReset && userReset.userReset.success
+      ? userReset.userReset.message
+      : null);
+
+  const onSendResetEmail = () => {
+    dispatch(sendResetEmail({ 'email': email }));
+    navigate("/reset-password");
+  };
+
+  useEffect(() => {
+    setIsEmailValid(checkEmail(email));
+    return () => {
+        if (userReset.userReset && userReset.userReset.success) {
+            setEmail("");
+            setIsEmailValid(false);
+        }
+    }
+  }, [email, userReset.userReset]);
   return (
     <div className={styles.container}>
-        <h1 className="text text_type_main-medium mb-6">Восстановление пароля</h1>
-        <EmailInput
-            onChange={onChange}
-            value={value}
-            name={'email'}
-            placeholder='Укажите e-mail'
-            isIcon={false}
-            extraClass={styles.input}
-        />
-        <Button htmlType="button" type="primary" size="medium">
-            Восстановить
-        </Button>
+      <h1 className="text text_type_main-medium mb-6">Восстановление пароля</h1>
+      <EmailInput
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
+        name={"email"}
+        placeholder="Укажите e-mail"
+        isIcon={false}
+        extraClass={styles.input}
+      />
+      <Button
+        disabled={!isEmailValid && userReset.isLoading}
+        htmlType="button"
+        type="primary"
+        size="medium"
+        onClick={onSendResetEmail}
+      >
+        Восстановить
+      </Button>
+      {error && (
         <p className="text text_type_main-default text_color_inactive ml-2 mt-20">
-           Вспомнили пароль? <Link to='/login' className={styles.link}>Войти</Link>
+          {error}
         </p>
+      )}
+      <p className="text text_type_main-default text_color_inactive ml-2 mt-20">
+        Вспомнили пароль?{" "}
+        <Link to="/login" className={styles.link}>
+          Войти
+        </Link>
+      </p>
     </div>
   );
 }

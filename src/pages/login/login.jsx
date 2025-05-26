@@ -6,7 +6,7 @@ import {
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./login.module.css";
-import { loginUser } from "../../services/user/thunks";
+import { loginUser } from "../../services/userAuth/thunks";
 import { useAppDispatch, useAppSelector } from "../../services";
 import { useNavigate } from "react-router-dom";
 import { checkEmail } from "../../utils/checkEmail";

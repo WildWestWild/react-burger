@@ -7,7 +7,7 @@ import {
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../services";
-import { registrationUser } from "../../services/user/thunks";
+import { registrationUser } from "../../services/userAuth/thunks";
 import { useNavigate } from "react-router-dom";
 import styles from "./registration.module.css";
 import { checkEmail } from "../../utils/checkEmail";

@@ -11,12 +11,24 @@ import { DraggableConstructorIngredient } from './draggable-constructor-ingredie
 import { getOrderDetails } from '../../services/order-details/thunks';
 import { incrementIngredientCount, pickBunCounter } from '../../services/burger-ingredients/slice';
 import { clearOrderDetails } from '../../services/order-details/slice';
+import { useNavigate } from 'react-router-dom';
 
 
 const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
   const burgerPickedIngredients = useAppSelector(store => store.burgerConstructor.burgerItems.ingredients);
   const burgerBun = useAppSelector(store => store.burgerConstructor.burgerItems.bun);
+  const userAuth = useAppSelector(store => store.userAuth);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const checkRights = () => {
+    if (userAuth.user) {
+      setIsModelOpen(true);
+    }
+    else{
+      navigate('/login');
+    }
+  }
   
   const [, dropRef] = useDrop({
     accept: 'ingredient',
@@ -95,7 +107,7 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
           <div className={styles.footer}>
             <span className="text text_type_digits-medium mr-2">{totalPrice}</span>
             <CurrencyIcon type="primary" />
-            <Button htmlType="button" type="primary" size="medium" extraClass="ml-10" onClick={() => setIsModelOpen(true)}>
+            <Button htmlType="button" type="primary" size="medium" extraClass="ml-10" onClick={(e) => checkRights()}>
               Оформить заказ
             </Button>
             {isModalOpen && number && (

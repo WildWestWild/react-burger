@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { OrderDetails } from './slice';
 import { BASE_URL } from '../../Constants';
 import { checkResponse } from '../../utils/checkResponse';
+import { getBearerAccessTokenFromCookie } from '../../utils/tokens';
 
 export type IngredientIdetificators = {
     ingredients: string[];
@@ -14,7 +15,9 @@ export const getOrderDetails = createAsyncThunk<OrderDetails, IngredientIdetific
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            "Authorization": getBearerAccessTokenFromCookie()
         },
+        
         body: JSON.stringify(ingredientsIdenitificators),
     });
 

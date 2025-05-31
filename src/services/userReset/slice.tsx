@@ -7,12 +7,14 @@ export type UserReset = {
 }
 
 export type UserResetState = {
+    isForgotPasswordCompleted: boolean, 
     isLoading: boolean,
     error: string | null,
     userReset: UserReset | null
 }
 
 export const initalState : UserResetState = {
+    isForgotPasswordCompleted: false,
     isLoading: false,
     error: null,
     userReset: null
@@ -26,6 +28,10 @@ export const userResetSlice = createSlice({
             state.isLoading = false;
             state.error = null;
             state.userReset = null;
+            state.isForgotPasswordCompleted = false;
+        },
+        setForgotPasswordCompleted: (state) => {
+            state.isForgotPasswordCompleted = true;
         }
     },
     extraReducers: (builder) => {
@@ -55,4 +61,4 @@ export const userResetSlice = createSlice({
     }
 });
 
-export const { clearReset } = userResetSlice.actions;
+export const { clearReset, setForgotPasswordCompleted } = userResetSlice.actions;

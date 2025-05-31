@@ -9,7 +9,7 @@ import { checkEmail } from "../../utils/checkEmail";
 import { useAppDispatch, useAppSelector } from "../../services";
 import { sendResetEmail } from "../../services/userReset/thunks";
 import { useNavigate } from "react-router-dom";
-import { clearReset } from "../../services/userReset/slice";
+import { setForgotPasswordCompleted } from "../../services/userReset/slice";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -27,6 +27,7 @@ function ForgotPassword() {
     const resultAction = await dispatch(sendResetEmail({ email }));
 
     if (sendResetEmail.fulfilled.match(resultAction)) {
+      dispatch(setForgotPasswordCompleted());
       navigate("/reset-password");
     } else {
       console.error("Failed to send reset email:", resultAction.error);
@@ -39,7 +40,6 @@ function ForgotPassword() {
       if (userReset.userReset && userReset.userReset.success) {
         setEmail("");
         setIsEmailValid(false);
-        dispatch(clearReset());
       }
     };
   }, [email, userReset.userReset, dispatch]);

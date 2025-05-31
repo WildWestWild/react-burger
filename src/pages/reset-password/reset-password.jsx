@@ -23,22 +23,27 @@ function ResetPassword() {
       ? userReset.userReset.message
       : null);
 
-  const onResetPassword = () => {
-    dispatch(resetPassword({'password': password, 'token': code}));
-  };
+  const onResetPassword = async () => {
+   const resultAction = await dispatch(resetPassword({'password': password, 'token': code}));
 
+    if (resetPassword.fulfilled.match(resultAction)) {
+        navigate("/login");
+      } else {
+        console.error("Failed to send reset email:", resultAction.error);
+      }
+  };
+  
   const buttonDisabled = !(password && code && !userReset.isLoading);
 
   useEffect(() => {
     return () => {
         if (userReset.userReset && userReset.userReset.success) {
-            navigate("/login");
             setPassword("");
             setCode("");
             dispatch(clearReset());
         }
     }
-  }, [userReset.userReset, dispatch, navigate]);
+  }, [userReset.isLoading, userReset.userReset, dispatch, navigate]);
   return (
     <div className={styles.container}>
       <h1 className="text text_type_main-medium mb-6">Восстановление пароля</h1>

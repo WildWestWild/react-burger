@@ -23,20 +23,25 @@ function ForgotPassword() {
       ? userReset.userReset.message
       : null);
 
-  const onSendResetEmail = () => {
-    dispatch(sendResetEmail({ 'email': email }));
-    navigate("/reset-password");
+  const onSendResetEmail = async () => {
+    const resultAction = await dispatch(sendResetEmail({ email }));
+
+    if (sendResetEmail.fulfilled.match(resultAction)) {
+      navigate("/reset-password");
+    } else {
+      console.error("Failed to send reset email:", resultAction.error);
+    }
   };
 
   useEffect(() => {
     setIsEmailValid(checkEmail(email));
     return () => {
-        if (userReset.userReset && userReset.userReset.success) {
-            setEmail("");
-            setIsEmailValid(false);
-            dispatch(clearReset());
-        }
-    }
+      if (userReset.userReset && userReset.userReset.success) {
+        setEmail("");
+        setIsEmailValid(false);
+        dispatch(clearReset());
+      }
+    };
   }, [email, userReset.userReset, dispatch]);
   return (
     <div className={styles.container}>

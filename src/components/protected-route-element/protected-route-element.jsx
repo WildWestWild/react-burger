@@ -3,31 +3,31 @@ import { useAppDispatch, useAppSelector } from "../../services";
 import { getUserInfo } from "../../services/userAuth/thunks";
 import { useNavigate } from "react-router-dom";
 
-export const BlockIfAuthTrue = (user) => ({ 
-    isBlocked: Boolean(user), 
+export const BlockIfAuthTrue = (userAuth) => ({ 
+    isBlocked: userAuth && Boolean(userAuth.user), 
     path: "/" 
 });
 
-export const BlockIfAuthFalse = (user) => ({ 
-    isBlocked: !user, 
+export const BlockIfAuthFalse = (userAuth) => ({ 
+    isBlocked: userAuth && !Boolean(userAuth.user), 
     path: "/login" 
 });
 export function ProtectedRouteElement({ element, block }) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { user } = useAppSelector((store) => store.userAuth);
+  const userAuth = useAppSelector((store) => store.userAuth);
 
   useEffect(() => {
     dispatch(getUserInfo())
   }, [dispatch]);
 
   useEffect(() => {
-    let result = block(user)
+    let result = block(userAuth)
     if (result.isBlocked) {
       navigate(result.path, { replace: true });
     }
-  }, [user, navigate, block]);
+  }, [userAuth, navigate, block]);
 
-  return !block(user).isBlocked ? element : null;
+  return userAuth && !block(userAuth).isBlocked ? element : null;
 }

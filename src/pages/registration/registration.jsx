@@ -25,13 +25,19 @@ function Registration() {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const buttonDisabled = !(name && password && isEmailValid);
 
-  const onRegistrationClick = () => {
+  const onRegistrationClick = async () => {
     if (buttonDisabled) {
       return;
     }
     
-    dispatch(registrationUser({ name, email, password }));
-    setIsRegistration(true);
+    const resultAction = await dispatch(registrationUser({ name, email, password }));
+    if (registrationUser.fulfilled.match(resultAction)) {
+      navigate("/login");
+      setIsRegistration(true);
+    } else {
+      console.error("Registration failed:", resultAction.error);
+      setIsRegistration(false);
+    }
   }
 
   useEffect(() => {
@@ -41,7 +47,6 @@ function Registration() {
   useEffect(() => {
     if (isRegistration && !isLoading) {
       setIsRegistration(false);
-      navigate("/login");
       return (() => {
         setEmail("");
         setName("");

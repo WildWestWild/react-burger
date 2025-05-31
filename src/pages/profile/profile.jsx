@@ -7,6 +7,7 @@ import {
 import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../services";
 import { getUserInfo, logoutUser } from "../../services/userAuth/thunks";
+import { useNavigate } from "react-router-dom";
 
 const disableDecorationWithInherit = {
   textDecoration: "none",
@@ -25,6 +26,7 @@ function Profile() {
   const [isWithInheritProfile, setisWithInheritProfile] = useState(true);
   const [isWithInheritProfileOrders, setisWithInheritProfileOrders] = useState(true);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const user = useAppSelector((store) => store.userAuth.user);
   useEffect(() => {
     if (name === "" && email === "" && user) {
@@ -33,8 +35,16 @@ function Profile() {
     }
   }, [user, name, email]);
 
-  const onLogout = () => {
-    dispatch(logoutUser());
+
+  const onLogout = async (e) => {
+    e.preventDefault();
+    const result = await dispatch(logoutUser());
+
+    if (logoutUser.fulfilled.match(result)) {
+      navigate("/register");
+    } else {
+      console.error("Logout failed");
+    }
   };
 
   useEffect(() => {
@@ -77,7 +87,7 @@ function Profile() {
           </NavLink>
           <NavLink
             to="/register"
-            onClick={onLogout}
+            onClick={(e) => onLogout(e)}
             style={
               isWithInheritProfileOrders
                 ? disableDecorationWithInherit

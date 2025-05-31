@@ -9,6 +9,7 @@ export type User = {
 
 export type UserState = {
     isLoading: boolean,
+    isRegistered: boolean,
     error: string | null,
     accessToken: string | '',
     refreshToken: string | '',
@@ -17,6 +18,7 @@ export type UserState = {
 
 export const initalState : UserState = {
     isLoading: true,
+    isRegistered: false,
     error: null,
     accessToken: '',
     refreshToken: '',
@@ -33,7 +35,8 @@ export const userSlice = createSlice({
                 state.isLoading = false;
                 state.accessToken = action.payload.accessToken;
                 state.refreshToken = action.payload.refreshToken;
-                state.user = action.payload.user;
+                //state.user = action.payload.user;
+                state.isRegistered = true;
                 console.log('Registration successful:', action.payload);
             })
             .addCase(registrationUser.rejected, (state, action) => {
@@ -64,6 +67,7 @@ export const userSlice = createSlice({
                 state.accessToken = action.payload.accessToken;
                 state.refreshToken = action.payload.refreshToken;
                 state.user = action.payload.user;
+                state.isRegistered = false;
                 console.log('Logout successful:', action.payload);
             })
             .addCase(logoutUser.rejected, (state, action) => {

@@ -24,13 +24,19 @@ function Login() {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const buttonDisabled = !(password && isEmailValid && !isLogin);
 
-  const onLoginClick = () => {
+  const onLoginClick = async () => {
     if (buttonDisabled) {
       return;
     }
 
-    dispatch(loginUser({ email, password }));
-    setIsLogin(true);
+    const resultAction = await dispatch(loginUser({ email, password }));
+    if (loginUser.fulfilled.match(resultAction)) {
+      navigate("/");
+      setIsLogin(true);
+    } else {
+      console.error("Login failed:", resultAction.error);
+      setIsLogin(false);
+    }
   };
 
   useEffect(() => {
@@ -40,7 +46,7 @@ function Login() {
   useEffect(() => {
     if (isLogin && !isLoading) {
       setIsLogin(false);
-      navigate("/");
+      
       return () => {
         setEmail("");
         setPassword("");

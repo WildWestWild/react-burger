@@ -7,6 +7,7 @@ import Login from "../login/login";
 import ForgotPassword from "../forgot-password/forgot-password";
 import ResetPassword from "../reset-password/reset-password";
 import Profile from "../profile/profile";
+import { BlockIfAuthFalse, BlockIfAuthTrue, ProtectedRouteElement } from "../../components/protected-route-element/protected-route-element";
 
 export function App() {
   return (
@@ -15,11 +16,11 @@ export function App() {
         <AppHeader />
         <Routes>
           <Route path="/" element={<AppMain />} />
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/register" element={<Registration />}/>
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword/>}/>
-          <Route path="/profile" element={<Profile/>}/>
+          <Route path="/login" element={<ProtectedRouteElement element={<Login/>} block={BlockIfAuthTrue}/>}/>
+          <Route path="/register" element={<ProtectedRouteElement element={<Registration/>} block={BlockIfAuthTrue}/>}/>
+          <Route path="/forgot-password" element={<ProtectedRouteElement element={<ForgotPassword />} block={BlockIfAuthTrue}/>} />
+          <Route path="/reset-password" element={<ProtectedRouteElement element={<ResetPassword/>} block={BlockIfAuthTrue}/>}/>
+          <Route path="/profile" element={<ProtectedRouteElement element={<Profile/>} block={BlockIfAuthFalse}/>}/>
           <Route path="/ingredients/:id" />
           <Route path="*" />
         </Routes>

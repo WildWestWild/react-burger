@@ -39,6 +39,7 @@ export const userResetSlice = createSlice({
             .addCase(sendResetEmail.fulfilled, (state, action: PayloadAction<UserResetState>) => {
                 state.isLoading = false;
                 state.userReset = action.payload.userReset;
+                state.error = null;
                 console.log('Password reset email sent successfully:', action.payload);
             })
             .addCase(sendResetEmail.rejected, (state, action) => {
@@ -50,6 +51,7 @@ export const userResetSlice = createSlice({
             .addCase(resetPassword.fulfilled, (state, action: PayloadAction<UserResetState>) => {
                 state.isLoading = false;
                 state.userReset = action.payload.userReset;
+                state.error = null;
                 console.log('Password reset successful:', action.payload);
             })
             .addCase(resetPassword.rejected, (state, action) => {

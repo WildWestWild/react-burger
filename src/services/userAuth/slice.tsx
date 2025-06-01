@@ -37,6 +37,7 @@ export const userSlice = createSlice({
                 state.refreshToken = action.payload.refreshToken;
                 //state.user = action.payload.user;
                 state.isRegistered = true;
+                state.error = null;
                 console.log('Registration successful:', action.payload);
             })
             .addCase(registrationUser.rejected, (state, action) => {
@@ -52,6 +53,7 @@ export const userSlice = createSlice({
                 state.accessToken = action.payload.accessToken;
                 state.refreshToken = action.payload.refreshToken;
                 state.user = action.payload.user;
+                state.error = null;
                 console.log('Login successful:', action.payload);
             })
             .addCase(loginUser.rejected, (state, action) => {
@@ -68,10 +70,12 @@ export const userSlice = createSlice({
                 state.refreshToken = action.payload.refreshToken;
                 state.user = action.payload.user;
                 state.isRegistered = false;
+                state.error = null;
                 console.log('Logout successful:', action.payload);
             })
             .addCase(logoutUser.rejected, (state, action) => {
                 console.error('Logout failed:', action.error.message);
+                state.error = action.error.message || 'Logout failed';
             })
     }
 });

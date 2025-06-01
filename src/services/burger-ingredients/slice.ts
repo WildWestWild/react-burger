@@ -68,7 +68,13 @@ export const burgerIngredientSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(getBurgerIngredients.fulfilled, (state, {payload}) => {
-        state.burgerIngredients = payload;
+        state.burgerIngredients = payload.map(payloadItem => {
+          const oldItem = state.burgerIngredients.find(item => item._id === payloadItem._id);
+          return {
+            ...payloadItem,
+            count: oldItem ? oldItem.count : 0
+          }
+        });
         state.isLoading = false;
         state.error = '';
       })

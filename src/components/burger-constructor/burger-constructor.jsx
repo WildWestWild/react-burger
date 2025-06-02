@@ -13,6 +13,8 @@ import { incrementIngredientCount, pickBunCounter } from '../../services/burger-
 import { clearOrderDetails } from '../../services/order-details/slice';
 import { useNavigate } from 'react-router-dom';
 import { setBlockPath } from '../../services/userAuth/slice';
+import { retryIfAuthTokenNotFound } from '../../utils/tokens';
+import { refreshToken } from '../../services/userAuth/thunks';
 
 
 const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
@@ -55,8 +57,8 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
     if (!isModalOpen) return;
     const ids = [burgerBun, burgerPickedIngredients ? burgerPickedIngredients : []]
       .map(item => item._id);
-
-    dispatch(getOrderDetails({ ingredients: ids }));
+    
+    retryIfAuthTokenNotFound(dispatch, refreshToken, getOrderDetails, { ingredients: ids });
   }, [isModalOpen, burgerBun, burgerPickedIngredients, dispatch]);
 
   const { orderDetails } = useAppSelector(store => store.orderDetails);

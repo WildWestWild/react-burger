@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../services";
-import { getUserInfo } from "../../services/userAuth/thunks";
+import { getUserInfo, refreshToken } from "../../services/userAuth/thunks";
 import { useNavigate, useLocation } from "react-router-dom";
 import { setBlockPath } from "../../services/userAuth/slice";
+import { retryIfAuthTokenNotFound } from "../../utils/tokens";
 
 export const BlockIfAuthTrue = (userAuth, _) => ({ 
     isBlocked: Boolean(userAuth.user), 
@@ -29,7 +30,7 @@ export function ProtectedRouteElement({ element, block }) {
 
   useEffect(() => {
     if (!userAuth.user && !userAuth.isLoading) {
-      dispatch(getUserInfo());
+      retryIfAuthTokenNotFound(dispatch, refreshToken, getUserInfo);
     }
   }, [userAuth, dispatch]);
 

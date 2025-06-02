@@ -8,6 +8,8 @@ import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../services";
 import { getUserInfo, logoutUser } from "../../services/userAuth/thunks";
 import { useNavigate } from "react-router-dom";
+import { refreshToken } from "../../services/userAuth/thunks";
+import { retryIfAuthTokenNotFound } from "../../utils/tokens";
 
 const disableDecorationWithInherit = {
   textDecoration: "none",
@@ -48,7 +50,7 @@ function Profile() {
   };
 
   useEffect(() => {
-    dispatch(getUserInfo());
+    retryIfAuthTokenNotFound(dispatch, refreshToken, getUserInfo);
   }, [dispatch]);
 
   return (

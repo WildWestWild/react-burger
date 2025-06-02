@@ -1,11 +1,13 @@
 import styles from './ingredient-details.module.css';
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useAppDispatch } from '../../services';
+import { useAppDispatch, useAppSelector } from '../../services';
 import { setIngredientDetails } from '../../services/ingredient-details/slice';
+import { useParams } from 'react-router-dom';
 
-const IngredientDetails = ({ ingredient}) => {
+const IngredientDetails = ({isNotModal}) => {
   const dispatcher = useAppDispatch();
+  const { id } = useParams();
+  const { burgerIngredients } = useAppSelector((store) => store.burgerIngredient);
+  const ingredient = burgerIngredients.find(r=>r._id === id);
   
   dispatcher(setIngredientDetails({
     image_large: ingredient.image_large,
@@ -17,7 +19,8 @@ const IngredientDetails = ({ ingredient}) => {
   }));
 
   return (
-    <div className={styles.modal}>
+    <div className={isNotModal ? styles.page : styles.modal}>
+      {isNotModal && <h1>Детали ингредиента</h1>}
       <img src={ingredient.image_large} alt={ingredient.name} className="mb-4" />
       <p className="text text_type_main-medium mb-8">{ingredient.name}</p>
 
@@ -43,15 +46,5 @@ const IngredientDetails = ({ ingredient}) => {
   );
 };
 
-IngredientDetails.propTypes = {
-    ingredient: PropTypes.shape({
-        image_large: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        calories: PropTypes.number.isRequired,
-        proteins: PropTypes.number.isRequired,
-        fat: PropTypes.number.isRequired,
-        carbohydrates: PropTypes.number.isRequired,
-    }).isRequired,
-}
 
 export default IngredientDetails;

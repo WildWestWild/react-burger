@@ -9,6 +9,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { App } from './pages/app/app';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor } from './services';
+import {BrowserRouter as Router} from 'react-router-dom'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -20,7 +21,9 @@ root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <DndProvider backend={HTML5Backend}>
-          <App />
+          <Router>
+            <App />
+          </Router>
         </DndProvider>
       </PersistGate>
     </Provider>

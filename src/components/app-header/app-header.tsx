@@ -1,9 +1,7 @@
 import { Logo, BurgerIcon, ListIcon, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './app-header.module.css'
-import { Link, NavLink } from 'react-router-dom';
-import { isAction } from '@reduxjs/toolkit';
+import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
-import React from 'react';
 
 const disableDecorationWithInherit = {
   textDecoration: "none",
@@ -62,9 +60,4 @@ function AppHeader() {
   );
 }
 
-/*className={({ isActive }) => {
-              setisWithInheritProfile(isActive);
-              let result = isActive ? `${mainText}` : `${smallText}`;
-              return `${result} mb-8`;
-            }} */
 export default AppHeader;

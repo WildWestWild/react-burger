@@ -1,6 +1,6 @@
 import { Logo, BurgerIcon, ListIcon, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './app-header.module.css'
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 
 const disableDecorationWithInherit = {
@@ -18,6 +18,7 @@ const grayIcon = "secondary";
 function AppHeader() {
   const [isWithInheritProfile, setisWithInheritProfile] = useState(true);
   const [isWithInheritConstractor, setisWithInheritConstractor] = useState(true);
+  const location = useLocation();
 
   return (
     <header className={styles.header}>
@@ -30,7 +31,7 @@ function AppHeader() {
                 ? disableDecorationWithInherit
                 : disableDecoration
             } className={({isActive}) => {
-              setisWithInheritConstractor(isActive); 
+              setisWithInheritConstractor(isActive || location.pathname.startsWith('/ingredients')); 
               return isActive ? mainText : smallText}
               } to='/'>Конструктор</NavLink>
           </div>
@@ -50,7 +51,7 @@ function AppHeader() {
                 ? disableDecorationWithInherit
                 : disableDecoration
             } className={({isActive}) => {
-              setisWithInheritProfile(isActive); 
+              setisWithInheritProfile(isActive ); 
               return isActive ? mainText : smallText}
               } to='/profile'>Личный кабинет</NavLink>
           </div>

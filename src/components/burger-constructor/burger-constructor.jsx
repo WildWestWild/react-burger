@@ -12,6 +12,7 @@ import { getOrderDetails } from '../../services/order-details/thunks';
 import { incrementIngredientCount, pickBunCounter } from '../../services/burger-ingredients/slice';
 import { clearOrderDetails } from '../../services/order-details/slice';
 import { useNavigate } from 'react-router-dom';
+import { setBlockPath } from '../../services/userAuth/slice';
 
 
 const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
@@ -26,6 +27,7 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
       setIsModelOpen(true);
     }
     else{
+      dispatch(setBlockPath('/'));
       navigate('/login');
     }
   }

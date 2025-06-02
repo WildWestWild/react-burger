@@ -15,7 +15,7 @@ import { useEffect } from "react";
 function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const user = useAppSelector((store) => store.userAuth);
+  const user  = useAppSelector((store) => store.userAuth);
   const isLoading = user.isLoading;
   const error = user.error;
   const [email, setEmail] = useState("");
@@ -31,7 +31,7 @@ function Login() {
 
     const resultAction = await dispatch(loginUser({ email, password }));
     if (loginUser.fulfilled.match(resultAction)) {
-      navigate("/");
+      navigate(user.blockedPath ? user.blockedPath : "/", { replace: true });
       setIsLogin(true);
     } else {
       console.error("Login failed:", resultAction.error);

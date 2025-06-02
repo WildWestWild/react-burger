@@ -41,7 +41,7 @@ function Profile() {
     const result = await dispatch(logoutUser());
 
     if (logoutUser.fulfilled.match(result)) {
-      navigate("/register");
+      navigate("/login");
     } else {
       console.error("Logout failed");
     }
@@ -86,7 +86,7 @@ function Profile() {
             История заказов
           </NavLink>
           <NavLink
-            to="/register"
+            to="/login"
             onClick={(e) => onLogout(e)}
             style={
               isWithInheritProfileOrders

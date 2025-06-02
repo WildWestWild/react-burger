@@ -10,6 +10,7 @@ export type User = {
 export type UserState = {
     isLoading: boolean,
     isRegistered: boolean,
+    blockedPath: string | null,
     error: string | null,
     accessToken: string | '',
     refreshToken: string | '',
@@ -19,6 +20,7 @@ export type UserState = {
 export const initalState : UserState = {
     isLoading: true,
     isRegistered: false,
+    blockedPath : null,
     error: null,
     accessToken: '',
     refreshToken: '',
@@ -28,14 +30,17 @@ export const initalState : UserState = {
 export const userSlice = createSlice({
     name: 'user',
     initialState: initalState,
-    reducers:{},
+    reducers:{
+        setBlockPath: (state, action: PayloadAction<string | null>) => {
+            state.blockedPath = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(registrationUser.fulfilled, (state, action: PayloadAction<UserState>) => {
                 state.isLoading = false;
                 state.accessToken = action.payload.accessToken;
                 state.refreshToken = action.payload.refreshToken;
-                //state.user = action.payload.user;
                 state.isRegistered = true;
                 state.error = null;
                 console.log('Registration successful:', action.payload);
@@ -79,3 +84,5 @@ export const userSlice = createSlice({
             })
     }
 });
+
+export const { setBlockPath } = userSlice.actions;

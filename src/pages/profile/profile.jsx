@@ -1,14 +1,18 @@
 import styles from "./profile.module.css";
 import { useState, useEffect } from "react";
 import {
+  Button,
   Input,
   PasswordInput,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../services";
-import { getUserInfo, logoutUser } from "../../services/userAuth/thunks";
-import { useNavigate } from "react-router-dom";
-import { refreshToken } from "../../services/userAuth/thunks";
+import {
+  getUserInfo,
+  logoutUser,
+  refreshToken,
+  updateUserInfo,
+} from "../../services/userAuth/thunks";
 import { retryIfAuthTokenNotFound } from "../../utils/tokens";
 
 const disableDecorationWithInherit = {
@@ -17,19 +21,40 @@ const disableDecorationWithInherit = {
 };
 const disableDecoration = { textDecoration: "none" };
 
-const mainText = "text text_type_main-medium mb-8";
-const smallText = "text text_type_main-medium text_color_inactive mt-2";
+const mainText = "text text_type_main-medium";
+const smallText = "text text_type_main-medium text_color_inactive";
 
 function Profile() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isShowButtons, setIsShowButtons] = useState(false);
 
-  const [isWithInheritProfile, setisWithInheritProfile] = useState(true);
-  const [isWithInheritProfileOrders, setisWithInheritProfileOrders] = useState(true);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const user = useAppSelector((store) => store.userAuth.user);
+
+  const isProfileActive = location.pathname === "/profile";
+  const isOrdersActive = location.pathname === "/profile/orders";
+
+  const cancelCommand = () => {
+    setName(user.name);
+    setEmail(user.email);
+    setPassword("");
+    setIsShowButtons(false);
+  };
+
+  const saveChanges = async () => {
+    await retryIfAuthTokenNotFound(
+      dispatch,
+      refreshToken,
+      updateUserInfo,
+      { name, email, password }
+    );
+    setIsShowButtons(false);
+  };
+
   useEffect(() => {
     if (name === "" && email === "" && user) {
       setName(user.name);
@@ -37,6 +62,9 @@ function Profile() {
     }
   }, [user, name, email]);
 
+  useEffect(() => {
+    retryIfAuthTokenNotFound(dispatch, refreshToken, getUserInfo);
+  }, [dispatch]);
 
   const onLogout = async (e) => {
     e.preventDefault();
@@ -49,66 +77,42 @@ function Profile() {
     }
   };
 
-  useEffect(() => {
-    retryIfAuthTokenNotFound(dispatch, refreshToken, getUserInfo);
-  }, [dispatch]);
-
   return (
     <div>
       <div className={styles.container}>
         <div className={styles.innerContent}>
           <NavLink
             to="/profile"
-            style={
-              isWithInheritProfile
-                ? disableDecorationWithInherit
-                : disableDecoration
-            }
-            className={({ isActive }) => {
-              setisWithInheritProfile(isActive);
-              let result = isActive ? `${mainText}` : `${smallText}`;
-              return `${result} mb-8`;
-            }}
+            style={isProfileActive ? disableDecorationWithInherit : disableDecoration}
+            className={`${isProfileActive ? mainText : smallText} mb-8`}
           >
             Профиль
           </NavLink>
           <NavLink
             to="/profile/orders"
-            style={
-              isWithInheritProfileOrders
-                ? disableDecorationWithInherit
-                : disableDecoration
-            }
-            className={({ isActive }) => {
-              setisWithInheritProfileOrders(isActive);
-              let result = isActive ? `${mainText}` : `${smallText}`;
-              return `${result} mb-8`;
-            }}
+            style={isOrdersActive ? disableDecorationWithInherit : disableDecoration}
+            className={`${isOrdersActive ? mainText : smallText} mb-8`}
           >
             История заказов
           </NavLink>
           <NavLink
             to="/login"
             onClick={(e) => onLogout(e)}
-            style={
-              isWithInheritProfileOrders
-                ? disableDecorationWithInherit
-                : disableDecoration
-            }
-            className={({ isActive }) => {
-              setisWithInheritProfileOrders(isActive);
-              let result = isActive ? `${mainText}` : `${smallText}`;
-              return `${result} mb-20`;
-            }}
+            style={disableDecoration}
+            className={`${smallText} mb-20`}
           >
             Выход
           </NavLink>
         </div>
+
         <div className={styles.innerContent}>
           <Input
             type={"text"}
             placeholder={"Имя"}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              setIsShowButtons(true);
+            }}
             icon={"EditIcon"}
             value={name}
             name={"name"}
@@ -120,17 +124,23 @@ function Profile() {
           <Input
             type={"text"}
             placeholder={"Логин"}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setIsShowButtons(true);
+            }}
             icon={"EditIcon"}
             value={email}
-            name={"name"}
+            name={"email"}
             error={false}
             errorText={"Ошибка"}
             size={"default"}
             extraClass={styles.input}
           />
           <PasswordInput
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setIsShowButtons(true);
+            }}
             value={password}
             name={"password"}
             extraClass={styles.input}
@@ -139,6 +149,7 @@ function Profile() {
           />
         </div>
       </div>
+
       <div className={styles.containerSmalltext}>
         <p
           style={{ width: "300px" }}
@@ -146,6 +157,22 @@ function Profile() {
         >
           В этом разделе вы можете изменить свои персональные данные
         </p>
+
+        {isShowButtons && (
+          <div className={styles.buttons}>
+            <div className={styles.cancel} onClick={cancelCommand}>
+              Отменить
+            </div>
+            <Button
+              htmlType="button"
+              type="primary"
+              size="medium"
+              onClick={saveChanges}
+            >
+              Сохранить
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

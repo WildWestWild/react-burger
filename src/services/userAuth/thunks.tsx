@@ -113,6 +113,7 @@ export const refreshToken = createAsyncThunk<UserState>(
 export const getUserInfo = createAsyncThunk<UserState>(
   "user/getUser",
   async () => {
+    console.log("Fetching user info");
     const response = await fetch(BASE_URL + "/auth/user", {
       method: "GET",
       headers: {
@@ -129,6 +130,7 @@ export const getUserInfo = createAsyncThunk<UserState>(
 export const updateUserInfo = createAsyncThunk<UserState, RegisterUser>(
   "user/updateUser",
   async (updateUser) => {
+    console.log("Updating user info with:", updateUser);
     const response = await fetch(BASE_URL + "/auth/user", {
       method: "PATCH",
       headers: {

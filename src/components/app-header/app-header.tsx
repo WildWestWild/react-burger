@@ -1,7 +1,7 @@
 import { Logo, BurgerIcon, ListIcon, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './app-header.module.css'
 import { NavLink, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const disableDecorationWithInherit = {
   textDecoration: "none",
@@ -20,20 +20,27 @@ function AppHeader() {
   const [isWithInheritConstractor, setisWithInheritConstractor] = useState(true);
   const location = useLocation();
 
+  useEffect(() => {
+    setisWithInheritConstractor(
+      location.pathname === '/' || location.pathname.startsWith('/ingredients')
+    );
+    
+    setisWithInheritProfile(location.pathname.startsWith('/profile'));
+  }, [location.pathname]);
+
   return (
     <header className={styles.header}>
       <nav className={styles.nav}>
         <div className={styles.left}>
           <div className={styles.menuItem}>
             <BurgerIcon type={isWithInheritConstractor ? whiteIcon : grayIcon} />
-            <NavLink style={
-              isWithInheritConstractor
-                ? disableDecorationWithInherit
-                : disableDecoration
-            } className={({isActive}) => {
-              setisWithInheritConstractor(isActive || location.pathname.startsWith('/ingredients')); 
-              return isActive ? mainText : smallText}
-              } to='/'>Конструктор</NavLink>
+            <NavLink
+              to="/"
+              style={isWithInheritConstractor ? disableDecorationWithInherit : disableDecoration}
+              className={({ isActive }) => isActive ? mainText : smallText}
+            >
+              Конструктор
+            </NavLink>
           </div>
           <div className={styles.menuItem}>
             <ListIcon type="secondary" />
@@ -46,19 +53,19 @@ function AppHeader() {
         <div className={styles.right}>
           <div className={styles.menuItem}>
             <ProfileIcon type={isWithInheritProfile ? whiteIcon : grayIcon} />
-            <NavLink style={
-              isWithInheritProfile
-                ? disableDecorationWithInherit
-                : disableDecoration
-            } className={({isActive}) => {
-              setisWithInheritProfile(isActive ); 
-              return isActive ? mainText : smallText}
-              } to='/profile'>Личный кабинет</NavLink>
+            <NavLink
+              to="/profile"
+              style={isWithInheritProfile ? disableDecorationWithInherit : disableDecoration}
+              className={({ isActive }) => isActive ? mainText : smallText}
+            >
+              Личный кабинет
+            </NavLink>
           </div>
         </div>
       </nav>
     </header>
   );
 }
+
 
 export default AppHeader;

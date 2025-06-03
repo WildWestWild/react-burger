@@ -39,13 +39,13 @@ export const orderDetailsSlice = createSlice({
                 state.orderDetails = payload;
                 state.isOrderLoading = false;
                 state.error = '';
-                console.log(payload);
+                console.log('Order details fetched successfully');
             })
             .addCase(getOrderDetails.rejected, (state, { error }) => {
                 state.orderDetails = null;
                 state.isOrderLoading = true;
                 state.error = error.message ?? 'Что-то пошло не так';
-                console.log(error);
+                console.log('Failed to fetch order details:', error.message);
             })
     },
 });

@@ -11,6 +11,7 @@ export type IngredientIdetificators = {
 
 export const getOrderDetails = createAsyncThunk<OrderDetails, IngredientIdetificators[]>(
   'orderDetails/getOrderDetails', async (ingredientsIdenitificators) => {
+    console.log('Fetching order details with ingredients:', ingredientsIdenitificators);
     const response = await fetch(BASE_URL + '/orders', {
         method: 'POST',
         headers: {

@@ -16,7 +16,7 @@ export function getBearerAccessTokenFromCookie() {
   if (accessToken) {
     return "Bearer " + accessToken;
   } else {
-    throw new Error("Access token not found in cookies");
+    throw new Error("No accessToken token");
   }
 }
 
@@ -26,11 +26,14 @@ export async function retryIfAuthTokenNotFound(dispatch, funcRefreshAuth, funcWh
       await dispatch(funcWhickNeedAuth(params));
       console.log("Function executed successfully.");
     } catch (error) {
-      if (error.message === "Access token not found in cookies") {
+      if (error.message === "No accessToken token") {
         console.warn("Access token not found, trying to refresh...");
         try {
+          console.log("Refreshing authentication tokens...");
           await dispatch(funcRefreshAuth());
+          console.log("Tokens refreshed successfully, retrying the function...");
           await dispatch(funcWhickNeedAuth(params));
+          console.log("Function retried successfully after refreshing tokens.");
         } catch (refreshError) {
           console.error("Failed to refresh tokens:", refreshError);
           throw refreshError;

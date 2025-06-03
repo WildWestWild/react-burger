@@ -22,7 +22,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const buttonDisabled = !(password && isEmailValid && !isLogin);
+  const buttonDisabled = !(password && isEmailValid);
 
   const onLoginClick = async () => {
     if (buttonDisabled) {

@@ -30,7 +30,7 @@ export function ProtectedRouteElement({ element, block }) {
 
   useEffect(() => {
     if (!userAuth.user && !userAuth.isLoading) {
-      retryIfAuthTokenNotFound(dispatch, refreshToken, getUserInfo);
+      //retryIfAuthTokenNotFound(dispatch, refreshToken, getUserInfo);
     }
   }, [userAuth, dispatch]);
 

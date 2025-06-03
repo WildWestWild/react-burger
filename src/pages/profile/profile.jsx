@@ -14,6 +14,8 @@ import {
   updateUserInfo,
 } from "../../services/userAuth/thunks";
 import { retryIfAuthTokenNotFound } from "../../utils/tokens";
+import { checkEmail } from "../../utils/checkEmail";
+import { checkPassword } from "../../utils/checkPassword";
 
 const disableDecorationWithInherit = {
   textDecoration: "none",
@@ -37,6 +39,20 @@ function Profile() {
 
   const isProfileActive = location.pathname === "/profile";
   const isOrdersActive = location.pathname === "/profile/orders";
+
+   const [isEmailValid, setIsEmailValid] = useState(false);
+  
+    useEffect(() => {
+      setIsEmailValid(checkEmail(email));
+    }, [email]);
+
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  
+    useEffect(() => {
+      setIsPasswordValid(checkPassword(password));
+    }, [password]);
+
+  const buttonDisabled = !(name && isEmailValid && isPasswordValid)
 
   const cancelCommand = () => {
     setName(user.name);
@@ -163,7 +179,7 @@ function Profile() {
             <div className={styles.cancel} onClick={cancelCommand}>
               Отменить
             </div>
-            <Button
+            <Button disabled={buttonDisabled}
               htmlType="button"
               type="primary"
               size="medium"

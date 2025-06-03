@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../services";
 import { resetPassword } from "../../services/userReset/thunks";
 import { useNavigate } from "react-router-dom";
 import { clearReset } from "../../services/userReset/slice";
+import { checkPassword } from "../../utils/checkPassword";
 
 function ResetPassword() {
   const navigate = useNavigate();
@@ -27,13 +28,19 @@ function ResetPassword() {
    const resultAction = await dispatch(resetPassword({'password': password, 'token': code}));
 
     if (resetPassword.fulfilled.match(resultAction)) {
-        navigate("/login");
+        navigate("/login", { replace: true });
       } else {
         console.error("Failed to send reset email:", resultAction.error);
       }
   };
+
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   
-  const buttonDisabled = !(password && code && !userReset.isLoading);
+    useEffect(() => {
+      setIsPasswordValid(checkPassword(password));
+    }, [password]);
+  
+  const buttonDisabled = !(isPasswordValid && code && !userReset.isLoading);
 
   useEffect(() => {
     return () => {

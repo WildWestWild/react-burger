@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "../../services";
 import { useNavigate } from "react-router-dom";
 import { checkEmail } from "../../utils/checkEmail";
 import { useEffect } from "react";
+import { checkPassword } from "../../utils/checkPassword";
 
 function Login() {
   const dispatch = useAppDispatch();
@@ -21,8 +22,20 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(false);
+
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const buttonDisabled = !(password && isEmailValid);
+
+  useEffect(() => {
+    setIsEmailValid(checkEmail(email));
+  }, [email]);
+
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+
+  useEffect(() => {
+    setIsPasswordValid(checkPassword(password));
+  }, [password]);
+
+  const buttonDisabled = !(isPasswordValid && isEmailValid);
 
   const onLoginClick = async () => {
     if (buttonDisabled) {
@@ -38,10 +51,6 @@ function Login() {
       setIsLogin(false);
     }
   };
-
-  useEffect(() => {
-    setIsEmailValid(checkEmail(email));
-  }, [email]);
 
   useEffect(() => {
     if (isLogin && !isLoading) {

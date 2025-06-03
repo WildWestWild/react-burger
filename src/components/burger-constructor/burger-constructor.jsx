@@ -5,7 +5,7 @@ import OrderDetails from '../order-details/order-defails';
 import PropTypes from 'prop-types';
 import { useAppSelector, useAppDispatch } from '../../services';
 import { setBun, addIngredient, sortIngredients } from '../../services/burger-constructor/slice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { DraggableConstructorIngredient } from './draggable-constructor-ingredient/draggable-constructor-ingredient';
 import { getOrderDetails } from '../../services/order-details/thunks';
@@ -21,6 +21,7 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
   const burgerPickedIngredients = useAppSelector(store => store.burgerConstructor.burgerItems.ingredients);
   const burgerBun = useAppSelector(store => store.burgerConstructor.burgerItems.bun);
   const userAuth = useAppSelector(store => store.userAuth);
+  const [isLoadingButtonDisabled, setLoadingButtonDisabled] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -55,10 +56,18 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
 
   useEffect(() => {
     if (!isModalOpen) return;
+    setLoadingButtonDisabled(true);
     const ids = [burgerBun, burgerPickedIngredients ? burgerPickedIngredients : []]
       .map(item => item._id);
     
-    retryIfAuthTokenNotFound(dispatch, refreshToken, getOrderDetails, { ingredients: ids });
+    retryIfAuthTokenNotFound(dispatch, refreshToken, getOrderDetails, { ingredients: ids })
+      .then(() => {
+        setLoadingButtonDisabled(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching order details:', error);
+        setLoadingButtonDisabled(false);
+      });
   }, [isModalOpen, burgerBun, burgerPickedIngredients, dispatch]);
 
   const { orderDetails } = useAppSelector(store => store.orderDetails);
@@ -111,7 +120,7 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
           <div className={styles.footer}>
             <span className="text text_type_digits-medium mr-2">{totalPrice}</span>
             <CurrencyIcon type="primary" />
-            <Button htmlType="button" type="primary" size="medium" extraClass="ml-10" onClick={(e) => checkRights()}>
+            <Button disabled={isLoadingButtonDisabled} htmlType="button" type="primary" size="medium" extraClass="ml-10" onClick={(e) => checkRights()}>
               Оформить заказ
             </Button>
             {isModalOpen && number && (

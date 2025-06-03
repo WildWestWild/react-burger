@@ -28,7 +28,7 @@ function ForgotPassword() {
 
     if (sendResetEmail.fulfilled.match(resultAction)) {
       dispatch(setForgotPasswordCompleted());
-      navigate("/reset-password");
+      navigate("/reset-password", { replace: true });
     } else {
       console.error("Failed to send reset email:", resultAction.error);
     }

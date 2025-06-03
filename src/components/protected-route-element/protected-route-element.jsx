@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../services";
-import { getUserInfo, refreshToken } from "../../services/userAuth/thunks";
 import { useNavigate, useLocation } from "react-router-dom";
 import { setBlockPath } from "../../services/userAuth/slice";
-import { retryIfAuthTokenNotFound } from "../../utils/tokens";
 
 export const BlockIfAuthTrue = (userAuth, _) => ({ 
     isBlocked: Boolean(userAuth.user), 
@@ -16,7 +14,7 @@ export const BlockIfAuthFalse = (userAuth, _) => ({
 });
 
 export const BlockIfAuthFalseResetPassword = (userAuth, userReset) => ({
-    isBlocked: (Boolean(userAuth.user) || !userReset.isForgotPasswordCompleted),
+    isBlocked: (Boolean(userAuth.user) || !userReset?.isForgotPasswordCompleted),
     path: "/forgot-password"
 });
 
@@ -26,13 +24,7 @@ export function ProtectedRouteElement({ element, block }) {
   const location = useLocation();
 
   const userAuth = useAppSelector((store) => store.userAuth);
-  const userReset = useAppSelector((store) => store.resetPassword);
-
-  useEffect(() => {
-    if (!userAuth.user && !userAuth.isLoading) {
-      //retryIfAuthTokenNotFound(dispatch, refreshToken, getUserInfo);
-    }
-  }, [userAuth, dispatch]);
+  const userReset = useAppSelector((store) => store.userReset);
 
   useEffect(() => {
     let result = block(userAuth, userReset)

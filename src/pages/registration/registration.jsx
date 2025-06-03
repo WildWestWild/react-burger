@@ -11,6 +11,7 @@ import { registrationUser } from "../../services/userAuth/thunks";
 import { useNavigate } from "react-router-dom";
 import styles from "./registration.module.css";
 import { checkEmail } from "../../utils/checkEmail";
+import { checkPassword } from "../../utils/checkPassword";
 
 function Registration() {
   const dispatch = useAppDispatch();
@@ -23,14 +24,26 @@ function Registration() {
   const [password, setPassword] = useState("");
   const [isRegistration, setIsRegistration] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const buttonDisabled = !(name && password && isEmailValid);
+  useEffect(() => {
+    setIsEmailValid(checkEmail(email));
+  }, [email]);
+
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+
+  useEffect(() => {
+    setIsPasswordValid(checkPassword(password));
+  }, [password]);
+
+  const buttonDisabled = !(name && isPasswordValid && isEmailValid);
 
   const onRegistrationClick = async () => {
     if (buttonDisabled) {
       return;
     }
-    
-    const resultAction = await dispatch(registrationUser({ name, email, password }));
+
+    const resultAction = await dispatch(
+      registrationUser({ name, email, password })
+    );
     if (registrationUser.fulfilled.match(resultAction)) {
       navigate("/login");
       setIsRegistration(true);
@@ -38,20 +51,16 @@ function Registration() {
       console.error("Registration failed:", resultAction.error);
       setIsRegistration(false);
     }
-  }
-
-  useEffect(() => {
-    setIsEmailValid(checkEmail(email));
-  }, [email]);
+  };
 
   useEffect(() => {
     if (isRegistration && !isLoading) {
       setIsRegistration(false);
-      return (() => {
+      return () => {
         setEmail("");
         setName("");
         setPassword("");
-      });
+      };
     }
   }, [isRegistration, isLoading, navigate]);
 
@@ -85,7 +94,13 @@ function Registration() {
         extraClass={styles.input}
         placeholder="Пароль"
       />
-      <Button disabled={buttonDisabled} htmlType="button" type="primary" size="medium" onClick={onRegistrationClick}>
+      <Button
+        disabled={buttonDisabled}
+        htmlType="button"
+        type="primary"
+        size="medium"
+        onClick={onRegistrationClick}
+      >
         Зарегистрироваться
       </Button>
       {error && (

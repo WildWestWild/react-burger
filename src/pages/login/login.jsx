@@ -16,20 +16,20 @@ import { checkPassword } from "../../utils/checkPassword";
 function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const user  = useAppSelector((store) => store.userAuth);
+  const user = useAppSelector((store) => store.userAuth);
   const isLoading = user.isLoading;
   const error = user.error;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(false);
 
   const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   useEffect(() => {
     setIsEmailValid(checkEmail(email));
   }, [email]);
-
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   useEffect(() => {
     setIsPasswordValid(checkPassword(password));
@@ -37,7 +37,9 @@ function Login() {
 
   const buttonDisabled = !(isPasswordValid && isEmailValid);
 
-  const onLoginClick = async () => {
+  const onLoginSubmit = async (event) => {
+    event.preventDefault();
+
     if (buttonDisabled) {
       return;
     }
@@ -55,48 +57,51 @@ function Login() {
   useEffect(() => {
     if (isLogin && !isLoading) {
       setIsLogin(false);
-      
+
       return () => {
         setEmail("");
         setPassword("");
-      }
+      };
     }
   }, [isLogin, isLoading, navigate]);
 
   return (
     <div className={styles.container}>
       <h1 className="text text_type_main-medium mb-6">Вход</h1>
-      <EmailInput
-        onChange={(e) => setEmail(e.target.value)}
-        value={email}
-        name={"email"}
-        placeholder="E-mail"
-        isIcon={false}
-        extraClass={styles.input}
-      />
-      <PasswordInput
-        onChange={(e) => setPassword(e.target.value)}
-        value={password}
-        name={"password"}
-        extraClass={styles.input}
-        placeholder="Пароль"
-      />
-      <Button
-        disabled={buttonDisabled}
-        htmlType="button"
-        type="primary"
-        size="medium"
-        onClick={onLoginClick}
-      >
-        Войти
-      </Button>
-        {error && (
-            <p className="text text_type_main-default text_color_error mt-2">
-            {error}
-            </p>
-        )}
+      <form onSubmit={onLoginSubmit}>
+        <EmailInput
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          name="email"
+          placeholder="E-mail"
+          isIcon={false}
+          extraClass={styles.input}
+        />
+        <PasswordInput
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          name="password"
+          extraClass={styles.input}
+          placeholder="Пароль"
+        />
+        <Button
+          disabled={buttonDisabled}
+          htmlType="submit"
+          type="primary"
+          size="medium"
+        >
+          Войти
+        </Button>
+      </form>
+
+      {error && (
+        <p className="text text_type_main-default text_color_error mt-2">
+          {error}
+        </p>
+      )}
+
       <p className="text text_type_main-default text_color_inactive ml-2 mt-20">
-        Вы - новый пользователь?{" "}
+        Вы — новый пользователь?{" "}
         <Link to="/register" className={styles.link}>
           Зарегистрироваться
         </Link>
@@ -110,5 +115,6 @@ function Login() {
     </div>
   );
 }
+
 
 export default Login;

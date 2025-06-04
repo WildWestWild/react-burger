@@ -40,19 +40,18 @@ function Profile() {
   const isProfileActive = location.pathname === "/profile";
   const isOrdersActive = location.pathname === "/profile/orders";
 
-   const [isEmailValid, setIsEmailValid] = useState(false);
-  
-    useEffect(() => {
-      setIsEmailValid(checkEmail(email));
-    }, [email]);
-
+  const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
-  
-    useEffect(() => {
-      setIsPasswordValid(checkPassword(password));
-    }, [password]);
 
-  const buttonDisabled = !(name && isEmailValid && isPasswordValid)
+  useEffect(() => {
+    setIsEmailValid(checkEmail(email));
+  }, [email]);
+
+  useEffect(() => {
+    setIsPasswordValid(checkPassword(password));
+  }, [password]);
+
+  const buttonDisabled = !(name && isEmailValid && isPasswordValid);
 
   const cancelCommand = () => {
     setName(user.name);
@@ -61,13 +60,16 @@ function Profile() {
     setIsShowButtons(false);
   };
 
-  const saveChanges = async () => {
+  const onFormSubmit = async (e) => {
+    e.preventDefault();
+
     await retryIfAuthTokenNotFound(
       dispatch,
       refreshToken,
       updateUserInfo,
       { name, email, password }
     );
+
     setIsShowButtons(false);
   };
 
@@ -113,7 +115,7 @@ function Profile() {
           </NavLink>
           <NavLink
             to="/login"
-            onClick={(e) => onLogout(e)}
+            onClick={onLogout}
             style={disableDecoration}
             className={`${smallText} mb-20`}
           >
@@ -121,35 +123,35 @@ function Profile() {
           </NavLink>
         </div>
 
-        <div className={styles.innerContent}>
+        <form className={styles.innerContent} onSubmit={onFormSubmit}>
           <Input
-            type={"text"}
-            placeholder={"Имя"}
+            type="text"
+            placeholder="Имя"
             onChange={(e) => {
               setName(e.target.value);
               setIsShowButtons(true);
             }}
-            icon={"EditIcon"}
+            icon="EditIcon"
             value={name}
-            name={"name"}
+            name="name"
             error={false}
-            errorText={"Ошибка"}
-            size={"default"}
+            errorText="Ошибка"
+            size="default"
             extraClass={styles.input}
           />
           <Input
-            type={"text"}
-            placeholder={"Логин"}
+            type="text"
+            placeholder="Логин"
             onChange={(e) => {
               setEmail(e.target.value);
               setIsShowButtons(true);
             }}
-            icon={"EditIcon"}
+            icon="EditIcon"
             value={email}
-            name={"email"}
+            name="email"
             error={false}
-            errorText={"Ошибка"}
-            size={"default"}
+            errorText="Ошибка"
+            size="default"
             extraClass={styles.input}
           />
           <PasswordInput
@@ -158,12 +160,28 @@ function Profile() {
               setIsShowButtons(true);
             }}
             value={password}
-            name={"password"}
+            name="password"
             extraClass={styles.input}
             placeholder="Пароль"
-            icon={"EditIcon"}
+            icon="EditIcon"
           />
-        </div>
+
+          {isShowButtons && (
+            <div className={styles.buttons}>
+              <div className={styles.cancel} onClick={cancelCommand}>
+                Отменить
+              </div>
+              <Button
+                disabled={buttonDisabled}
+                htmlType="submit"
+                type="primary"
+                size="medium"
+              >
+                Сохранить
+              </Button>
+            </div>
+          )}
+        </form>
       </div>
 
       <div className={styles.containerSmalltext}>
@@ -173,25 +191,10 @@ function Profile() {
         >
           В этом разделе вы можете изменить свои персональные данные
         </p>
-
-        {isShowButtons && (
-          <div className={styles.buttons}>
-            <div className={styles.cancel} onClick={cancelCommand}>
-              Отменить
-            </div>
-            <Button disabled={buttonDisabled}
-              htmlType="button"
-              type="primary"
-              size="medium"
-              onClick={saveChanges}
-            >
-              Сохранить
-            </Button>
-          </div>
-        )}
       </div>
     </div>
   );
 }
+
 
 export default Profile;

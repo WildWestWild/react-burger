@@ -39,7 +39,7 @@ export const userSlice = createSlice({
         builder
             .addCase(registrationUser.fulfilled, (state, action: PayloadAction<UserState>) => {
                 state.isLoading = false;
-                state.accessToken = action.payload.accessToken;
+                //state.accessToken = action.payload.accessToken;
                 state.refreshToken = action.payload.refreshToken;
                 state.isRegistered = true;
                 state.user = action.payload.user;

@@ -17,13 +17,16 @@ function ForgotPassword() {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const dispatch = useAppDispatch();
   const userReset = useAppSelector((store) => store.userReset);
+
   const error =
     userReset.error ||
     (userReset.userReset && !userReset.userReset.success
       ? userReset.userReset.message
       : null);
 
-  const onSendResetEmail = async () => {
+  const onFormSubmit = async (e) => {
+    e.preventDefault();
+
     const resultAction = await dispatch(sendResetEmail({ email }));
 
     if (sendResetEmail.fulfilled.match(resultAction)) {
@@ -42,27 +45,29 @@ function ForgotPassword() {
         setIsEmailValid(false);
       }
     };
-  }, [email, userReset.userReset, dispatch]);
+  }, [email, userReset.userReset]);
+
   return (
     <div className={styles.container}>
       <h1 className="text text_type_main-medium mb-6">Восстановление пароля</h1>
-      <EmailInput
-        onChange={(e) => setEmail(e.target.value)}
-        value={email}
-        name={"email"}
-        placeholder="Укажите e-mail"
-        isIcon={false}
-        extraClass={styles.input}
-      />
-      <Button
-        disabled={!isEmailValid && userReset.isLoading}
-        htmlType="button"
-        type="primary"
-        size="medium"
-        onClick={onSendResetEmail}
-      >
-        Восстановить
-      </Button>
+      <form onSubmit={onFormSubmit}>
+        <EmailInput
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          name="email"
+          placeholder="Укажите e-mail"
+          isIcon={false}
+          extraClass={styles.input}
+        />
+        <Button
+          disabled={!isEmailValid || userReset.isLoading}
+          htmlType="submit"
+          type="primary"
+          size="medium"
+        >
+          Восстановить
+        </Button>
+      </form>
       {error && (
         <p className="text text_type_main-default text_color_error mt-2">
           {error}
@@ -79,3 +84,4 @@ function ForgotPassword() {
 }
 
 export default ForgotPassword;
+

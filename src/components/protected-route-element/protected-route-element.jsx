@@ -26,20 +26,23 @@ export function ProtectedRouteElement({ element, block }) {
   const userAuth = useAppSelector((store) => store.userAuth);
   const userReset = useAppSelector((store) => store.userReset);
 
-  useEffect(() => {
-    let result = block(userAuth, userReset)
-    if (result.isBlocked) {
-      navigate(result.path, { replace: true });
-    }
-    
-  }, [userAuth, navigate, block, userReset]);
-
   const blockObject = block(userAuth, userReset);
-  const isblockDesicion = blockObject.isBlocked;
-  if (!userAuth.user && location.pathname !== "/login") {
-    console.log("ProtectedRouteElement: setting block path to: ", isblockDesicion ? location.pathname : null);
-      dispatch(setBlockPath(isblockDesicion ? location.pathname : null));
+  const isBlocked = blockObject.isBlocked;
+  const redirectPath = blockObject.path;
+
+  useEffect(() => {
+    if (isBlocked) {
+      navigate(redirectPath, { replace: true });
     }
- 
-  return isblockDesicion ? null : element;
+  }, [isBlocked, redirectPath, navigate]);
+
+
+  useEffect(() => {
+    if (!userAuth.user && location.pathname !== "/login") {
+      dispatch(setBlockPath(isBlocked ? location.pathname : null));
+    }
+  }, [userAuth.user, isBlocked, location.pathname, dispatch]);
+
+  return isBlocked ? null : element;
 }
+

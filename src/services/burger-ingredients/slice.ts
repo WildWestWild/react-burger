@@ -63,6 +63,14 @@ export const burgerIngredientSlice = createSlice({
         
         return item;
       });
+    },
+    clearCounters : (state) => {
+      state.burgerIngredients = state.burgerIngredients.map(item => {
+        return {
+          ...item,
+          count: 0
+        }
+      });
     }
   },
   extraReducers: builder => {
@@ -86,4 +94,4 @@ export const burgerIngredientSlice = createSlice({
   },
 });
 
-export const { incrementIngredientCount, decreaseIngredientCount, pickBunCounter } = burgerIngredientSlice.actions;
+export const { clearCounters, incrementIngredientCount, decreaseIngredientCount, pickBunCounter } = burgerIngredientSlice.actions;

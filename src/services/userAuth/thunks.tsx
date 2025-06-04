@@ -15,7 +15,6 @@ export type RegisterUser = {
 export const registrationUser = createAsyncThunk<UserState, RegisterUser>(
   "user/registrationUser",
   async (registerUser) => {
-    console.log("registrationUser -> ", registerUser);
     const response = await fetch(BASE_URL + "/auth/register", {
       method: "POST",
       headers: {
@@ -25,7 +24,7 @@ export const registrationUser = createAsyncThunk<UserState, RegisterUser>(
     });
 
     const json = await checkResponse(response); 
-    console.log("registrationUser Response -> ", json);
+    saveTokensInCookie(json);
     return json as UserState;
   }
 );

@@ -47,9 +47,7 @@ function Registration() {
       registrationUser({ name, email, password })
     );
     if (registrationUser.fulfilled.match(resultAction)) {
-      console.log("navigate login start");
       navigate("/");
-       console.log("navigate login end");
       setIsRegistration(true);
     } else {
       console.error("Registration failed:", resultAction.error);

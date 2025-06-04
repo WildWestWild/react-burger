@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { setBlockPath } from '../../services/userAuth/slice';
 import { retryIfAuthTokenNotFound } from '../../utils/tokens';
 import { refreshToken } from '../../services/userAuth/thunks';
+import { clearBurgerConstructor } from '../../services/burger-constructor/slice';
 
 
 const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
@@ -127,6 +128,7 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
               <Modal title="" onClose={() => {
                 setIsModelOpen(false);
                 dispatch(clearOrderDetails());
+                dispatch(clearBurgerConstructor());
               }
               }>
                 <OrderDetails number={number} status={orderInformation.status} info={orderInformation.info} />

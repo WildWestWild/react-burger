@@ -1,0 +1,72 @@
+import styles from './app.module.css';
+import { ingredientsJsonLink, orderInformation } from '../../Constants'
+import AppHeader from '../app-header/app-header';
+import BurgerIngredients from '../burger-ingredients/burger-ingredients';
+import BurgerConstructor from '../burger-constructor/burger-constructor';
+import { useEffect, useState } from 'react';
+
+function UpdateCountersInResponse(response, selectedBun, selectedOtherIngredients){
+    return response.map(item => {
+      if(item._id === selectedBun._id || selectedOtherIngredients.some(ingredient => ingredient._id === item._id)) {
+        item.count = 1;
+      }
+
+      return item;
+    });
+}
+
+function App() {
+  const [response, setResponse] = useState({success: false, data : []});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  useEffect(() => {
+    fetch(ingredientsJsonLink)
+      .then(res => {
+          if (!res.ok) {
+            return Promise.reject(`Ошибка ${res.status}`);
+          }
+
+          return res.json();
+        }
+      )
+      .then(data => {
+        setResponse(data);
+      })
+      .catch(error => console.log(error));
+  }, []);
+
+  const hasData = response.success;
+
+  const bun = response.data.find(item => item.type === 'bun');
+
+  const mains = response.data.filter(item => item.type === 'main');
+
+  const showIngredientsWithCounters = UpdateCountersInResponse(response.data, bun, mains);
+
+  return (
+    <div className={styles.App}>
+      <AppHeader/>
+      <div className={styles["App-h1"]}>
+          <h1 className="text text_type_main-large mt-10 mb-5">Соберите бургер</h1>
+      </div>
+      
+      <div className={styles["App-Body"]}>
+        {hasData ? (
+            <>
+              <BurgerIngredients data={showIngredientsWithCounters} />
+              <BurgerConstructor
+                bun={bun}
+                ingredients={mains}
+                isModalOpen={isModalOpen}
+                setIsModelOpen={setIsModalOpen}
+                orderInformation={orderInformation}
+              />
+            </>
+          ) : (
+            <p className="text text_type_main-medium">Загрузка ингредиентов...</p>
+          )}
+        </div>
+      </div>
+  );
+}
+
+export default App;

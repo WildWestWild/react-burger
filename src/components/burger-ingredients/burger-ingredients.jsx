@@ -1,9 +1,9 @@
-import React from 'react';
+import { useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientCategory from './ingredient-category/ingredient-category';
 import styles from './burger-ingredients.module.css';
 
-function SelectIngredientCategory(current, data){
+function selectIngredientCategory(current, data){
     switch(current){
       case "mains": return <IngredientCategory title="Начинки" elements={data.filter(r => r.type === "main")}/>;
       case "sauces": return <IngredientCategory title="Соусы"  elements={data.filter(r => r.type === "sauce")}/>;
@@ -12,8 +12,7 @@ function SelectIngredientCategory(current, data){
 }
 
 const BurgerIngredients = ( { data } ) => {
-  const [current, setCurrent] = React.useState('buns');
-  console.log(current);
+  const [current, setCurrent] = useState('buns');
 
   return (
     <section className={styles.container}>
@@ -30,7 +29,9 @@ const BurgerIngredients = ( { data } ) => {
       </div>
 
       <div className={styles.scrollable}>
-        {SelectIngredientCategory(current, data)}
+        {selectIngredientCategory("buns", data)}
+        {selectIngredientCategory("sauces", data)}
+        {selectIngredientCategory("mains", data)}
       </div>
     </section>
   );

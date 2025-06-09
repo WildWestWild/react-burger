@@ -1,21 +1,39 @@
-import React from 'react';
+import { useState } from 'react';
 import { Counter, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './ingredient-card.module.css';
+import Modal from '../../model/model';
+import IngredientDetails from '../../ingredient-details/ingredient-details';
+import PropTypes from 'prop-types';
+
 
 const IngredientCard = ({ item }) => {
   const { image, name, price, count = 0 } = item;
 
+  const [selectedIngredient, setSelectedIngredient] = useState(false);
+  let divState = true;
   return (
-    <div className={styles.card}>
+    <div className={styles.card} onClick={() => setSelectedIngredient(divState)}>
       {count > 0 && <Counter count={count} size="default" />}
       <img src={image} alt={name} className={styles.image} />
       <div className={styles.price}>
         <span className="text text_type_digits-default mr-2">{price}</span>
         <CurrencyIcon type="primary" />
+        { selectedIngredient ? (<Modal onClose={() => { divState = false; setSelectedIngredient(false)}} title="Детали ингредиента">
+          <IngredientDetails ingredient={item} />
+        </Modal>) : null}
       </div>
       <p className="text text_type_main-default mt-1">{name}</p>
     </div>
   );
 };
+
+IngredientCard.propTypes = {
+  item: PropTypes.shape({
+    image: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    count: PropTypes.number,
+  }).isRequired,
+}
 
 export default IngredientCard;

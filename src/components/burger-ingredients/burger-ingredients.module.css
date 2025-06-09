@@ -11,7 +11,9 @@
   .scrollable {
     max-height: 500px;
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 50px;
+    scrollbar-width: thin;
+    scrollbar-color: #8585AD transparent;
   }
   
   .scrollable::-webkit-scrollbar {
@@ -25,5 +27,11 @@
   
   .scrollable::-webkit-scrollbar-track {
     background-color: transparent;
+  }
+
+  .scrollable:-webkit-scrollbar-button {
+    display: none;
+    height: 0;
+    width: 0;
   }
   

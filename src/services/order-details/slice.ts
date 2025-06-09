@@ -13,33 +13,41 @@ export type OrderDetails = {
 
 export type OrderDetailsState = {
     orderDetails: OrderDetails | null;
-    isLoading: boolean;
+    isOrderLoading: boolean;
     error: string;
 }
 
 export const initialState: OrderDetailsState = {
     orderDetails: null,
-    isLoading: true,
+    isOrderLoading: true,
     error: '',
 };
 
 export const orderDetailsSlice = createSlice({
     name: 'orderDetails',
     initialState,
-    reducers: {},
+    reducers: {
+        clearOrderDetails: (state) => {
+            state.orderDetails = null;
+            state.isOrderLoading = true;
+            state.error = '';
+        }
+    },
     extraReducers: builder => {
         builder
             .addCase(getOrderDetails.fulfilled, (state, { payload }) => {
                 state.orderDetails = payload;
-                state.isLoading = false;
+                state.isOrderLoading = false;
                 state.error = '';
                 console.log(payload);
             })
             .addCase(getOrderDetails.rejected, (state, { error }) => {
                 state.orderDetails = null;
-                state.isLoading = true;
+                state.isOrderLoading = true;
                 state.error = error.message ?? 'Что-то пошло не так';
                 console.log(error);
             })
     },
 });
+
+export const { clearOrderDetails } = orderDetailsSlice.actions;

@@ -1,6 +1,4 @@
-export const ingredientsJsonLink = "https://norma.nomoreparties.space/api/ingredients";
-
-export const orderFillLink = "https://norma.nomoreparties.space/api/orders";
+export const BASE_URL = "https://norma.nomoreparties.space/api";
 
 export const orderInformation = {
     number: '034536',

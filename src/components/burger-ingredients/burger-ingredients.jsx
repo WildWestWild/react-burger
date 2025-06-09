@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
+import { useAppSelector } from '../../services';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientCategory from './ingredient-category/ingredient-category';
 import styles from './burger-ingredients.module.css';
 
-const BurgerIngredients = ({ data }) => {
+const BurgerIngredients = () => {
   const [current, setCurrent] = useState('buns');
+  const { burgerIngredients } = useAppSelector(store => store.burgerIngredient);
 
   const containerRef = useRef(null);
   const bunsRef = useRef(null);
   const saucesRef = useRef(null);
-  const mainsRef = useRef(null);
+  const mainsRef = useRef(null);      
 
   const handleScroll = () => {
     const containerTop = containerRef.current?.getBoundingClientRect().top;
@@ -43,13 +45,13 @@ const BurgerIngredients = ({ data }) => {
 
       <div className={styles.scrollable} ref={containerRef}>
         <div ref={bunsRef}>
-          <IngredientCategory title="Булки" elements={data.filter(r => r.type === 'bun')} />
+          <IngredientCategory title="Булки" elements={burgerIngredients.filter(r => r.type === 'bun')} />
         </div>
         <div ref={saucesRef}>
-          <IngredientCategory title="Соусы" elements={data.filter(r => r.type === 'sauce')} />
+          <IngredientCategory title="Соусы" elements={burgerIngredients.filter(r => r.type === 'sauce')} />
         </div>
         <div ref={mainsRef}>
-          <IngredientCategory title="Начинки" elements={data.filter(r => r.type === 'main')} />
+          <IngredientCategory title="Начинки" elements={burgerIngredients.filter(r => r.type === 'main')} />
         </div>
       </div>
     </section>

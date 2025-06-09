@@ -1,4 +1,4 @@
-.container {
+  .container {
     border-radius: 16px;
     padding: 20px;
     max-width: 600px;
@@ -41,13 +41,6 @@
     display: none;
     height: 0;
     width: 0;
-  }
-  
-  .item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
   }
   
   .footer {

@@ -1,37 +1,56 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientCategory from './ingredient-category/ingredient-category';
 import styles from './burger-ingredients.module.css';
 
-function selectIngredientCategory(current, data){
-    switch(current){
-      case "mains": return <IngredientCategory title="Начинки" elements={data.filter(r => r.type === "main")}/>;
-      case "sauces": return <IngredientCategory title="Соусы"  elements={data.filter(r => r.type === "sauce")}/>;
-      default: return <IngredientCategory title="Булки" elements={data.filter(r => r.type === "bun")}/>;
-    }
-}
-
-const BurgerIngredients = ( { data } ) => {
+const BurgerIngredients = ({ data }) => {
   const [current, setCurrent] = useState('buns');
+
+  const containerRef = useRef(null);
+  const bunsRef = useRef(null);
+  const saucesRef = useRef(null);
+  const mainsRef = useRef(null);
+
+  const handleScroll = () => {
+    const containerTop = containerRef.current?.getBoundingClientRect().top;
+
+    const bunTop = Math.abs(bunsRef.current?.getBoundingClientRect().top - containerTop);
+    const sauceTop = Math.abs(saucesRef.current?.getBoundingClientRect().top - containerTop);
+    const mainTop = Math.abs(mainsRef.current?.getBoundingClientRect().top - containerTop);
+
+    const min = Math.min(bunTop, sauceTop, mainTop);
+
+    if (min === bunTop) setCurrent('buns');
+    else if (min === sauceTop) setCurrent('sauces');
+    else if (min === mainTop) setCurrent('mains');
+  };
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <section className={styles.container}>
       <div className={styles.tabs}>
-        <Tab value="buns" active={current === 'buns'} onClick={setCurrent}>
-          Булки
-        </Tab>
-        <Tab value="sauces" active={current === 'sauces'} onClick={setCurrent}>
-          Соусы
-        </Tab>
-        <Tab value="mains" active={current === 'mains'} onClick={setCurrent}>
-          Начинки
-        </Tab>
+        <Tab value="buns" active={current === 'buns'} onClick={() => setCurrent('buns')}>Булки</Tab>
+        <Tab value="sauces" active={current === 'sauces'} onClick={() => setCurrent('sauces')}>Соусы</Tab>
+        <Tab value="mains" active={current === 'mains'} onClick={() => setCurrent('mains')}>Начинки</Tab>
       </div>
 
-      <div className={styles.scrollable}>
-        {selectIngredientCategory("buns", data)}
-        {selectIngredientCategory("sauces", data)}
-        {selectIngredientCategory("mains", data)}
+      <div className={styles.scrollable} ref={containerRef}>
+        <div ref={bunsRef}>
+          <IngredientCategory title="Булки" elements={data.filter(r => r.type === 'bun')} />
+        </div>
+        <div ref={saucesRef}>
+          <IngredientCategory title="Соусы" elements={data.filter(r => r.type === 'sauce')} />
+        </div>
+        <div ref={mainsRef}>
+          <IngredientCategory title="Начинки" elements={data.filter(r => r.type === 'main')} />
+        </div>
       </div>
     </section>
   );

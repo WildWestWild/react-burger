@@ -3,11 +3,44 @@ import styles from './burger-constructor.module.css';
 import Modal from '../model/model';
 import OrderDetails from '../order-details/order-defails';
 import PropTypes from 'prop-types';
+import { useAppSelector, useAppDispatch } from '../../services';
+import { setBun, addIngredient, removeIngredient } from '../../services/burger-constructor/slice'; 
+import { useEffect } from 'react';
+import { useDrop } from 'react-dnd';
+import { decreaseIngredientCount, incrementIngredientCount, pickBunCounter } from '../../services/burger-ingredients/slice';
 
-const BurgerConstructor = ({ bun, ingredients, isModalOpen, setIsModelOpen, orderInformation }) => {
+const getRandomInt = (min = 1, max = 100000) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
-  return (
-    <section className={styles.container} aria-label="Конструктор бургера">
+const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
+  const { burgerIngredients, isLoading } = useAppSelector(store => store.burgerIngredient);
+  const burgerPickedIngredients = useAppSelector(store => store.burgerConstructor.burgerItems.ingredients);
+  const burgerBun = useAppSelector(store => store.burgerConstructor.burgerItems.bun);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+      if (!isLoading && !burgerBun) {
+        const firstBun = burgerIngredients.find(item => item.type === 'bun');
+        dispatch(setBun(firstBun));
+      }
+  }, [isLoading, burgerBun, burgerIngredients, dispatch]);
+
+  const [, dropRef] = useDrop({
+    accept: 'ingredient',
+    drop: (item) => {
+      if (item.type === 'bun') {
+        dispatch(setBun(item));
+        dispatch(pickBunCounter(item._id));
+      } else {
+        dispatch(addIngredient(item));
+        dispatch(incrementIngredientCount(item._id));
+      }
+    },
+  });
+
+  return (burgerBun &&
+    <section ref ={dropRef} className={styles.container} aria-label="Конструктор бургера">
       <ul className={styles.list}>
 
         {/* Верхняя булка */}
@@ -15,21 +48,26 @@ const BurgerConstructor = ({ bun, ingredients, isModalOpen, setIsModelOpen, orde
           <ConstructorElement
             type="top"
             isLocked={true}
-            text={`${bun.name} (верх)`}
-            price={bun.price}
-            thumbnail={bun.image}
+            text={`${burgerBun.name} (верх)`}
+            price={burgerBun.price}
+            thumbnail={burgerBun.image}
           />
         </li>
 
         {/* Начинки */}
         <ul className={styles.scrollable}>
-          {ingredients.map((item) => (
-            <li key={item._id} className={styles.item}>
+          {burgerPickedIngredients.map((item) => (
+            <li key={item._id + getRandomInt()} className={styles.item}>
               <DragIcon type="primary" />
               <ConstructorElement
                 text={item.name}
                 price={item.price}
                 thumbnail={item.image}
+                handleClose={() => 
+                  { 
+                    dispatch(removeIngredient(item._id)) 
+                    dispatch(decreaseIngredientCount(item._id));
+                  }}
               />
             </li>
           ))}
@@ -40,22 +78,22 @@ const BurgerConstructor = ({ bun, ingredients, isModalOpen, setIsModelOpen, orde
           <ConstructorElement
             type="bottom"
             isLocked={true}
-            text={`${bun.name} (низ)`}
-            price={bun.price}
-            thumbnail={bun.image}
+            text={`${burgerBun.name} (низ)`}
+            price={burgerBun.price}
+            thumbnail={burgerBun.image}
           />
         </li>
       </ul>
 
       <div className={styles.footer}>
-        <span className="text text_type_digits-medium mr-2">{bun.price * 2 + ingredients.reduce((acc, i) => acc + i.price, 0)}</span>
+        <span className="text text_type_digits-medium mr-2">{burgerBun.price * 2 + burgerPickedIngredients.reduce((acc, i) => acc + i.price, 0)}</span>
         <CurrencyIcon type="primary" />
         <Button htmlType="button" type="primary" size="medium" extraClass="ml-10" onClick={() => setIsModelOpen(true)}>
           Оформить заказ
         </Button>
         {isModalOpen && (
           <Modal title="" onClose={() => setIsModelOpen(false)}>
-            <OrderDetails number={orderInformation.number} status={orderInformation.status} info={orderInformation.info}/>
+            <OrderDetails ingredients={[burgerBun, burgerPickedIngredients ? burgerPickedIngredients : []]} number={orderInformation.number} status={orderInformation.status} info={orderInformation.info}/>
           </Modal>
         )}
       </div>
@@ -64,19 +102,6 @@ const BurgerConstructor = ({ bun, ingredients, isModalOpen, setIsModelOpen, orde
 };
 
 BurgerConstructor.propTypes = {
-  bun: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-  }).isRequired,
-  ingredients: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      price: PropTypes.number.isRequired,
-      image: PropTypes.string.isRequired,
-    })
-  ).isRequired,
   isModalOpen: PropTypes.bool.isRequired,
   setIsModelOpen: PropTypes.func.isRequired,
   orderInformation: PropTypes.shape({

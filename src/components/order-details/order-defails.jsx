@@ -2,8 +2,21 @@ import React from 'react';
 import styles from './order-details.module.css';
 import { CheckMarkIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
+import { useAppSelector, useAppDispatch } from '../../services';
+import { useEffect } from 'react';
+import { getOrderDetails } from '../../services/order-details/thunks';
 
-const OrderDetails = ({number, status, info}) => {
+const OrderDetails = ({ingredients, status, info}) => {
+  const dispatcher = useAppDispatch();
+  const { orderDetails } = useAppSelector(store => store.orderDetails);
+  const number = orderDetails && orderDetails.order && orderDetails.order.number;
+
+  useEffect(() => {
+    const ids = ingredients
+    .map(item => item._id);
+
+    dispatcher(getOrderDetails({ ingredients: ids }));
+  }, [ingredients, dispatcher]);
 
   return (
     <div className={styles.wrapper}>
@@ -25,7 +38,7 @@ const OrderDetails = ({number, status, info}) => {
 };
 
 OrderDetails.propTypes = {
-  number: PropTypes.string.isRequired,
+  ingredients: PropTypes.arrayOf(PropTypes.object).isRequired,
   status: PropTypes.string.isRequired,
   info: PropTypes.string.isRequired,
 }

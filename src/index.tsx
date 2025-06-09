@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './components/app/app';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { store } from './services';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { App } from './pages/app/app';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor } from './services';
+import {BrowserRouter as Router} from 'react-router-dom'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -16,9 +19,13 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <DndProvider backend={HTML5Backend}>
-        <App />
-      </DndProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <DndProvider backend={HTML5Backend}>
+          <Router>
+            <App />
+          </Router>
+        </DndProvider>
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 );

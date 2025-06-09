@@ -63,12 +63,26 @@ export const burgerIngredientSlice = createSlice({
         
         return item;
       });
+    },
+    clearCounters : (state) => {
+      state.burgerIngredients = state.burgerIngredients.map(item => {
+        return {
+          ...item,
+          count: 0
+        }
+      });
     }
   },
   extraReducers: builder => {
     builder
       .addCase(getBurgerIngredients.fulfilled, (state, {payload}) => {
-        state.burgerIngredients = payload;
+        state.burgerIngredients = payload.map(payloadItem => {
+          const oldItem = state.burgerIngredients.find(item => item._id === payloadItem._id);
+          return {
+            ...payloadItem,
+            count: oldItem ? oldItem.count : 0
+          }
+        });
         state.isLoading = false;
         state.error = '';
       })
@@ -80,4 +94,4 @@ export const burgerIngredientSlice = createSlice({
   },
 });
 
-export const { incrementIngredientCount, decreaseIngredientCount, pickBunCounter } = burgerIngredientSlice.actions;
+export const { clearCounters, incrementIngredientCount, decreaseIngredientCount, pickBunCounter } = burgerIngredientSlice.actions;

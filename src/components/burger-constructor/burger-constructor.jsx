@@ -5,26 +5,38 @@ import OrderDetails from '../order-details/order-defails';
 import PropTypes from 'prop-types';
 import { useAppSelector, useAppDispatch } from '../../services';
 import { setBun, addIngredient, sortIngredients } from '../../services/burger-constructor/slice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { DraggableConstructorIngredient } from './draggable-constructor-ingredient/draggable-constructor-ingredient';
 import { getOrderDetails } from '../../services/order-details/thunks';
 import { incrementIngredientCount, pickBunCounter } from '../../services/burger-ingredients/slice';
 import { clearOrderDetails } from '../../services/order-details/slice';
+import { useNavigate } from 'react-router-dom';
+import { setBlockPath } from '../../services/userAuth/slice';
+import { retryIfAuthTokenNotFound } from '../../utils/tokens';
+import { refreshToken } from '../../services/userAuth/thunks';
+import { clearBurgerConstructor } from '../../services/burger-constructor/slice';
+import { clearCounters } from '../../services/burger-ingredients/slice';
 
 
 const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
   const burgerPickedIngredients = useAppSelector(store => store.burgerConstructor.burgerItems.ingredients);
   const burgerBun = useAppSelector(store => store.burgerConstructor.burgerItems.bun);
+  const userAuth = useAppSelector(store => store.userAuth);
+  const [isLoadingButtonDisabled, setLoadingButtonDisabled] = useState(false);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!isLoading && !burgerBun) {
-  //     const firstBun = burgerIngredients.find(item => item.type === 'bun');
-  //     dispatch(setBun(firstBun));
-  //   }
-  // }, [isLoading, burgerBun, burgerIngredients, dispatch]);
-
+  const checkRights = () => {
+    if (userAuth.user) {
+      setIsModelOpen(true);
+    }
+    else{
+      dispatch(setBlockPath('/'));
+      navigate('/login');
+    }
+  }
+  
   const [, dropRef] = useDrop({
     accept: 'ingredient',
     drop: (item) => {
@@ -46,10 +58,18 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
 
   useEffect(() => {
     if (!isModalOpen) return;
+    setLoadingButtonDisabled(true);
     const ids = [burgerBun, burgerPickedIngredients ? burgerPickedIngredients : []]
       .map(item => item._id);
-
-    dispatch(getOrderDetails({ ingredients: ids }));
+    
+    retryIfAuthTokenNotFound(dispatch, refreshToken, getOrderDetails, { ingredients: ids })
+      .then(() => {
+        setLoadingButtonDisabled(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching order details:', error);
+        setLoadingButtonDisabled(false);
+      });
   }, [isModalOpen, burgerBun, burgerPickedIngredients, dispatch]);
 
   const { orderDetails } = useAppSelector(store => store.orderDetails);
@@ -102,13 +122,15 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
           <div className={styles.footer}>
             <span className="text text_type_digits-medium mr-2">{totalPrice}</span>
             <CurrencyIcon type="primary" />
-            <Button htmlType="button" type="primary" size="medium" extraClass="ml-10" onClick={() => setIsModelOpen(true)}>
+            <Button disabled={isLoadingButtonDisabled} htmlType="button" type="primary" size="medium" extraClass="ml-10" onClick={(e) => checkRights()}>
               Оформить заказ
             </Button>
             {isModalOpen && number && (
               <Modal title="" onClose={() => {
                 setIsModelOpen(false);
                 dispatch(clearOrderDetails());
+                dispatch(clearBurgerConstructor());
+                dispatch(clearCounters());
               }
               }>
                 <OrderDetails number={number} status={orderInformation.status} info={orderInformation.info} />

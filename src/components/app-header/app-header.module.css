@@ -25,7 +25,8 @@
   
   .center {
     display: flex;
-    justify-content: center;
+    justify-content: start;
+    margin-left: 12%;
     flex-grow: 1;
   }
   

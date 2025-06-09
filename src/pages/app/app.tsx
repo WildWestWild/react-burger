@@ -21,8 +21,9 @@ import {
 import NotFound from "../not-found/not-found";
 import Modal from "../../components/model/model";
 import IngredientDetails from "../../components/ingredient-details/ingredient-details";
+import { JSX } from "react";
 
-export function App() {
+export function App() : JSX.Element {
   const location = useLocation();
   const navigate = useNavigate();
   const background = location.state && location.state.background;
@@ -86,7 +87,7 @@ export function App() {
             path="/ingredients/:id"
             element={
               <Modal onClose={handleModalClose} title="Детали ингредиента">
-                <IngredientDetails />
+                <IngredientDetails isNotModal={false} />
               </Modal>
             }
           />

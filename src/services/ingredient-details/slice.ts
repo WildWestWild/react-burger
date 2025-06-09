@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-type Ingredient ={ 
+export type Ingredient ={
+    _id: string; 
     image_large: string;
     name: string;
     calories: number;

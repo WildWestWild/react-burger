@@ -23,9 +23,9 @@ export const registrationUser = createAsyncThunk<UserState, RegisterUser>(
       body: JSON.stringify(registerUser),
     });
 
-    const json = await checkResponse(response); 
+    const json = await checkResponse<UserState>(response); 
     saveTokensInCookie(json);
-    return json as UserState;
+    return json;
   }
 );
 
@@ -46,12 +46,16 @@ export const loginUser = createAsyncThunk<UserState, LoginUser>(
       body: JSON.stringify(loginUser),
     });
 
-    const json = await checkResponse(response);
+    const json = await checkResponse<UserState>(response);
     
     saveTokensInCookie(json);
-    return json as UserState;
+    return json;
   }
 );
+
+type LogoutResponse = {
+  success: boolean
+}
 
 export const logoutUser = createAsyncThunk<UserState>(
   "user/logoutUser",
@@ -70,7 +74,7 @@ export const logoutUser = createAsyncThunk<UserState>(
       body: JSON.stringify({ "token": token }),
     });
 
-    const json = await checkResponse(response);
+    const json = await checkResponse<LogoutResponse>(response);
 
     if (json.success) {
       Cookie.remove("accessToken");
@@ -104,7 +108,7 @@ export const refreshToken = createAsyncThunk<UserState>(
       body: JSON.stringify({ "refreshToken": token }),
     });
 
-    const json = await checkResponse(response);
+    const json = await checkResponse<UserState>(response);
 
     saveTokensInCookie({accessToken: json.accessToken, refreshToken: token});
     return {
@@ -125,8 +129,8 @@ export const getUserInfo = createAsyncThunk<UserState>(
       },
     });
 
-    const json = await checkResponse(response);
-    return json as UserState;
+    const json = await checkResponse<UserState>(response);
+    return json;
   }
 );
 
@@ -143,8 +147,8 @@ export const updateUserInfo = createAsyncThunk<UserState, RegisterUser>(
       body: JSON.stringify(updateUser),
     });
 
-    const json = await checkResponse(response);
-    return json as UserState;
+    const json = await checkResponse<UserState>(response);
+    return json;
   }
 );
 

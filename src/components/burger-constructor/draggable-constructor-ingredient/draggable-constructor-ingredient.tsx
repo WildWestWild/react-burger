@@ -1,16 +1,27 @@
-import { useRef } from 'react';
+import { FC, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useAppDispatch } from '../../../services';
-import { removeIngredient } from '../../../services/burger-constructor/slice';
+import { Item, removeIngredient } from '../../../services/burger-constructor/slice';
 import { decreaseIngredientCount } from '../../../services/burger-ingredients/slice';
 import styles from './draggable-constructor-ingredient.module.css'
 
-export const DraggableConstructorIngredient = ({ item, index, moveIngredient }) => {
+type DraggableConstructorIngredientProps = {
+  item: Item,
+  index: number,
+  moveIngredient: (fromIndex: number, toIndex: number) => void
+}
+
+type DraggbleElement = {
+  index: number,
+  uuid: string
+}
+
+export const DraggableConstructorIngredient : FC<DraggableConstructorIngredientProps> = ({ item, index, moveIngredient }) => {
   const dispatch = useAppDispatch();
   const ref = useRef(null);
 
-  const [, drop] = useDrop({
+  const [, drop] = useDrop<DraggbleElement>({
     accept: 'constructor-ingredient',
     drop(draggedItem) {
       if (!ref.current || draggedItem.index === index) return;

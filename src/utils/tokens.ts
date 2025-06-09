@@ -1,6 +1,8 @@
+import { AsyncThunk, Dispatch } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
+import { UserState } from "../services/userAuth/slice";
 
-export function saveTokensInCookie(tokens) {
+export function saveTokensInCookie(tokens: {accessToken: string, refreshToken: string}): void {
   if (tokens && tokens.accessToken && tokens.refreshToken) {
     Cookies.set("accessToken", tokens.accessToken.replace("Bearer ", ""), {expires: 1 / 72}); // 20 minutes
     Cookies.set("refreshToken", tokens.refreshToken, {expires: 365});
@@ -11,7 +13,7 @@ export function saveTokensInCookie(tokens) {
   }
 }
 
-export function getBearerAccessTokenFromCookie() {
+export function getBearerAccessTokenFromCookie(): string {
   const accessToken = Cookies.get("accessToken");
   if (accessToken) {
     return "Bearer " + accessToken;
@@ -20,13 +22,17 @@ export function getBearerAccessTokenFromCookie() {
   }
 }
 
-export async function retryIfAuthTokenNotFound(dispatch, funcRefreshAuth, funcWhickNeedAuth, params = undefined){
+export type FuncRefreshAuth = () => UserState;
+
+export type FuncWhickNeedAuth = (value: any) => any;
+
+export async function retryIfAuthTokenNotFound(dispatch: Dispatch<any>, funcRefreshAuth: AsyncThunk<UserState, void, any>, funcWhickNeedAuth: FuncWhickNeedAuth, params: any = undefined){
  try {
       console.log("Starting function that requires authentication...");
       await dispatch(funcWhickNeedAuth(params));
       console.log("Function executed successfully.");
     } catch (error) {
-      if (error.message === "No accessToken token") {
+      if (error instanceof Error && error.message === "No accessToken token") {
         console.warn("Access token not found, trying to refresh...");
         try {
           console.log("Refreshing authentication tokens...");

@@ -10,9 +10,15 @@
     min-width: 500px;
   }
   
-  .header {
+  .headerBetween {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+  }
+
+   .headerEnd {
+    display: flex;
+    justify-content: flex-end;
     align-items: center;
   }
   

@@ -2,28 +2,39 @@ import { ConstructorElement, Button, CurrencyIcon } from '@ya.praktikum/react-de
 import styles from './burger-constructor.module.css';
 import Modal from '../model/model';
 import OrderDetails from '../order-details/order-defails';
-import PropTypes from 'prop-types';
 import { useAppSelector, useAppDispatch } from '../../services';
-import { setBun, addIngredient, sortIngredients } from '../../services/burger-constructor/slice';
-import { useEffect, useState } from 'react';
+import { setBun, addIngredient, sortIngredients, Item } from '../../services/burger-constructor/slice';
+import { useEffect, useState, Dispatch, SetStateAction, Ref } from 'react';
 import { useDrop } from 'react-dnd';
 import { DraggableConstructorIngredient } from './draggable-constructor-ingredient/draggable-constructor-ingredient';
 import { getOrderDetails } from '../../services/order-details/thunks';
 import { incrementIngredientCount, pickBunCounter } from '../../services/burger-ingredients/slice';
 import { clearOrderDetails } from '../../services/order-details/slice';
 import { useNavigate } from 'react-router-dom';
-import { setBlockPath } from '../../services/userAuth/slice';
+import { setBlockPath, UserState } from '../../services/userAuth/slice';
 import { retryIfAuthTokenNotFound } from '../../utils/tokens';
 import { refreshToken } from '../../services/userAuth/thunks';
 import { clearBurgerConstructor } from '../../services/burger-constructor/slice';
 import { clearCounters } from '../../services/burger-ingredients/slice';
 
 
-const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
-  const burgerPickedIngredients = useAppSelector(store => store.burgerConstructor.burgerItems.ingredients);
-  const burgerBun = useAppSelector(store => store.burgerConstructor.burgerItems.bun);
-  const userAuth = useAppSelector(store => store.userAuth);
-  const [isLoadingButtonDisabled, setLoadingButtonDisabled] = useState(false);
+interface OrderInformation {
+  number: string;
+  status: string;
+  info: string;
+}
+
+interface BurgerConstructorProps {
+  isModalOpen: boolean;
+  setIsModelOpen: Dispatch<SetStateAction<boolean>>;
+  orderInformation: OrderInformation;
+}
+
+const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
+  const burgerPickedIngredients  = useAppSelector<Item[]>(store => store.burgerConstructor.burgerItems.ingredients);
+  const burgerBun = useAppSelector<Item | null>(store => store.burgerConstructor.burgerItems.bun);
+  const userAuth  = useAppSelector<UserState>(store => store.userAuth);
+  const [isLoadingButtonDisabled, setLoadingButtonDisabled] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -37,20 +48,21 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
     }
   }
   
-  const [, dropRef] = useDrop({
-    accept: 'ingredient',
-    drop: (item) => {
-      if (item.type === 'bun') {
-        dispatch(setBun(item));
-        dispatch(pickBunCounter(item._id));
-      } else {
-        dispatch(addIngredient(item));
-        dispatch(incrementIngredientCount(item._id));
-      }
-    },
-  });
+  const [, dropRef] = useDrop<Item>({
+      accept: 'ingredient',
+      drop: (item: Item) => {
+        if (item.type === 'bun') {
+          dispatch(setBun(item));
+          dispatch(pickBunCounter(item._id));
+        } else {
+          dispatch(addIngredient(item));
+          dispatch(incrementIngredientCount(item._id));
+        }
+      },
+    }
+  );
 
-  const moveIngredient = (fromIndex, toIndex) => {
+  const moveIngredient = (fromIndex: number, toIndex: number): void => {
     dispatch(sortIngredients({ fromIndex, toIndex }));
   };
 
@@ -59,7 +71,11 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
   useEffect(() => {
     if (!isModalOpen) return;
     setLoadingButtonDisabled(true);
-    const ids = [burgerBun, burgerPickedIngredients ? burgerPickedIngredients : []]
+    const ids = [
+      ...(burgerBun ? [burgerBun] : []),
+      ...(burgerPickedIngredients ?? [])
+    ]
+      .filter(item => item !== null)
       .map(item => item._id);
     
     retryIfAuthTokenNotFound(dispatch, refreshToken, getOrderDetails, { ingredients: ids })
@@ -76,7 +92,7 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
   const number = orderDetails && orderDetails.order && orderDetails.order.number;
 
   return (
-    <section ref={dropRef} className={styles.container} aria-label="Конструктор бургера">
+    <section ref={dropRef as unknown as Ref<HTMLDivElement>} className={styles.container} aria-label="Конструктор бургера">
       {burgerBun ?
         <div>
           <ul className={styles.list}>
@@ -142,15 +158,5 @@ const BurgerConstructor = ({ isModalOpen, setIsModelOpen, orderInformation }) =>
     </section>
   );
 };
-
-BurgerConstructor.propTypes = {
-  isModalOpen: PropTypes.bool.isRequired,
-  setIsModelOpen: PropTypes.func.isRequired,
-  orderInformation: PropTypes.shape({
-    number: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    info: PropTypes.string.isRequired,
-  }).isRequired,
-}
 
 export default BurgerConstructor;

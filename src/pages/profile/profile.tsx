@@ -176,8 +176,17 @@ function Profile(): JSX.Element {
             placeholder="Пароль"
             icon="EditIcon"
           />
+        </form>
+      </div>
 
-          {isShowButtons && (
+      <div className={styles.containerSmalltext}>
+        <p
+          style={{ width: "300px" }}
+          className="text text_type_main-small text_color_inactive mt-2"
+        >
+          В этом разделе вы можете изменить свои персональные данные
+        </p>
+        {isShowButtons && (
             <div className={styles.buttons}>
               <div className={styles.cancel} onClick={cancelCommand}>
                 Отменить
@@ -192,16 +201,6 @@ function Profile(): JSX.Element {
               </Button>
             </div>
           )}
-        </form>
-      </div>
-
-      <div className={styles.containerSmalltext}>
-        <p
-          style={{ width: "300px" }}
-          className="text text_type_main-small text_color_inactive mt-2"
-        >
-          В этом разделе вы можете изменить свои персональные данные
-        </p>
       </div>
     </div>
   );

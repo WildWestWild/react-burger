@@ -1,31 +1,39 @@
-import { Logo, BurgerIcon, ListIcon, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import styles from './app-header.module.css'
+import {
+  Logo,
+  BurgerIcon,
+  ListIcon,
+  ProfileIcon,
+} from '@ya.praktikum/react-developer-burger-ui-components';
+import styles from './app-header.module.css';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, CSSProperties, JSX } from 'react';
 
-const disableDecorationWithInherit = {
-  textDecoration: "none",
-  color: "inherit",
+const disableDecorationWithInherit: CSSProperties = {
+  textDecoration: 'none',
+  color: 'inherit',
 };
-const disableDecoration = { textDecoration: "none" };
 
-const mainText = "text text_type_main-default ml-2";
-const smallText = "text text_type_main-default text_color_inactive ml-2";
+const disableDecoration: CSSProperties = {
+  textDecoration: 'none',
+};
 
-const whiteIcon = "primary";
-const grayIcon = "secondary";
+const mainText = 'text text_type_main-default ml-2';
+const smallText = 'text text_type_main-default text_color_inactive ml-2';
 
-function AppHeader() {
-  const [isWithInheritProfile, setisWithInheritProfile] = useState(true);
-  const [isWithInheritConstractor, setisWithInheritConstractor] = useState(true);
+const whiteIcon = 'primary';
+const grayIcon = 'secondary';
+
+function AppHeader(): JSX.Element {
+  const [isWithInheritProfile, setIsWithInheritProfile] = useState<boolean>(true);
+  const [isWithInheritConstractor, setIsWithInheritConstractor] = useState<boolean>(true);
   const location = useLocation();
 
   useEffect(() => {
-    setisWithInheritConstractor(
+    setIsWithInheritConstractor(
       location.pathname === '/' || location.pathname.startsWith('/ingredients')
     );
-    
-    setisWithInheritProfile(location.pathname.startsWith('/profile'));
+
+    setIsWithInheritProfile(location.pathname.startsWith('/profile'));
   }, [location.pathname]);
 
   return (
@@ -37,7 +45,9 @@ function AppHeader() {
             <NavLink
               to="/"
               style={isWithInheritConstractor ? disableDecorationWithInherit : disableDecoration}
-              className={({ isActive }) => isActive ? mainText : smallText}
+              className={({ isActive }: { isActive: boolean }) =>
+                isActive ? mainText : smallText
+              }
             >
               Конструктор
             </NavLink>
@@ -56,7 +66,9 @@ function AppHeader() {
             <NavLink
               to="/profile"
               style={isWithInheritProfile ? disableDecorationWithInherit : disableDecoration}
-              className={({ isActive }) => isActive ? mainText : smallText}
+              className={({ isActive }: { isActive: boolean }) =>
+                isActive ? mainText : smallText
+              }
             >
               Личный кабинет
             </NavLink>
@@ -66,6 +78,5 @@ function AppHeader() {
     </header>
   );
 }
-
 
 export default AppHeader;

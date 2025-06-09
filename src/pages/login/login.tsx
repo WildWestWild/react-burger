@@ -3,7 +3,7 @@ import {
   Button,
   PasswordInput,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useState } from "react";
+import { JSX, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./login.module.css";
 import { loginUser } from "../../services/userAuth/thunks";
@@ -12,20 +12,21 @@ import { useNavigate } from "react-router-dom";
 import { checkEmail } from "../../utils/checkEmail";
 import { useEffect } from "react";
 import { checkPassword } from "../../utils/checkPassword";
+import { UserState } from "../../services/userAuth/slice";
 
-function Login() {
+function Login(): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const user = useAppSelector((store) => store.userAuth);
+  const user = useAppSelector<UserState>((store) => store.userAuth);
   const isLoading = user.isLoading;
   const error = user.error;
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLogin, setIsLogin] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isLogin, setIsLogin] = useState<boolean>(false);
 
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState<boolean>(false);
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
 
   useEffect(() => {
     setIsEmailValid(checkEmail(email));
@@ -37,7 +38,7 @@ function Login() {
 
   const buttonDisabled = !(isPasswordValid && isEmailValid);
 
-  const onLoginSubmit = async (event) => {
+  const onLoginSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (buttonDisabled) {

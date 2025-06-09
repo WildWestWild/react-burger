@@ -1,13 +1,17 @@
 import styles from './ingredient-details.module.css';
 import { useAppDispatch, useAppSelector } from '../../services';
-import { setIngredientDetails } from '../../services/ingredient-details/slice';
+import { Ingredient, setIngredientDetails } from '../../services/ingredient-details/slice';
 import { useParams } from 'react-router-dom';
 
-const IngredientDetails = ({isNotModal}) => {
+const IngredientDetails = ({isNotModal} : { isNotModal: Boolean}) => {
   const dispatcher = useAppDispatch();
-  const { id } = useParams();
-  const { burgerIngredients } = useAppSelector((store) => store.burgerIngredient);
-  const ingredient = burgerIngredients.find(r=>r._id === id);
+  const { id } = useParams<string>();
+  const { burgerIngredients } = useAppSelector<{ burgerIngredients: Ingredient[] }>((store) => store.burgerIngredient);
+  const ingredient: Ingredient | undefined = burgerIngredients.find(r=>r._id === id);
+
+  if(ingredient === undefined){
+    return null;
+  }
   
   dispatcher(setIngredientDetails({
     image_large: ingredient.image_large,

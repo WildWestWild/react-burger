@@ -2,19 +2,19 @@ import styles from "./app-main.module.css";
 import { orderInformation } from "../../Constants";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../services";
 import { getBurgerIngredients } from "../../services/burger-ingredients/thunks";
 
-function AppMain() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+function AppMain() : JSX.Element {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const dispatcher = useAppDispatch();
 
   useEffect(() => {
     dispatcher(getBurgerIngredients());
   }, [dispatcher]);
 
-  const { isLoading } = useAppSelector((store) => store.burgerIngredient);
+  const { isLoading } = useAppSelector<{ isLoading: boolean }>((store) => store.burgerIngredient);
 
   return (
     <div>

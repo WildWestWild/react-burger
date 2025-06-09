@@ -9,34 +9,36 @@ import styles from "./reset-password.module.css";
 import { useAppDispatch, useAppSelector } from "../../services";
 import { resetPassword } from "../../services/userReset/thunks";
 import { useNavigate } from "react-router-dom";
-import { clearReset } from "../../services/userReset/slice";
+import { clearReset, UserResetState } from "../../services/userReset/slice";
 import { checkPassword } from "../../utils/checkPassword";
 
 function ResetPassword() {
   const navigate = useNavigate();
-  const [password, setPassword] = useState("");
-  const [code, setCode] = useState("");
+  const [password, setPassword] = useState<string>("");
+  const [code, setCode] = useState<string>("");
   const dispatch = useAppDispatch();
-  const userReset = useAppSelector((store) => store.userReset);
+  const userReset = useAppSelector<UserResetState>((store) => store.userReset);
 
-  const error =
+  const error: string | null =
     userReset.error ||
     (userReset.userReset && !userReset.userReset.success
       ? userReset.userReset.message
       : null);
 
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
 
   useEffect(() => {
     setIsPasswordValid(checkPassword(password));
   }, [password]);
 
-  const buttonDisabled = !(isPasswordValid && code && !userReset.isLoading);
+  const buttonDisabled: boolean = !(isPasswordValid && code && !userReset.isLoading);
 
-  const onFormSubmit = async (e) => {
+  const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const resultAction = await dispatch(resetPassword({ password, token: code }));
+    const resultAction = await dispatch(
+      resetPassword({ password, token: code })
+    );
 
     if (resetPassword.fulfilled.match(resultAction)) {
       navigate("/login", { replace: true });
@@ -70,13 +72,14 @@ function ResetPassword() {
           type="text"
           placeholder="Введите код из письма"
           onChange={(e) => setCode(e.target.value)}
-          icon=""
           value={code}
           name="code"
           error={false}
           errorText="Ошибка"
           size="default"
           extraClass={styles.input}
+          onPointerEnterCapture={null}
+          onPointerLeaveCapture={null}
         />
         <Button
           disabled={buttonDisabled}
@@ -103,4 +106,3 @@ function ResetPassword() {
 }
 
 export default ResetPassword;
-

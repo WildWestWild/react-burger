@@ -1,13 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getBurgerIngredients } from './thunks';
 
-export const BURGER_INGREDIENT_TYPES = {
-  BUN: 'bun',
-  SAUCE: 'sauce',
-  MAIN: 'main',
-} as const;
-
-export type BurgerIngredientType = typeof BURGER_INGREDIENT_TYPES[keyof typeof BURGER_INGREDIENT_TYPES];
+export enum BurgerIngredientType {
+  BUN = 'bun',
+  SAUCE = 'sauce',
+  MAIN = 'main',
+}
 
 export type BurgerIngredient = {
     _id: string,
@@ -23,6 +21,10 @@ export type BurgerIngredient = {
     image_large: string,
     count: number | 0,
     __v: number
+};
+
+export type BurgerIngredientResponse = {
+   data: BurgerIngredient[]
 };
 
 export type BurgerIngredientState = {
@@ -55,9 +57,9 @@ export const burgerIngredientSlice = createSlice({
     },
     pickBunCounter: (state, action) => {
       state.burgerIngredients.map(item => {
-        if (item.type === BURGER_INGREDIENT_TYPES.BUN && item._id === action.payload ) {
+        if (item.type === BurgerIngredientType.BUN && item._id === action.payload ) {
           item.count = 1;
-        } else if (item.type === BURGER_INGREDIENT_TYPES.BUN && item._id !== action.payload) {
+        } else if (item.type === BurgerIngredientType.BUN && item._id !== action.payload) {
           item.count = 0;
         }
         

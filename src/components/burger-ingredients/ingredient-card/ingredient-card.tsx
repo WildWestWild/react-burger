@@ -3,17 +3,22 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./ingredient-card.module.css";
-import PropTypes from "prop-types";
 import { useDrag } from "react-dnd";
 import { Link, useLocation } from "react-router-dom";
+import { Item } from '../../../services/burger-constructor/slice';
+import { FC } from 'react';
 
-const IngredientCard = ({ item }) => {
+type IngredientCardProps = {
+  item: Item
+}
+
+const IngredientCard: FC<IngredientCardProps> = ({ item }) => {
   const { image, name, price, count = 0 } = item;
 
-  const [, dragRef] = useDrag({
-    type: "ingredient",
-    item: item,
-  });
+  const [, dragRef] = useDrag<Item>(() => ({
+    type: 'ingredient',
+    item,
+  }));
 
   const location = useLocation();
 
@@ -22,10 +27,10 @@ const IngredientCard = ({ item }) => {
       style={{ textDecoration: 'none', color: 'inherit' }}
       to={`/ingredients/${item._id}`}
       state={{ background: location }}
-      ref={dragRef}
+      ref={dragRef as unknown as React.Ref<HTMLAnchorElement>} // Приведение типа для устранения ошибки
     >
       <div className={styles.card}>
-        {count > 0 && <Counter count={count} size="default" />}
+        {(count !== null) && count > 0 && <Counter count={count} size="default" />}
         <img src={image} alt={name} className={styles.image} />
         <div className={styles.price}>
           <span className="text text_type_digits-default mr-2">{price}</span>
@@ -35,15 +40,6 @@ const IngredientCard = ({ item }) => {
       </div>
     </Link>
   );
-};
-
-IngredientCard.propTypes = {
-  item: PropTypes.shape({
-    image: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    count: PropTypes.number,
-  }).isRequired,
 };
 
 export default IngredientCard;

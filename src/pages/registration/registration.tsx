@@ -12,21 +12,23 @@ import { useNavigate } from "react-router-dom";
 import styles from "./registration.module.css";
 import { checkEmail } from "../../utils/checkEmail";
 import { checkPassword } from "../../utils/checkPassword";
+import { UserState } from "../../services/userAuth/slice";
+import { JSX } from "react/jsx-runtime";
 
-function Registration() {
+function Registration() : JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const user = useAppSelector((store) => store.userAuth);
+  const user = useAppSelector<UserState>((store) => store.userAuth);
   const isLoading = user.isLoading;
   const error = user.error;
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isRegistration, setIsRegistration] = useState(false);
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isRegistration, setIsRegistration] = useState<boolean>(false);
 
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState<boolean>(false);
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
 
   useEffect(() => {
     setIsEmailValid(checkEmail(email));
@@ -36,9 +38,9 @@ function Registration() {
     setIsPasswordValid(checkPassword(password));
   }, [password]);
 
-  const buttonDisabled = !(name && isPasswordValid && isEmailValid);
+  const buttonDisabled: boolean = !(name && isPasswordValid && isEmailValid);
 
-  const onFormSubmit = async (e) => {
+  const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (buttonDisabled) return;
@@ -74,13 +76,14 @@ function Registration() {
           type="text"
           placeholder="Имя"
           onChange={(e) => setName(e.target.value)}
-          icon={""}
           value={name}
           name="name"
           error={false}
           errorText="Ошибка"
           size="default"
           extraClass={styles.input}
+          onPointerEnterCapture={null}
+          onPointerLeaveCapture={null}
         />
         <EmailInput
           onChange={(e) => setEmail(e.target.value)}
@@ -122,4 +125,3 @@ function Registration() {
 }
 
 export default Registration;
-

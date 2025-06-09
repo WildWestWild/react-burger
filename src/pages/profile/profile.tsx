@@ -1,5 +1,5 @@
 import styles from "./profile.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, CSSProperties, JSX } from "react";
 import {
   Button,
   Input,
@@ -16,32 +16,33 @@ import {
 import { retryIfAuthTokenNotFound } from "../../utils/tokens";
 import { checkEmail } from "../../utils/checkEmail";
 import { checkPassword } from "../../utils/checkPassword";
+import { User } from "../../services/userAuth/slice";
 
-const disableDecorationWithInherit = {
+const disableDecorationWithInherit: CSSProperties = {
   textDecoration: "none",
   color: "inherit",
 };
-const disableDecoration = { textDecoration: "none" };
+const disableDecoration: CSSProperties = { textDecoration: "none" };
 
-const mainText = "text text_type_main-medium";
-const smallText = "text text_type_main-medium text_color_inactive";
+const mainText: string = "text text_type_main-medium";
+const smallText: string = "text text_type_main-medium text_color_inactive";
 
-function Profile() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isShowButtons, setIsShowButtons] = useState(false);
+function Profile(): JSX.Element {
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isShowButtons, setIsShowButtons] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const user = useAppSelector((store) => store.userAuth.user);
+  const user = useAppSelector<User | null>((store) => store.userAuth.user);
 
-  const isProfileActive = location.pathname === "/profile";
-  const isOrdersActive = location.pathname === "/profile/orders";
+  const isProfileActive: boolean = location.pathname === "/profile";
+  const isOrdersActive: boolean = location.pathname === "/profile/orders";
 
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState<boolean>(false);
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
 
   useEffect(() => {
     setIsEmailValid(checkEmail(email));
@@ -54,21 +55,23 @@ function Profile() {
   const buttonDisabled = !(name && isEmailValid && isPasswordValid);
 
   const cancelCommand = () => {
-    setName(user.name);
-    setEmail(user.email);
+    if (user) {
+      setName(user.name);
+      setEmail(user.email);
+    }
+
     setPassword("");
     setIsShowButtons(false);
   };
 
-  const onFormSubmit = async (e) => {
+  const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    await retryIfAuthTokenNotFound(
-      dispatch,
-      refreshToken,
-      updateUserInfo,
-      { name, email, password }
-    );
+    await retryIfAuthTokenNotFound(dispatch, refreshToken, updateUserInfo, {
+      name,
+      email,
+      password,
+    });
 
     setIsShowButtons(false);
   };
@@ -84,7 +87,7 @@ function Profile() {
     retryIfAuthTokenNotFound(dispatch, refreshToken, getUserInfo);
   }, [dispatch]);
 
-  const onLogout = async (e) => {
+  const onLogout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const result = await dispatch(logoutUser());
 
@@ -101,14 +104,18 @@ function Profile() {
         <div className={styles.innerContent}>
           <NavLink
             to="/profile"
-            style={isProfileActive ? disableDecorationWithInherit : disableDecoration}
+            style={
+              isProfileActive ? disableDecorationWithInherit : disableDecoration
+            }
             className={`${isProfileActive ? mainText : smallText} mb-8`}
           >
             Профиль
           </NavLink>
           <NavLink
             to="/profile/orders"
-            style={isOrdersActive ? disableDecorationWithInherit : disableDecoration}
+            style={
+              isOrdersActive ? disableDecorationWithInherit : disableDecoration
+            }
             className={`${isOrdersActive ? mainText : smallText} mb-8`}
           >
             История заказов
@@ -138,6 +145,8 @@ function Profile() {
             errorText="Ошибка"
             size="default"
             extraClass={styles.input}
+            onPointerEnterCapture={null}
+            onPointerLeaveCapture={null}
           />
           <Input
             type="text"
@@ -153,6 +162,8 @@ function Profile() {
             errorText="Ошибка"
             size="default"
             extraClass={styles.input}
+            onPointerEnterCapture={null}
+            onPointerLeaveCapture={null}
           />
           <PasswordInput
             onChange={(e) => {
@@ -165,8 +176,17 @@ function Profile() {
             placeholder="Пароль"
             icon="EditIcon"
           />
+        </form>
+      </div>
 
-          {isShowButtons && (
+      <div className={styles.containerSmalltext}>
+        <p
+          style={{ width: "300px" }}
+          className="text text_type_main-small text_color_inactive mt-2"
+        >
+          В этом разделе вы можете изменить свои персональные данные
+        </p>
+        {isShowButtons && (
             <div className={styles.buttons}>
               <div className={styles.cancel} onClick={cancelCommand}>
                 Отменить
@@ -181,20 +201,9 @@ function Profile() {
               </Button>
             </div>
           )}
-        </form>
-      </div>
-
-      <div className={styles.containerSmalltext}>
-        <p
-          style={{ width: "300px" }}
-          className="text text_type_main-small text_color_inactive mt-2"
-        >
-          В этом разделе вы можете изменить свои персональные данные
-        </p>
       </div>
     </div>
   );
 }
-
 
 export default Profile;

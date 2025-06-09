@@ -2,29 +2,29 @@ import {
   EmailInput,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, JSX } from "react";
 import { Link } from "react-router-dom";
 import styles from "./forgot-passwrod.module.css";
 import { checkEmail } from "../../utils/checkEmail";
 import { useAppDispatch, useAppSelector } from "../../services";
 import { sendResetEmail } from "../../services/userReset/thunks";
 import { useNavigate } from "react-router-dom";
-import { setForgotPasswordCompleted } from "../../services/userReset/slice";
+import { setForgotPasswordCompleted, UserResetState } from "../../services/userReset/slice";
 
-function ForgotPassword() {
+function ForgotPassword(): JSX.Element {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [isEmailValid, setIsEmailValid] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const userReset = useAppSelector((store) => store.userReset);
+  const userReset = useAppSelector<UserResetState>((store) => store.userReset);
 
-  const error =
+  const error: string | null =
     userReset.error ||
     (userReset.userReset && !userReset.userReset.success
       ? userReset.userReset.message
       : null);
 
-  const onFormSubmit = async (e) => {
+  const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const resultAction = await dispatch(sendResetEmail({ email }));

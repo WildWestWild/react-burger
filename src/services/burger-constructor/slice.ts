@@ -1,21 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { BurgerIngredientType } from "../burger-ingredients/slice";
 
-type Item = {
+export type Item = {
   _id: string;
   text: string;
+  name: string;
   price: number;
+  type: BurgerIngredientType;
   image: string;
+  count: number | null;
   uuid: string;
 };
 
-type BurgerContractor = {
+export type BurgerContractor = {
   bun: Item | null;
   ingredients: Item[];
 };
 
-type BurgerConstructorState = {
+export type BurgerConstructorState = {
   burgerItems: BurgerContractor;
   isLoading: boolean;
   error: string;

@@ -38,7 +38,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
         </div>
         <div className={styles.picturesAndPrice}>
           <div className={styles.icons}>
-            {ingredients.slice(0, 6).map((item, index) => (
+            {ingredients.slice(0, 12).map((item, index) => (
               <div
                 className={styles.iconWrapper}
                 key={item._id}
@@ -51,7 +51,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
                 />
               </div>
             ))}
-            {ingredients.length > 6 && (
+            {ingredients.length > 12 && (
               <div
                 className={styles.iconWrapper}
                 style={{ left: `${6 * 30}px`, zIndex: 0 }}

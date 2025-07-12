@@ -1,0 +1,176 @@
+.page {
+  padding: 40px;
+  background-color: #0b0c10;
+  font-family: 'JetBrains Mono', monospace;
+  color: white;
+}
+
+.lineHeader{
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 32px;
+}
+
+.container {
+  display: flex;
+  gap: 40px;
+}
+
+.orders {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.orderCard {
+  background-color: #1c1c21;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #8585ad;
+}
+
+.orderNumber {
+  font-weight: 600;
+}
+
+.orderTime {
+  color: #6c6cff;
+}
+
+.orderName {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+}
+
+.orderFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ingredients {
+  display: flex;
+  position: relative;
+  height: 48px;
+}
+
+.ingredient {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #4c4cff;
+  position: relative;
+  background-color: #2e2e35;
+  margin-left: -15px;
+}
+
+.ingredient:first-child {
+  margin-left: 0;
+}
+
+.ingredientImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.extraCounter {
+  position: relative;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 14px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #4c4cff;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.priceValue {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.statusBoard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.statusColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.columnTitle {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.doneList,
+.inProgressList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 16px;
+}
+
+.doneOrder {
+  color: #00ffff;
+  font-weight: 700;
+}
+
+.inProgressOrder {
+  color: #ffffff;
+}
+
+.statistics {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.statsLabel {
+  font-size: 16px;
+  color: #888;
+}
+
+.totalAllTime,
+.totalToday {
+  font-size: 48px;
+  font-weight: bold;
+  color: #66f;
+  text-shadow: 0 0 10px #66f;
+}

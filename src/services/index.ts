@@ -8,6 +8,7 @@ import { userSlice } from './userAuth/slice';
 import { userResetSlice } from './userReset/slice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { wsOrdersMiddleware } from './socketMiddleware';
 
   const persistConfig = {
   key: 'root',
@@ -31,7 +32,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false
-    })
+    }).concat(wsOrdersMiddleware)
 });
 
 export const persistor = persistStore(store);

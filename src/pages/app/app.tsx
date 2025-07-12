@@ -22,6 +22,7 @@ import NotFound from "../not-found/not-found";
 import Modal from "../../components/model/model";
 import IngredientDetails from "../../components/ingredient-details/ingredient-details";
 import { JSX } from "react";
+import Feed from "../feed/feed";
 
 export function App() : JSX.Element {
   const location = useLocation();
@@ -78,6 +79,11 @@ export function App() : JSX.Element {
             />
           }
         />
+        <Route
+          path="/feed"
+          element={
+            <Feed/>
+          }/>
         <Route path="/ingredients/:id" element={<IngredientDetails isNotModal={true}/>}/>
         <Route path="*" element={<NotFound />} />
       </Routes>

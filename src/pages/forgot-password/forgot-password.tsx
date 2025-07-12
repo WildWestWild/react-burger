@@ -18,7 +18,7 @@ function ForgotPassword(): JSX.Element {
   const dispatch = useAppDispatch();
   const userReset = useAppSelector<UserResetState>((store) => store.userReset);
 
-  const error: string | null =
+  const error =
     userReset.error ||
     (userReset.userReset && !userReset.userReset.success
       ? userReset.userReset.message

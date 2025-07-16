@@ -1,8 +1,9 @@
 .blockOrderCard {
-  width: 600px;
+  width: 570px;
   height: 200px;
   background-color: #1F1F26;
   border-radius: 30px;
+  margin: 5px;
 }
 
 .header {
@@ -65,4 +66,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+li {
+  list-style-type: none;
 }

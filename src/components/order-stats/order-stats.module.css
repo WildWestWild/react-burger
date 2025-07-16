@@ -1,0 +1,57 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.statuses {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.digitColumns{
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+
+.statusesColumn {
+  width: 300px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  padding-left: 40px;
+  gap: 20px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 150px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.ready li {
+  color: #00CCCC; /* цвет как на скриншоте */
+}
+
+.glow {
+  font-size: 64px;
+  color: #fff;
+  text-shadow: 0 0 8px #3bfffe, 0 0 16px #3bfffe;
+  font-weight: bold;
+}
+
+.dispalyBigDigits {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  margin-left: 40px;
+}

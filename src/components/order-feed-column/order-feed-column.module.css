@@ -1,0 +1,10 @@
+.columnForm{
+    height: 600px;
+    width: 600px;
+    overflow-y: auto
+}
+
+ul {
+  padding-left: 0;
+  margin-left: 0; /* если нужно полностью убрать */
+}

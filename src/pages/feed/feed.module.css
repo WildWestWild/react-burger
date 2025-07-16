@@ -1,8 +1,4 @@
 .page {
-  padding: 40px;
-  background-color: #0b0c10;
-  font-family: 'JetBrains Mono', monospace;
-  color: white;
 }
 
 .lineHeader{
@@ -11,6 +7,26 @@
   justify-content: start;
   margin: 0 auto;
   max-width: 1200px;
+}
+
+.feedMainBlock {
+  display: flex;
+  flex-direction: row;
+  width: 1200px;
+  height: 600px;;
+  margin: 0 auto;
+}
+
+.score{
+  width: 600px;
+  height: 100%;
+}
+
+.mainColumns{
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .title {

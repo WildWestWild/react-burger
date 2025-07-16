@@ -26,6 +26,7 @@ const grayIcon = 'secondary';
 function AppHeader(): JSX.Element {
   const [isWithInheritProfile, setIsWithInheritProfile] = useState<boolean>(true);
   const [isWithInheritConstractor, setIsWithInheritConstractor] = useState<boolean>(true);
+  const [isWithInheritFeed, setIsWithInheritFeed] = useState<boolean>(true);
   const location = useLocation();
 
   useEffect(() => {
@@ -34,6 +35,8 @@ function AppHeader(): JSX.Element {
     );
 
     setIsWithInheritProfile(location.pathname.startsWith('/profile'));
+
+    setIsWithInheritFeed(location.pathname.startsWith('/feed'));
   }, [location.pathname]);
 
   return (
@@ -53,8 +56,16 @@ function AppHeader(): JSX.Element {
             </NavLink>
           </div>
           <div className={styles.menuItem}>
-            <ListIcon type="secondary" />
-            <p className="text text_type_main-default text_color_inactive ml-2">Лента заказов</p>
+            <ListIcon type={isWithInheritFeed ? whiteIcon : grayIcon} />
+            <NavLink
+              to="/feed"
+              style={isWithInheritFeed ? disableDecorationWithInherit : disableDecoration}
+              className={({ isActive }: { isActive: boolean }) =>
+                isActive ? mainText : smallText
+              }
+            >
+              Лента заказов
+            </NavLink>
           </div>
         </div>
         <div className={styles.center}>

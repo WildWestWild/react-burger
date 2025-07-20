@@ -1,9 +1,10 @@
 .blockOrderCard {
-  width: 570px;
+  width: 98%;
   height: 200px;
   background-color: #1F1F26;
   border-radius: 30px;
   margin: 5px;
+  margin-bottom: 20px;
 }
 
 .header {

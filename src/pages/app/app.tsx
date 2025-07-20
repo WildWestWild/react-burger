@@ -23,6 +23,7 @@ import Modal from "../../components/model/model";
 import IngredientDetails from "../../components/ingredient-details/ingredient-details";
 import { JSX } from "react";
 import Feed from "../feed/feed";
+import ProfileOrders from "../profile-orders/profile-order";
 
 export function App() : JSX.Element {
   const location = useLocation();
@@ -75,6 +76,15 @@ export function App() : JSX.Element {
           element={
             <ProtectedRouteElement
               element={<Profile />}
+              block={BlockIfAuthFalse}
+            />
+          }
+        />
+        <Route
+          path="/profile/orders"
+          element={
+            <ProtectedRouteElement
+              element={<ProfileOrders />}
               block={BlockIfAuthFalse}
             />
           }

@@ -1,31 +1,50 @@
-import React, { useEffect, useState } from "react";
-import styles from "./feed.module.css";
-import { useAppSelector } from "../../services";
+import styles from "./profile-orders.module.css";
+import { useState, useEffect, CSSProperties, JSX } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../services";
+import {
+  getUserInfo,
+  logoutUser,
+  refreshToken,
+} from "../../services/userAuth/thunks";
+import { retryIfAuthTokenNotFound } from "../../utils/tokens";
 import OrderFeedColumn from "../../components/order-feed-column/order-feed-column";
-import { OrderStats } from "../../components/order-stats/order-stats";
+import { OrderFeedResponse } from "../feed/feed";
 
-export type Order = {
-  _id: string;
-  number: number;
-  ingredients: string[];
-  createdAt: string;
-  updatedAt: string;
-  status: "done" | "pending" | "created";
+const disableDecorationWithInherit: CSSProperties = {
+  textDecoration: "none",
+  color: "inherit",
 };
+const disableDecoration: CSSProperties = { textDecoration: "none" };
 
-export type OrderFeedResponse = {
-  success: boolean;
-  orders: Order[];
-  total: number;
-  totalToday: number;
-};
+const mainText: string = "text text_type_main-medium";
+const smallText: string = "text text_type_main-medium text_color_inactive";
 
-const Feed: React.FC = () => {
+function ProfileOrders(): JSX.Element {
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isProfileActive: boolean = location.pathname === "/profile";
+  const isOrdersActive: boolean = location.pathname === "/profile/orders";
+
   const [ordersData, setOrdersData] = useState<OrderFeedResponse | null>(null);
-  const ingredients = useAppSelector(
-    (store) => store.burgerIngredient.burgerIngredients
-  );
-  console.log("Ingredients:", ingredients);
+
+  useEffect(() => {
+    retryIfAuthTokenNotFound(dispatch, refreshToken, getUserInfo);
+  }, [dispatch]);
+
+  const onLogout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const result = await dispatch(logoutUser());
+
+    if (logoutUser.fulfilled.match(result)) {
+      navigate("/login");
+    } else {
+      console.error("Logout failed");
+    }
+  };
 
   useEffect(() => {
     // Заглушка: замените на API-запрос или WebSocket
@@ -124,26 +143,54 @@ const Feed: React.FC = () => {
     setOrdersData(mockResponse);
   }, []);
 
-  if (!ordersData) return <div className={styles.page}>Загрузка...</div>;
-
   return (
     <div>
-      <div className={styles.lineHeader}>
-        <h1 className={styles.title}>Лента заказов</h1>
-      </div>
-      <div className={styles.feedMainBlock}>
-        <OrderFeedColumn orders={ordersData.orders}/>
-        <div className={styles.score}>
-          <OrderStats
-            ready={[34533, 34532, 34530, 34527, 34525]}
-            inProgress={[34538, 34541, 34542]}
-            total={28752}
-            totalToday={138}
-          />
+      <div className={styles.container}>
+        <div className={styles.innerContent}>
+          <NavLink
+            to="/profile"
+            style={
+              isProfileActive ? disableDecorationWithInherit : disableDecoration
+            }
+            className={`${isProfileActive ? mainText : smallText} mb-8`}
+          >
+            Профиль
+          </NavLink>
+          <NavLink
+            to="/profile/orders"
+            style={
+              isOrdersActive ? disableDecorationWithInherit : disableDecoration
+            }
+            className={`${isOrdersActive ? mainText : smallText} mb-8`}
+          >
+            История заказов
+          </NavLink>
+          <NavLink
+            to="/login"
+            onClick={onLogout}
+            style={disableDecoration}
+            className={`${smallText} mb-20`}
+          >
+            Выход
+          </NavLink>
+
+          <p
+            style={{ width: "300px" }}
+            className="text text_type_main-small text_color_inactive mt-2"
+          >
+            В этом разделе вы можете изменить свои персональные данные
+          </p>
+        </div>
+        <div className={styles.ordersDataBlock}>
+          {!ordersData ? (
+            <div className={styles.page}>Загрузка...</div>
+          ) : (
+            <OrderFeedColumn orders={ordersData.orders}/>
+          )}
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default Feed;
+export default ProfileOrders;

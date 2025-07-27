@@ -17,9 +17,9 @@ interface OrderCardProps {
 }
 
 enum OrderStatus {
-  Cancel = "Отменен",
-  Penging = "Готовится",
-  Done = "Выполнен",
+  Cancel = "cancelled",
+  Penging = "pending",
+  Done = "done",
 }
 
 function getOrderStatus(status: OrderStatus) {
@@ -60,27 +60,27 @@ const OrderCard: React.FC<OrderCardProps> = ({
       </div>
       <div className={styles.picturesAndPrice}>
         <div className={styles.icons}>
-          {ingredients.slice(0, 12).map((item, index) => (
-            <div
-              className={styles.iconWrapper}
-              key={item._id}
-              style={{ left: `${index * 30}px`, zIndex: 10 - index }}
-            >
-              <img
-                className={styles.iconImage}
-                src={item.image_mobile}
-                alt={item.name}
-              />
-            </div>
-          ))}
-          {ingredients.length > 12 && (
-            <div
-              className={styles.iconWrapper}
-              style={{ left: `${6 * 30}px`, zIndex: 0 }}
-            >
-              <div className={styles.extra}>+{ingredients.length - 6}</div>
-            </div>
-          )}
+          {ingredients.slice(0, 6).map((item, index) => {
+            const isExtra = index === 5 && ingredients.length > 6;
+            const extraCount = ingredients.length - 6;
+
+            return (
+              <div
+                className={styles.iconOuterWrapper}
+                key={item._id}
+                style={{ left: `${index * 50 + 20}px`, zIndex: 10 - index }}
+              >
+                <div className={styles.iconInnerWrapper}>
+                  <img
+                    className={styles.iconImage}
+                    src={item.image_mobile}
+                    alt={item.name}
+                  />
+                  {isExtra && <p className={styles.extra}>+{extraCount}</p>}
+                </div>
+              </div>
+            );
+          })}
         </div>
         <div>
           <div className={styles.price}>

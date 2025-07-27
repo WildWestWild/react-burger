@@ -1,11 +1,11 @@
 import { FC } from "react";
-import { Order } from "../../pages/feed/feed";
 import OrderCard from "../order-feed-card/order-feed-card";
 import { useAppSelector } from "../../services";
 import styles from "./order-feed-column.module.css";
+import { TWsOrder } from "../../services/socketMiddleware/socketActions";
 
 interface OrderFeedColumnProps {
-  orders: Order[];
+  orders: TWsOrder[];
 }
 
 const OrderFeedColumn: FC<OrderFeedColumnProps> = ({orders}) => {
@@ -19,7 +19,7 @@ const OrderFeedColumn: FC<OrderFeedColumnProps> = ({orders}) => {
           <OrderCard
             key={order._id}
             number={order.number}
-            name={"Name order"}
+            name={order.name}
             status={order.status}
             createdAt={order.createdAt}
             ingredients={order.ingredients.map(

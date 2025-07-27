@@ -7,6 +7,7 @@ export type TWsOrder = {
   ingredients: string[];
   createdAt: string;
   updatedAt: string;
+  name: string;
   status: "done" | "pending" | "created";
 };
 

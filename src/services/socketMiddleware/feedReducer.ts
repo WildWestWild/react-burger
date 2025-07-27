@@ -24,8 +24,8 @@ const initialState: WsOrdersState = {
   error: null,
 };
 
-export const wsOrdersSlice = createSlice({
-  name: "wsOrders",
+export const feedSlice = createSlice({
+  name: "feed",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -48,4 +48,4 @@ export const wsOrdersSlice = createSlice({
   },
 });
 
-export default wsOrdersSlice.reducer;
+export default feedSlice.reducer;

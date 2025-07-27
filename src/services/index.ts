@@ -9,6 +9,7 @@ import { userResetSlice } from './userReset/slice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { wsOrdersMiddleware } from './socketMiddleware';
+import { feedSlice } from './socketMiddleware/feedReducer';
 
   const persistConfig = {
   key: 'root',
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
   orderDetails: orderDetailsSlice.reducer,
   ingredientDetails: ingredientDetailsSlice.reducer,
   userAuth: userSlice.reducer,
-  userReset: userResetSlice.reducer
+  userReset: userResetSlice.reducer,
+  feed: feedSlice.reducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

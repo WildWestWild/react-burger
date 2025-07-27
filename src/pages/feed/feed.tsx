@@ -1,130 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styles from "./feed.module.css";
-import { useAppSelector } from "../../services";
+import { useAppDispatch, useAppSelector } from "../../services";
 import OrderFeedColumn from "../../components/order-feed-column/order-feed-column";
 import { OrderStats } from "../../components/order-stats/order-stats";
-
-export type Order = {
-  _id: string;
-  number: number;
-  ingredients: string[];
-  createdAt: string;
-  updatedAt: string;
-  status: "done" | "pending" | "created";
-};
-
-export type OrderFeedResponse = {
-  success: boolean;
-  orders: Order[];
-  total: number;
-  totalToday: number;
-};
+import { wsConnect, wsOnConnected } from "../../services/socketMiddleware/socketActions";
 
 const Feed: React.FC = () => {
-  const [ordersData, setOrdersData] = useState<OrderFeedResponse | null>(null);
-  const ingredients = useAppSelector(
-    (store) => store.burgerIngredient.burgerIngredients
-  );
-  console.log("Ingredients:", ingredients);
+
+  const {ordersInfo, connected, error} = useAppSelector((store) => store.feed);
+
+  const dipatch = useAppDispatch();
 
   useEffect(() => {
-    // Заглушка: замените на API-запрос или WebSocket
-    const mockResponse: OrderFeedResponse = {
-      success: true,
-      orders: [
-        {
-          _id: "order1",
-          number: 10001,
-          ingredients: ["643d69a5c3f7b9001cfa0942", "643d69a5c3f7b9001cfa093c"],
-          createdAt: "2025-07-16T10:00:00.000Z",
-          updatedAt: "2025-07-16T10:05:00.000Z",
-          status: "done",
-        },
-        {
-          _id: "order2",
-          number: 10002,
-          ingredients: ["643d69a5c3f7b9001cfa0941", "643d69a5c3f7b9001cfa093c"],
-          createdAt: "2025-07-16T10:10:00.000Z",
-          updatedAt: "2025-07-16T10:15:00.000Z",
-          status: "pending",
-        },
-        {
-          _id: "order3",
-          number: 10003,
-          ingredients: ["643d69a5c3f7b9001cfa0941", "643d69a5c3f7b9001cfa0942"],
-          createdAt: "2025-07-16T10:20:00.000Z",
-          updatedAt: "2025-07-16T10:25:00.000Z",
-          status: "done",
-        },
-        {
-          _id: "order4",
-          number: 10004,
-          ingredients: ["643d69a5c3f7b9001cfa093c", "643d69a5c3f7b9001cfa0942"],
-          createdAt: "2025-07-16T10:30:00.000Z",
-          updatedAt: "2025-07-16T10:35:00.000Z",
-          status: "created",
-        },
-        {
-          _id: "order5",
-          number: 10005,
-          ingredients: ["643d69a5c3f7b9001cfa0942"],
-          createdAt: "2025-07-16T10:40:00.000Z",
-          updatedAt: "2025-07-16T10:45:00.000Z",
-          status: "pending",
-        },
-        {
-          _id: "order6",
-          number: 10006,
-          ingredients: ["643d69a5c3f7b9001cfa093c", "643d69a5c3f7b9001cfa0941"],
-          createdAt: "2025-07-16T10:50:00.000Z",
-          updatedAt: "2025-07-16T10:55:00.000Z",
-          status: "done",
-        },
-        {
-          _id: "order7",
-          number: 10007,
-          ingredients: ["643d69a5c3f7b9001cfa0941"],
-          createdAt: "2025-07-16T11:00:00.000Z",
-          updatedAt: "2025-07-16T11:05:00.000Z",
-          status: "done",
-        },
-        {
-          _id: "order8",
-          number: 10008,
-          ingredients: ["643d69a5c3f7b9001cfa093c"],
-          createdAt: "2025-07-16T11:10:00.000Z",
-          updatedAt: "2025-07-16T11:15:00.000Z",
-          status: "created",
-        },
-        {
-          _id: "order9",
-          number: 10009,
-          ingredients: ["643d69a5c3f7b9001cfa0942", "643d69a5c3f7b9001cfa093c"],
-          createdAt: "2025-07-16T11:20:00.000Z",
-          updatedAt: "2025-07-16T11:25:00.000Z",
-          status: "pending",
-        },
-        {
-          _id: "order10",
-          number: 10010,
-          ingredients: [
-            "643d69a5c3f7b9001cfa093c",
-            "643d69a5c3f7b9001cfa0941",
-            "643d69a5c3f7b9001cfa0942",
-          ],
-          createdAt: "2025-07-16T11:30:00.000Z",
-          updatedAt: "2025-07-16T11:35:00.000Z",
-          status: "done",
-        },
-      ],
-      total: 30000,
-      totalToday: 150,
-    };
+    dipatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
 
-    setOrdersData(mockResponse);
+    return () => {
+      dipatch(wsOnConnected(new Event("WebSocket disconnected")));
+    }
   }, []);
 
-  if (!ordersData) return <div className={styles.page}>Загрузка...</div>;
+  if (!connected) return <div className={styles.page}>Загрузка...</div>;
 
   return (
     <div>
@@ -132,13 +27,13 @@ const Feed: React.FC = () => {
         <h1 className={styles.title}>Лента заказов</h1>
       </div>
       <div className={styles.feedMainBlock}>
-        <OrderFeedColumn orders={ordersData.orders}/>
+        <OrderFeedColumn orders={ordersInfo.orders}/>
         <div className={styles.score}>
           <OrderStats
-            ready={[34533, 34532, 34530, 34527, 34525]}
-            inProgress={[34538, 34541, 34542]}
-            total={28752}
-            totalToday={138}
+            ready={ordersInfo.orders.filter(order => order.status === "done").map(order => order.number)}
+            inProgress={ordersInfo.orders.filter(order => order.status === "pending").map(order => order.number)}
+            total={ordersInfo.total}
+            totalToday={ordersInfo.totalToday}
           />
         </div>
       </div>

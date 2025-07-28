@@ -32,12 +32,12 @@ export const wsOnDisconnected = createAction<CloseEvent>("ws/onDisconnected");
 export const wsOnMessageReceived = createAction<TWsMessage>("ws/onMessageReceived");
 export const wsOnError = createAction<Event>("ws/onError");
 
-export const twsConnect = createAction<string>("ws/connect");
-export const twsDisconnect = createAction("ws/disconnect");
-export const twsSendMessage = createAction<any>("ws/sendMessage");
+export const twsConnect = createAction<string>("tws/connect");
+export const twsDisconnect = createAction("tws/disconnect");
+export const twsSendMessage = createAction<any>("tws/sendMessage");
 
-export const twsOnConnected = createAction<Event>("ws/onConnected");
-export const twsOnDisconnected = createAction<CloseEvent>("ws/onDisconnected");
-export const twsOnMessageReceived = createAction<TWsMessage>("ws/onMessageReceived");
-export const twsOnError = createAction<Event>("ws/onError");
+export const twsOnConnected = createAction<Event>("tws/onConnected");
+export const twsOnDisconnected = createAction<CloseEvent>("tws/onDisconnected");
+export const twsOnMessageReceived = createAction<TWsMessage>("tws/onMessageReceived");
+export const twsOnError = createAction<Event>("tws/onError");
 

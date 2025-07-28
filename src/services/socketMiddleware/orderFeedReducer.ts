@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { TWsMessage, WsOrdersState } from "./socketActions";
 import {
-  wsOnConnected,
-  wsOnDisconnected,
-  wsOnMessageReceived,
-  wsOnError,
+  twsOnConnected,
+  twsOnDisconnected,
+  twsOnMessageReceived,
+  twsOnError,
 } from "./socketActions";
 
 const initialState: WsOrdersState = {
@@ -18,28 +18,28 @@ const initialState: WsOrdersState = {
   error: null,
 };
 
-export const feedSlice = createSlice({
-  name: "feed",
+export const orderFeedSlice = createSlice({
+  name: "orderFeed",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(wsOnConnected, (state) => {
+      .addCase(twsOnConnected, (state) => {
         state.connected = true;
         state.error = null;
       })
-      .addCase(wsOnDisconnected, (state) => {
+      .addCase(twsOnDisconnected, (state) => {
         state.connected = false;
       })
-      .addCase(wsOnMessageReceived, (state, action: PayloadAction<TWsMessage>) => {
+      .addCase(twsOnMessageReceived, (state, action: PayloadAction<TWsMessage>) => {
         state.ordersInfo.orders = action.payload.orders;
         state.ordersInfo.total = action.payload.total;
         state.ordersInfo.totalToday = action.payload.totalToday;
       })
-      .addCase(wsOnError, (state, action: PayloadAction<Event>) => {
+      .addCase(twsOnError, (state, action: PayloadAction<Event>) => {
         state.error = action.payload.type;
       });
   },
 });
 
-export default feedSlice.reducer;
+export default orderFeedSlice.reducer;

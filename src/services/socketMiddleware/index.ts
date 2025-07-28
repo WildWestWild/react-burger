@@ -13,3 +13,16 @@ export const wsOrdersMiddleware = createWebSocketMiddleware(
   },
   { withTokenRefresh: false }
 );
+
+export const wsTOrdersMiddleware = createWebSocketMiddleware(
+  {
+    connect: wsActions.twsConnect,
+    disconnect: wsActions.twsDisconnect,
+    sendMessage: wsActions.twsSendMessage,
+    onConnected: wsActions.twsOnConnected,
+    onDisconnected: wsActions.twsOnDisconnected,
+    onMessageReceived: wsActions.twsOnMessageReceived,
+    onError: wsActions.twsOnError,
+  },
+  { withTokenRefresh: true }
+);

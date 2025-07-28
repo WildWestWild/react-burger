@@ -14,9 +14,13 @@ export function saveTokensInCookie(tokens: {accessToken: string, refreshToken: s
 }
 
 export function getBearerAccessTokenFromCookie(): string {
+  return `Bearer ${Cookies.get("accessToken")}`;
+}
+
+export function getAccessTokenFromCookie(): string {
   const accessToken = Cookies.get("accessToken");
   if (accessToken) {
-    return "Bearer " + accessToken;
+    return accessToken;
   } else {
     throw new Error("No accessToken token");
   }

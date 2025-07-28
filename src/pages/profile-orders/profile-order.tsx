@@ -1,15 +1,15 @@
 import styles from "./profile-orders.module.css";
 import { useState, useEffect, CSSProperties, JSX } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../services";
+import { useAppDispatch, useAppSelector } from "../../services";
 import {
   getUserInfo,
   logoutUser,
   refreshToken,
 } from "../../services/userAuth/thunks";
-import { retryIfAuthTokenNotFound } from "../../utils/tokens";
+import { getAccessTokenFromCookie, retryIfAuthTokenNotFound } from "../../utils/tokens";
 import OrderFeedColumn from "../../components/order-feed-column/order-feed-column";
-
+import { twsConnect, twsOnConnected } from "../../services/socketMiddleware/socketActions";
 
 export type Order = {
   _id: string;
@@ -28,7 +28,6 @@ export type OrderFeedResponse = {
   totalToday: number;
 };
 
-
 const disableDecorationWithInherit: CSSProperties = {
   textDecoration: "none",
   color: "inherit",
@@ -39,15 +38,12 @@ const mainText: string = "text text_type_main-medium";
 const smallText: string = "text text_type_main-medium text_color_inactive";
 
 function ProfileOrders(): JSX.Element {
-
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
   const isProfileActive: boolean = location.pathname === "/profile";
   const isOrdersActive: boolean = location.pathname === "/profile/orders";
-
-  const [ordersData, setOrdersData] = useState<OrderFeedResponse | null>(null);
 
   useEffect(() => {
     retryIfAuthTokenNotFound(dispatch, refreshToken, getUserInfo);
@@ -64,26 +60,18 @@ function ProfileOrders(): JSX.Element {
     }
   };
 
-  useEffect(() => {
-    // Заглушка: замените на API-запрос или WebSocket
-    const mockResponse: OrderFeedResponse = {
-      success: true,
-      orders: [
-        {
-          _id: "order1",
-          number: 10001,
-          ingredients: ["643d69a5c3f7b9001cfa0942", "643d69a5c3f7b9001cfa093c"],
-          createdAt: "2025-07-16T10:00:00.000Z",
-          updatedAt: "2025-07-16T10:05:00.000Z",
-          status: "done",
-          name: "Бургер с беконом",
-        }
-      ],
-      total: 30000,
-      totalToday: 150,
-    };
+  const { ordersInfo, connected, error } = useAppSelector(
+    (store) => store.orderFeed
+  );
 
-    setOrdersData(mockResponse);
+  const dipatch = useAppDispatch();
+
+  useEffect(() => {
+    dipatch(twsConnect(`wss://norma.nomoreparties.space/orders?token=${getAccessTokenFromCookie()}`));
+
+    return () => {
+      dipatch(twsOnConnected(new Event("WebSocket disconnected")));
+    };
   }, []);
 
   return (
@@ -125,10 +113,10 @@ function ProfileOrders(): JSX.Element {
           </p>
         </div>
         <div className={styles.ordersDataBlock}>
-          {!ordersData ? (
-            <div className={styles.page}>Загрузка...</div>
+          {!connected || error ? (
+            <div className={styles.page}>Загрузка... {error}</div>
           ) : (
-            <OrderFeedColumn orders={ordersData.orders}/>
+            <OrderFeedColumn orders={ordersInfo.orders} />
           )}
         </div>
       </div>

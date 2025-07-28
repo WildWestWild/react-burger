@@ -1,20 +1,21 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { burgerIngredientSlice } from './burger-ingredients/slice';
-import { burgerConstructorSlice } from './burger-constructor/slice';
-import { orderDetailsSlice } from './order-details/slice';
-import { ingredientDetailsSlice } from './ingredient-details/slice';
-import { userSlice } from './userAuth/slice';
-import { userResetSlice } from './userReset/slice';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import { wsOrdersMiddleware } from './socketMiddleware';
-import { feedSlice } from './socketMiddleware/feedReducer';
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { burgerIngredientSlice } from "./burger-ingredients/slice";
+import { burgerConstructorSlice } from "./burger-constructor/slice";
+import { orderDetailsSlice } from "./order-details/slice";
+import { ingredientDetailsSlice } from "./ingredient-details/slice";
+import { userSlice } from "./userAuth/slice";
+import { userResetSlice } from "./userReset/slice";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import { wsOrdersMiddleware, wsTOrdersMiddleware } from "./socketMiddleware";
+import { feedSlice } from "./socketMiddleware/feedReducer";
+import { orderFeedSlice } from "./socketMiddleware/orderFeedReducer";
 
-  const persistConfig = {
-  key: 'root',
+const persistConfig = {
+  key: "root",
   storage,
-  whitelist: ['burgerConstructor', 'burgerIngredient', 'userAuth'], 
+  whitelist: ["burgerConstructor", "burgerIngredient", "userAuth"],
 };
 
 const rootReducer = combineReducers({
@@ -24,8 +25,9 @@ const rootReducer = combineReducers({
   ingredientDetails: ingredientDetailsSlice.reducer,
   userAuth: userSlice.reducer,
   userReset: userResetSlice.reducer,
-  feed: feedSlice.reducer
-})
+  feed: feedSlice.reducer,
+  orderFeed: orderFeedSlice.reducer,
+});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -33,12 +35,13 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false
-    }).concat(wsOrdersMiddleware)
+      serializableCheck: false,
+    })
+      .concat(wsOrdersMiddleware)
+      .concat(wsTOrdersMiddleware),
 });
 
 export const persistor = persistStore(store);
-
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

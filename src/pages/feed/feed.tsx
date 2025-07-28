@@ -19,7 +19,7 @@ const Feed: React.FC = () => {
     }
   }, []);
 
-  if (!connected) return <div className={styles.page}>Загрузка...</div>;
+  if (!connected || error) return <div className={styles.page}>Загрузка... {error}</div>;
 
   return (
     <div>

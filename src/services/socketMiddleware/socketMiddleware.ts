@@ -79,13 +79,15 @@ export function createWebSocketMiddleware<TMessage>(
             //   store.dispatch(connect(wssUrl.toString()));
             // });
 
-            store.dispatch(disconnect());
+            //store.dispatch(disconnect());
           }
         };
 
         socket.onerror = event => {
           store.dispatch(onError(event));
         };
+
+        console.log('WebSocket connected to:', url);
       }
 
       if (disconnect.match(action)) {
@@ -97,6 +99,7 @@ export function createWebSocketMiddleware<TMessage>(
         isConnected = false;
         reconnectTimer = 0;
         socket = null;
+        console.log('WebSocket disconnected');
       }
 
       if (sendMessage.match(action)) {

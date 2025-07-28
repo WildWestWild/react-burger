@@ -3,7 +3,7 @@ import styles from "./feed.module.css";
 import { useAppDispatch, useAppSelector } from "../../services";
 import OrderFeedColumn from "../../components/order-feed-column/order-feed-column";
 import { OrderStats } from "../../components/order-stats/order-stats";
-import { wsConnect, wsOnConnected } from "../../services/socketMiddleware/socketActions";
+import { wsConnect, wsDisconnect, wsOnConnected } from "../../services/socketMiddleware/socketActions";
 
 const Feed: React.FC = () => {
 
@@ -15,11 +15,11 @@ const Feed: React.FC = () => {
     dipatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
 
     return () => {
-      dipatch(wsOnConnected(new Event("WebSocket disconnected")));
+      dipatch(wsDisconnect());
     }
-  }, []);
+  }, [dipatch]);
 
-  if (!connected || error) return <div className={styles.page}>Загрузка... {error}</div>;
+  if (!ordersInfo) return <div className={styles.page}>Подлючение по сокету - {connected}. {error ? "Ошибка - " + error : null}</div>;
 
   return (
     <div>

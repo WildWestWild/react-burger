@@ -9,7 +9,7 @@ import {
 } from "../../services/userAuth/thunks";
 import { getAccessTokenFromCookie, retryIfAuthTokenNotFound } from "../../utils/tokens";
 import OrderFeedColumn from "../../components/order-feed-column/order-feed-column";
-import { twsConnect, twsOnConnected } from "../../services/socketMiddleware/socketActions";
+import { twsConnect, twsDisconnect, twsOnConnected } from "../../services/socketMiddleware/socketActions";
 
 export type Order = {
   _id: string;
@@ -67,12 +67,12 @@ function ProfileOrders(): JSX.Element {
   const dipatch = useAppDispatch();
 
   useEffect(() => {
-    dipatch(twsConnect(`wss://norma.nomoreparties.space/orders?token=${getAccessTokenFromCookie()}`));
+    dipatch(twsConnect(`wss://norma.nomoreparties.space/orders?token=${encodeURIComponent(getAccessTokenFromCookie())}`));
 
     return () => {
-      dipatch(twsOnConnected(new Event("WebSocket disconnected")));
+      dipatch(twsDisconnect());
     };
-  }, []);
+  }, [dipatch]);
 
   return (
     <div>
@@ -113,8 +113,8 @@ function ProfileOrders(): JSX.Element {
           </p>
         </div>
         <div className={styles.ordersDataBlock}>
-          {!connected || error ? (
-            <div className={styles.page}>Загрузка... {error}</div>
+          {!ordersInfo ? (
+             <div className={styles.page}>Подлючение по сокету - {connected}. {error ? "Ошибка - " + error : null}</div>
           ) : (
             <OrderFeedColumn orders={ordersInfo.orders} />
           )}

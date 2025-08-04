@@ -9,6 +9,7 @@ export interface OrderCardPositions {
   createdAt: string;
   ingredients: BurgerIngredient[];
   price: number;
+  isUserProfile: boolean;
 }
 
 export type TWsOrder = {

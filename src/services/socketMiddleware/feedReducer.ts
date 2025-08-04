@@ -23,13 +23,13 @@ export const feedSlice = createSlice({
   name: "feed",
   initialState,
   reducers: {
-    addOrderCardPositing: (
+    addFeedOrderCardPositing: (
       state,
       action: PayloadAction<OrderCardPositions>
     ) => {
       state.orderCardPositionsList.push(action.payload);
     },
-    removeOrderCardPosition: (state, action: PayloadAction<number>) => {
+    removeFeedOrderCardPosition: (state, action: PayloadAction<number>) => {
       state.orderCardPositionsList = state.orderCardPositionsList.filter(
         (orderCard: OrderCardPositions) => orderCard.id !== action.payload
       );
@@ -61,7 +61,7 @@ export const feedSlice = createSlice({
   },
 });
 
-export const { addOrderCardPositing, removeOrderCardPosition } =
+export const { addFeedOrderCardPositing, removeFeedOrderCardPosition } =
   feedSlice.actions;
 
 export default feedSlice.reducer;

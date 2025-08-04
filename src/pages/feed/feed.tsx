@@ -27,7 +27,7 @@ const Feed: React.FC = () => {
         <h1 className={styles.title}>Лента заказов</h1>
       </div>
       <div className={styles.feedMainBlock}>
-        <OrderFeedColumn orders={ordersInfo.orders}/>
+        <OrderFeedColumn orders={ordersInfo.orders} isUserProfile={false}/>
         <div className={styles.score}>
           <OrderStats
             ready={ordersInfo.orders.filter(order => order.status === "done").map(order => order.number)}

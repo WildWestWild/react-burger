@@ -1,15 +1,15 @@
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../services";
-import FeedOrderDetailsCard from "./feed-order-details-card";
 import { FC } from "react";
+import FeedOrderDetailsCard from "../feed-order-details-card/feed-order-details-card";
 
-interface FeedOrderDetailsCardWindowProps {
+interface ProfileOrderDetailsCardWindowProps {
   isNotModal: boolean;
 }
 
-export const FeedOrderDetailsCardWindow: FC<FeedOrderDetailsCardWindowProps> = ({isNotModal}) => {
+export const ProfileOrderDetailsCardWindow: FC<ProfileOrderDetailsCardWindowProps> = ({isNotModal}) => {
   const { number } = useParams<string>();
-  const orderCardPositionsList = useAppSelector((store) => store.feed.orderCardPositionsList);
+  const orderCardPositionsList = useAppSelector((store) => store.orderFeed.orderCardPositionsList);
 
   console.log("orderCardPositionsList", orderCardPositionsList);
 

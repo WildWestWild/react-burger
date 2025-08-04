@@ -9,15 +9,18 @@ import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch } from "../../services";
 import { OrderCardPositions } from "../../services/socketMiddleware/socketActions";
 import {
-  addOrderCardPositing,
-  removeOrderCardPosition,
+  addFeedOrderCardPositing,
+  removeFeedOrderCardPosition,
 } from "../../services/socketMiddleware/feedReducer";
+import {
+  addProfileOrderCardPosition,
+  removeProfileOrderCardPosition,
+} from "../../services/socketMiddleware/orderFeedReducer";
 
 function truncateVeryLongText(text: string, maxLength: number = 100): string {
   if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength - 3) + '...';
+  return text.slice(0, maxLength - 3) + "...";
 }
-
 
 const OrderCard: React.FC<OrderCardPositions> = ({
   id,
@@ -27,26 +30,47 @@ const OrderCard: React.FC<OrderCardPositions> = ({
   ingredients,
   status,
   price,
+  isUserProfile,
 }) => {
   const location = useLocation();
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(
-      addOrderCardPositing({
-        id,
-        number,
-        name,
-        createdAt,
-        ingredients,
-        status,
-        price,
-      })
-    );
+    if (isUserProfile) {
+      dispatch(
+        addProfileOrderCardPosition({
+          id,
+          number,
+          name,
+          createdAt,
+          ingredients,
+          status,
+          price,
+          isUserProfile,
+        })
+      );
+    } else {
+      dispatch(
+        addFeedOrderCardPositing({
+          id,
+          number,
+          name,
+          createdAt,
+          ingredients,
+          status,
+          price,
+          isUserProfile,
+        })
+      );
+    }
 
     return () => {
-      dispatch(removeOrderCardPosition(id));
+      if (isUserProfile) {
+        dispatch(removeProfileOrderCardPosition(id));
+      } else {
+        dispatch(removeFeedOrderCardPosition(id));
+      }
     };
   }, []);
 
@@ -54,7 +78,7 @@ const OrderCard: React.FC<OrderCardPositions> = ({
     <li className={styles.blockOrderCard}>
       <Link
         style={{ textDecoration: "none", color: "inherit" }}
-        to={`/feed/${id}`}
+        to={`/${isUserProfile ? "profile/orders" : "feed"}/${id}`}
         state={{ background: location }}
       >
         <div className={styles.header}>
@@ -64,7 +88,9 @@ const OrderCard: React.FC<OrderCardPositions> = ({
           </span>
         </div>
         <div className={styles.orderFeedTextPosition}>
-          <h3 className="text text_type_main-medium mt-2 mb-2">{truncateVeryLongText(name)}</h3>
+          <h3 className="text text_type_main-medium mt-2 mb-2">
+            {truncateVeryLongText(name)}
+          </h3>
         </div>
         <div className={styles.orderFeedTextPosition}>
           {getOrderStatus(status as OrderStatus)}

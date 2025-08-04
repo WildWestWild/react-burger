@@ -6,19 +6,19 @@ import OrderCard from "../order-feed-card/order-feed-card";
 
 interface OrderFeedColumnProps {
   orders: TWsOrder[];
+  isUserProfile: boolean;
 }
 
-function getRandom8DigitNumber(): number {
-  return Math.floor(Math.random() * 90_000_000) + 10_000_000;
-}
-
-const OrderFeedColumn: FC<OrderFeedColumnProps> = ({ orders }) => {
+const OrderFeedColumn: FC<OrderFeedColumnProps> = ({
+  orders,
+  isUserProfile,
+}) => {
   const { burgerIngredients } = useAppSelector(
     (store) => store.burgerIngredient
   );
 
   let id = 0;
-  
+
   return (
     <div className={styles.columnForm}>
       <ul>
@@ -39,6 +39,7 @@ const OrderFeedColumn: FC<OrderFeedColumnProps> = ({ orders }) => {
                 (burgerIngredients.find((item) => item._id === id)?.price || 0),
               0
             )}
+            isUserProfile={isUserProfile}
           />
         ))}
       </ul>

@@ -116,7 +116,7 @@ function ProfileOrders(): JSX.Element {
           {!ordersInfo ? (
              <div className={styles.page}>Подлючение по сокету - {connected}. {error ? "Ошибка - " + error : null}</div>
           ) : (
-            <OrderFeedColumn orders={ordersInfo.orders} />
+            <OrderFeedColumn orders={ordersInfo.orders} isUserProfile={true} />
           )}
         </div>
       </div>

@@ -9,13 +9,14 @@ import {
 
 const initialState: WsOrdersState = {
   connected: false,
-    ordersInfo: {
-        success: false,
-        orders: [],
-        total: 0,
-        totalToday: 0,
-    },
+  ordersInfo: {
+    success: false,
+    orders: [],
+    total: 0,
+    totalToday: 0,
+  },
   error: null,
+  orderCardPositionsList: []
 };
 
 export const orderFeedSlice = createSlice({

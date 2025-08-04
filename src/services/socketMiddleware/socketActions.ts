@@ -1,4 +1,15 @@
 import { createAction } from "@reduxjs/toolkit";
+import { BurgerIngredient } from "../burger-ingredients/slice";
+
+export interface OrderCardPositions {
+  id: number
+  number: number;
+  name: string;
+  status: string;
+  createdAt: string;
+  ingredients: BurgerIngredient[];
+  price: number;
+}
 
 export type TWsOrder = {
   _id: string;
@@ -20,6 +31,7 @@ export type TWsMessage = {
 export interface WsOrdersState {
   connected: boolean;
   ordersInfo : TWsMessage;
+  orderCardPositionsList: OrderCardPositions[];
   error: string | null;
 }
 

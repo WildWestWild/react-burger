@@ -3,7 +3,7 @@ import styles from "./feed.module.css";
 import { useAppDispatch, useAppSelector } from "../../services";
 import OrderFeedColumn from "../../components/order-feed-column/order-feed-column";
 import { OrderStats } from "../../components/order-stats/order-stats";
-import { wsConnect, wsDisconnect, wsOnConnected } from "../../services/socketMiddleware/socketActions";
+import { wsConnect, wsDisconnect } from "../../services/socketMiddleware/socketActions";
 
 const Feed: React.FC = () => {
 
@@ -13,7 +13,7 @@ const Feed: React.FC = () => {
 
   useEffect(() => {
     dipatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
-
+  
     return () => {
       dipatch(wsDisconnect());
     }

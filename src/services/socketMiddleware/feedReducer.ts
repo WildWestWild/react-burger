@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { TWsMessage, WsOrdersState } from "./socketActions";
+import type { OrderCardPositions, TWsMessage, WsOrdersState } from "./socketActions";
 import {
   wsOnConnected,
   wsOnDisconnected,
@@ -7,21 +7,37 @@ import {
   wsOnError,
 } from "./socketActions";
 
-const initialState: WsOrdersState = {
+export const initialState: WsOrdersState = {
   connected: false,
-    ordersInfo: {
-        success: false,
-        orders: [],
-        total: 0,
-        totalToday: 0,
-    },
+  ordersInfo: {
+    success: false,
+    orders: [],
+    total: 0,
+    totalToday: 0,
+  },
+  orderCardPositionsList: [],
   error: null,
 };
 
 export const feedSlice = createSlice({
   name: "feed",
   initialState,
-  reducers: {},
+  reducers: {
+    addOrderCardPositing: (
+      state,
+      action: PayloadAction<OrderCardPositions>
+    ) => {
+      state.orderCardPositionsList.push(action.payload);
+    },
+    removeOrderCardPosition: (state, action: PayloadAction<number>) => {
+      state.orderCardPositionsList = state.orderCardPositionsList.filter(
+        (orderCard: OrderCardPositions) => orderCard.id !== action.payload
+      );
+    },
+    clearOrderCardPositionList: (state) => {
+      state.orderCardPositionsList = [];
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(wsOnConnected, (state) => {
@@ -31,15 +47,21 @@ export const feedSlice = createSlice({
       .addCase(wsOnDisconnected, (state) => {
         state.connected = false;
       })
-      .addCase(wsOnMessageReceived, (state, action: PayloadAction<TWsMessage>) => {
-        state.ordersInfo.orders = action.payload.orders;
-        state.ordersInfo.total = action.payload.total;
-        state.ordersInfo.totalToday = action.payload.totalToday;
-      })
+      .addCase(
+        wsOnMessageReceived,
+        (state, action: PayloadAction<TWsMessage>) => {
+          state.ordersInfo.orders = action.payload.orders;
+          state.ordersInfo.total = action.payload.total;
+          state.ordersInfo.totalToday = action.payload.totalToday;
+        }
+      )
       .addCase(wsOnError, (state, action: PayloadAction<Event>) => {
         state.error = action.payload.type;
       });
   },
 });
+
+export const { addOrderCardPositing, removeOrderCardPosition } =
+  feedSlice.actions;
 
 export default feedSlice.reducer;

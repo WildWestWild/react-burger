@@ -22,8 +22,11 @@ import NotFound from "../not-found/not-found";
 import Modal from "../../components/model/model";
 import IngredientDetails from "../../components/ingredient-details/ingredient-details";
 import { JSX } from "react";
-import Feed from "../feed/feed";
 import ProfileOrders from "../profile-orders/profile-order";
+import FeedOrderDetailsCard from "../../components/feed-order-details-card/feed-order-details-card";
+import { FeedOrderDetailsCardWindow } from "../../components/feed-order-details-card/feed-order-details-card-window";
+import Feed from "../feed/feed";
+import FeedOrderDetailsCardModal from "../../components/feed-order-details-card/feed-order-details-card-modal";
 
 export function App() : JSX.Element {
   const location = useLocation();
@@ -95,6 +98,7 @@ export function App() : JSX.Element {
             <Feed/>
           }/>
         <Route path="/ingredients/:id" element={<IngredientDetails isNotModal={true}/>}/>
+        <Route path="/feed/:number" element={ <FeedOrderDetailsCardWindow isNotModal={true} />}/>
         <Route path="*" element={<NotFound />} />
       </Routes>
       {background && (
@@ -105,6 +109,16 @@ export function App() : JSX.Element {
               <Modal onClose={handleModalClose} title="Детали ингредиента">
                 <IngredientDetails isNotModal={false} />
               </Modal>
+            }
+          />
+        </Routes>
+      )}
+      {background && (
+        <Routes>
+          <Route
+            path="/feed/:number"
+            element={
+              <FeedOrderDetailsCardModal handleModalClose={handleModalClose} />
             }
           />
         </Routes>

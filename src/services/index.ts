@@ -15,7 +15,7 @@ import { orderFeedSlice } from "./socketMiddleware/orderFeedReducer";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["burgerConstructor", "burgerIngredient", "userAuth"],
+  whitelist: ["burgerConstructor", "burgerIngredient", "userAuth", "feed"],
 };
 
 const rootReducer = combineReducers({

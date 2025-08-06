@@ -22,7 +22,7 @@ export const OrderStats: FC<OrderStatsProps> = ({
           <h3 className="text text_type_main-medium mb-2">Готовы:</h3>
           <div className={styles.digitColumns}>
             <ul className={`${styles.list} ${styles.ready}`}>
-              {ready.slice(0, 4).map((num) => (
+              {ready.slice(0, 9).map((num) => (
                 <li
                   key={num}
                   className="text text_type_digits-default text_color_success"
@@ -32,7 +32,7 @@ export const OrderStats: FC<OrderStatsProps> = ({
               ))}
             </ul>
             <ul className={`${styles.list} ${styles.ready}`}>
-              {ready.slice(5, 9).map((num) => (
+              {ready.slice(10, 19).map((num) => (
                 <li
                   key={num}
                   className="text text_type_digits-default text_color_success"
@@ -48,14 +48,14 @@ export const OrderStats: FC<OrderStatsProps> = ({
           <h3 className="text text_type_main-medium mb-2">В работе:</h3>
           <div className={styles.digitColumns}>
             <ul className={styles.list}>
-              {inProgress.slice(0, 4).map((num) => (
+              {inProgress.slice(0, 9).map((num) => (
                 <li key={num} className="text text_type_digits-default">
                   {num}
                 </li>
               ))}
             </ul>
             <ul className={styles.list}>
-              {inProgress.slice(5, 9).map((num) => (
+              {inProgress.slice(10, 19).map((num) => (
                 <li key={num} className="text text_type_digits-default">
                   {num}
                 </li>
@@ -64,7 +64,7 @@ export const OrderStats: FC<OrderStatsProps> = ({
           </div>
         </div>
       </div>
-      <div>
+      <div className={styles.marginTopBigDigits}>
         <div className={styles.dispalyBigDigits}>
           <h3 className="text text_type_main-medium">
             Выполнено за все время:

@@ -1,13 +1,13 @@
 export enum OrderStatus {
-  Cancel = "cancelled",
+  Created = "created",
   Penging = "pending",
   Done = "done",
 }
 
 export function getOrderStatus(status: OrderStatus) {
   switch (status) {
-    case OrderStatus.Cancel:
-      return <p style={{ color: "#FF2400" }}>Отменен</p>;
+    case OrderStatus.Created:
+      return <p style={{ color: "#FF2400" }}>Создан</p>;
     case OrderStatus.Done:
       return <p style={{ color: "#00CCCC" }}>Выполнен</p>;
     default:

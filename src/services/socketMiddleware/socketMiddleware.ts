@@ -1,13 +1,13 @@
 import {
   type ActionCreatorWithoutPayload,
   type ActionCreatorWithPayload,
-  type Dispatch,
   type Middleware,
   type MiddlewareAPI,
   type UnknownAction,
 } from '@reduxjs/toolkit';
 
-import { RootState } from '../index';
+import { RootState, AppDispatch } from '../index';
+import { refreshToken } from '../userAuth/thunks';
 
 export type WebSocketActions<TMessage> = {
   connect: ActionCreatorWithPayload<string>;
@@ -40,8 +40,8 @@ export function createWebSocketMiddleware<TMessage>(
   let reconnectTimer = 0;
   let url: string;
 
-  return ((store: MiddlewareAPI<Dispatch<UnknownAction>, RootState>) =>
-    (next: Dispatch<UnknownAction>) =>
+  return ((store: MiddlewareAPI<AppDispatch, RootState>) =>
+    (next: AppDispatch) =>
     (action: UnknownAction) => {
       if (connect.match(action)) {
         if (socket !== null) {
@@ -73,13 +73,26 @@ export function createWebSocketMiddleware<TMessage>(
           store.dispatch(onMessageReceived(data));
 
           if (withTokenRefresh && data.message === 'Invalid or missing token') {
-            // refreshToken().then(refreshData => {
-            //   const wssUrl = new URL(url);
-            //   wssUrl.searchParams.set('token', refreshData.accessToken.replace('Bearer ', ''));
-            //   store.dispatch(connect(wssUrl.toString()));
-            // });
+            const refreshAction = refreshToken();
+            const result = store.dispatch(refreshAction);
 
-            //store.dispatch(disconnect());
+            if (typeof (result as any).then === 'function') {
+              (result as any).then((refreshData: any) => {
+                if (refreshData?.payload?.accessToken) {
+                  const wssUrl = new URL(url);
+                  wssUrl.searchParams.set('token', refreshData.payload.accessToken.replace('Bearer ', ''));
+
+                  store.dispatch(disconnect());
+                  store.dispatch(connect(wssUrl.toString()));
+                } else {
+                  console.error('Token refresh failed: No access token in payload');
+                  store.dispatch(disconnect());
+                }
+              }).catch((error: any) => {
+                console.error('Token refresh error:', error);
+                store.dispatch(disconnect());
+              });
+            }
           }
         };
 

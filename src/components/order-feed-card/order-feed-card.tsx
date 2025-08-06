@@ -1,4 +1,4 @@
-import React, { use, useEffect } from "react";
+import React, { useEffect } from "react";
 import styles from "./order-feed-card.module.css";
 import {
   CurrencyIcon,
@@ -17,7 +17,7 @@ import {
   removeProfileOrderCardPosition,
 } from "../../services/socketMiddleware/orderFeedReducer";
 
-function truncateVeryLongText(text: string, maxLength: number = 100): string {
+function truncateVeryLongText(text: string, maxLength: number = 90): string {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength - 3) + "...";
 }

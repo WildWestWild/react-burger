@@ -11,7 +11,7 @@ export const FeedOrderDetailsCardWindow: FC<FeedOrderDetailsCardWindowProps> = (
   const { number } = useParams<string>();
   const orderCardPositionsList = useAppSelector((store) => store.feed.orderCardPositionsList);
 
-  console.log("orderCardPositionsList", orderCardPositionsList);
+  console.log("orderCardPositionsListCount: ", orderCardPositionsList.length);
 
   console.log("id", number);
 

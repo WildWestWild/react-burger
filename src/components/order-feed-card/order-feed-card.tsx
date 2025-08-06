@@ -72,7 +72,7 @@ const OrderCard: React.FC<OrderCardPositions> = ({
         dispatch(removeFeedOrderCardPosition(id));
       }
     };
-  }, []);
+  }, [id, number, status]);
 
   return (
     <li className={styles.blockOrderCard}>

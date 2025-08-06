@@ -19,10 +19,10 @@ import IngredientDetails from "../../components/ingredient-details/ingredient-de
 import { JSX } from "react";
 import ProfileOrders from "../profile-orders/profile-order";
 import { FeedOrderDetailsCardWindow } from "../../components/feed-order-details-card/feed-order-details-card-window";
-import Feed from "../feed/feed";
 import FeedOrderDetailsCardModal from "../../components/feed-order-details-card/feed-order-details-card-modal";
 import ProfileOrderDetailsCardModal from "../../components/profile-order-details-card-window/profile-order-details-card-modal";
 import { ProfileOrderDetailsCardWindow } from "../../components/profile-order-details-card-window/profile-order-details-card-window";
+import Feed from "../feed/feed";
 
 export function App(): JSX.Element {
   const location = useLocation();

@@ -1,11 +1,11 @@
 import { FC } from "react";
 import { useAppSelector } from "../../services";
 import styles from "./order-feed-column.module.css";
-import { TWsOrder } from "../../services/socketMiddleware/socketActions";
+import { OrderCardPositions, TWsOrder } from "../../services/socketMiddleware/socketActions";
 import OrderCard from "../order-feed-card/order-feed-card";
 
 interface OrderFeedColumnProps {
-  orders: TWsOrder[];
+  orders: OrderCardPositions[];
   isUserProfile: boolean;
 }
 
@@ -27,22 +27,13 @@ const OrderFeedColumn: FC<OrderFeedColumnProps> = ({
           )
           .map((order, index) => (
             <OrderCard
-              id={++index}
-              key={order._id}
+              key={index + 1}
               number={order.number}
               name={order.name}
               status={order.status}
               createdAt={order.createdAt}
-              ingredients={order.ingredients.map(
-                (id) => burgerIngredients.find((item) => item._id === id)!
-              )}
-              price={order.ingredients.reduce(
-                (total, id) =>
-                  total +
-                  (burgerIngredients.find((item) => item._id === id)?.price ||
-                    0),
-                0
-              )}
+              ingredients={order.ingredients}
+              price={order.price}
               isUserProfile={isUserProfile}
             />
           ))}

@@ -2,7 +2,6 @@ import { createAction } from "@reduxjs/toolkit";
 import { BurgerIngredient } from "../burger-ingredients/slice";
 
 export interface OrderCardPositions {
-  id: number
   number: number;
   name: string;
   status: string;

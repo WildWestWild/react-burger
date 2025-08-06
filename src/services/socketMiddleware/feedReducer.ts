@@ -1,11 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { OrderCardPositions, TWsMessage, WsOrdersState } from "./socketActions";
+import type {
+  TWsMessage,
+  WsOrdersState,
+} from "./socketActions";
 import {
   wsOnConnected,
   wsOnDisconnected,
   wsOnMessageReceived,
   wsOnError,
 } from "./socketActions";
+import { BurgerIngredient } from "../burger-ingredients/slice";
 
 export const initialState: WsOrdersState = {
   connected: false,
@@ -23,20 +27,27 @@ export const feedSlice = createSlice({
   name: "feed",
   initialState,
   reducers: {
-    addFeedOrderCardPositing: (
+    createFeedOrderCardPositions: (
       state,
-      action: PayloadAction<OrderCardPositions>
+      action: PayloadAction<BurgerIngredient[]>
     ) => {
-      state.orderCardPositionsList.push(action.payload);
+      state.orderCardPositionsList = state.ordersInfo.orders.map((order) => ({
+        number: order.number,
+        name: order.name,
+        status: order.status as string,
+        createdAt: order.createdAt,
+        ingredients: order.ingredients.map(
+          (id) => action.payload.find((item) => item._id === id)!
+        ),
+        price: order.ingredients.reduce(
+          (total, id) =>
+            total +
+            (action.payload.find((item) => item._id === id)?.price || 0),
+          0
+        ),
+        isUserProfile: false,
+      }));
     },
-    removeFeedOrderCardPosition: (state, action: PayloadAction<number>) => {
-      state.orderCardPositionsList = state.orderCardPositionsList.filter(
-        (orderCard: OrderCardPositions) => orderCard.id !== action.payload
-      );
-    },
-    clearOrderCardPositionList: (state) => {
-      state.orderCardPositionsList = [];
-    }
   },
   extraReducers: (builder) => {
     builder
@@ -61,7 +72,6 @@ export const feedSlice = createSlice({
   },
 });
 
-export const { addFeedOrderCardPositing, removeFeedOrderCardPosition } =
-  feedSlice.actions;
+export const { createFeedOrderCardPositions} = feedSlice.actions;
 
 export default feedSlice.reducer;

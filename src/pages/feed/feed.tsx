@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 import styles from "./feed.module.css";
 import { useAppDispatch, useAppSelector } from "../../services";
 import OrderFeedColumn from "../../components/order-feed-column/order-feed-column";
 import { OrderStats } from "../../components/order-stats/order-stats";
 import { wsConnect, wsDisconnect } from "../../services/socketMiddleware/socketActions";
+import { createFeedOrderCardPositions } from "../../services/socketMiddleware/feedReducer";
 
 const Feed: React.FC = () => {
 
-  const {ordersInfo, connected, error} = useAppSelector((store) => store.feed);
+  const {ordersInfo, connected, error, orderCardPositionsList} = useAppSelector((store) => store.feed);
+
+  const burgerIngredients = useAppSelector((store) => store.burgerIngredient.burgerIngredients);
 
   const dipatch = useAppDispatch();
 
@@ -19,7 +22,13 @@ const Feed: React.FC = () => {
     }
   }, [dipatch]);
 
-  if (!ordersInfo) return <div className={styles.page}>Подлючение по сокету - {connected}. {error ? "Ошибка - " + error : null}</div>;
+  useEffect(() => {
+    if (ordersInfo.orders.length !== 0) {
+      dipatch(createFeedOrderCardPositions(burgerIngredients));
+    }
+  }, [dipatch, ordersInfo.orders, burgerIngredients]);
+
+  if (!orderCardPositionsList) return <div className={styles.page}>Подлючение по сокету - {connected}. {error ? "Ошибка - " + error : null}</div>;
 
   return (
     <div>
@@ -27,7 +36,7 @@ const Feed: React.FC = () => {
         <h1 className={styles.title}>Лента заказов</h1>
       </div>
       <div className={styles.feedMainBlock}>
-        <OrderFeedColumn orders={ordersInfo.orders} isUserProfile={false}/>
+        <OrderFeedColumn orders={orderCardPositionsList} isUserProfile={false}/>
         <div className={styles.score}>
           <OrderStats
             ready={ordersInfo.orders.filter(order => order.status === "done").map(order => order.number)}

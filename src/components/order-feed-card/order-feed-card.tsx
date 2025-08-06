@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styles from "./order-feed-card.module.css";
 import {
   CurrencyIcon,
@@ -6,16 +6,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { getOrderStatus, OrderStatus } from "./order-text-status";
 import { Link, useLocation } from "react-router-dom";
-import { useAppDispatch } from "../../services";
 import { OrderCardPositions } from "../../services/socketMiddleware/socketActions";
-import {
-  addFeedOrderCardPositing,
-  removeFeedOrderCardPosition,
-} from "../../services/socketMiddleware/feedReducer";
-import {
-  addProfileOrderCardPosition,
-  removeProfileOrderCardPosition,
-} from "../../services/socketMiddleware/orderFeedReducer";
 
 function truncateVeryLongText(text: string, maxLength: number = 90): string {
   if (text.length <= maxLength) return text;
@@ -23,7 +14,6 @@ function truncateVeryLongText(text: string, maxLength: number = 90): string {
 }
 
 const OrderCard: React.FC<OrderCardPositions> = ({
-  id,
   number,
   name,
   createdAt,
@@ -34,51 +24,11 @@ const OrderCard: React.FC<OrderCardPositions> = ({
 }) => {
   const location = useLocation();
 
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (isUserProfile) {
-      dispatch(
-        addProfileOrderCardPosition({
-          id,
-          number,
-          name,
-          createdAt,
-          ingredients,
-          status,
-          price,
-          isUserProfile,
-        })
-      );
-    } else {
-      dispatch(
-        addFeedOrderCardPositing({
-          id,
-          number,
-          name,
-          createdAt,
-          ingredients,
-          status,
-          price,
-          isUserProfile,
-        })
-      );
-    }
-
-    return () => {
-      if (isUserProfile) {
-        dispatch(removeProfileOrderCardPosition(id));
-      } else {
-        dispatch(removeFeedOrderCardPosition(id));
-      }
-    };
-  }, [id, number, status]);
-
   return (
     <li className={styles.blockOrderCard}>
       <Link
         style={{ textDecoration: "none", color: "inherit" }}
-        to={`/${isUserProfile ? "profile/orders" : "feed"}/${id}`}
+        to={`/${isUserProfile ? "profile/orders" : "feed"}/${number}`}
         state={{ background: location }}
       >
         <div className={styles.header}>

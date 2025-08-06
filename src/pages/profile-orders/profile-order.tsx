@@ -10,6 +10,7 @@ import {
 import { getAccessTokenFromCookie, retryIfAuthTokenNotFound } from "../../utils/tokens";
 import OrderFeedColumn from "../../components/order-feed-column/order-feed-column";
 import { twsConnect, twsDisconnect, twsOnConnected } from "../../services/socketMiddleware/socketActions";
+import { createProfileOrderCardPositions } from "../../services/socketMiddleware/orderFeedReducer";
 
 export type Order = {
   _id: string;
@@ -60,8 +61,12 @@ function ProfileOrders(): JSX.Element {
     }
   };
 
-  const { ordersInfo, connected, error } = useAppSelector(
+  const { ordersInfo, connected, error, orderCardPositionsList } = useAppSelector(
     (store) => store.orderFeed
+  );
+
+  const burgerIngredients = useAppSelector(
+    (store) => store.burgerIngredient.burgerIngredients
   );
 
   const dipatch = useAppDispatch();
@@ -73,6 +78,12 @@ function ProfileOrders(): JSX.Element {
       dipatch(twsDisconnect());
     };
   }, [dipatch]);
+
+   useEffect(() => {
+      if (ordersInfo.orders.length !== 0) {
+        dipatch(createProfileOrderCardPositions(burgerIngredients));
+      }
+    }, [dipatch, ordersInfo.orders, burgerIngredients]);
 
   return (
     <div>
@@ -116,7 +127,7 @@ function ProfileOrders(): JSX.Element {
           {!ordersInfo ? (
              <div className={styles.page}>Подлючение по сокету - {connected}. {error ? "Ошибка - " + error : null}</div>
           ) : (
-            <OrderFeedColumn orders={ordersInfo.orders} isUserProfile={true} />
+            <OrderFeedColumn orders={orderCardPositionsList} isUserProfile={true} />
           )}
         </div>
       </div>
@@ -125,3 +136,4 @@ function ProfileOrders(): JSX.Element {
 }
 
 export default ProfileOrders;
+

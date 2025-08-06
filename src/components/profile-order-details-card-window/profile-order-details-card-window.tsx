@@ -20,7 +20,7 @@ export const ProfileOrderDetailsCardWindow: FC<ProfileOrderDetailsCardWindowProp
   }
 
   const orderCardPositions = orderCardPositionsList.find(
-    (order) => order.id === (Number(number))
+    (order) => order.number === (Number(number))
   );
 
   if (!orderCardPositions) {

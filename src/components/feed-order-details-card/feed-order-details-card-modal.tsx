@@ -20,7 +20,7 @@ const FeedOrderDetailsCardModal: FC<FeedOrderDetailsCardModalProps> = ({
   }
 
   const orderCardPositions = orderCardPositionsList.find(
-    (order) => order.id === Number(number)
+    (order) => order.number === Number(number)
   );
 
   if (!orderCardPositions) {

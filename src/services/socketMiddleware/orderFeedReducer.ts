@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type {
-  OrderCardPositions,
   TWsMessage,
   WsOrdersState,
 } from "./socketActions";
@@ -10,6 +9,7 @@ import {
   twsOnMessageReceived,
   twsOnError,
 } from "./socketActions";
+import { BurgerIngredient } from "../burger-ingredients/slice";
 
 const initialState: WsOrdersState = {
   connected: false,
@@ -27,20 +27,27 @@ export const orderFeedSlice = createSlice({
   name: "orderFeed",
   initialState,
   reducers: {
-    addProfileOrderCardPosition: (
+    createProfileOrderCardPositions: (
       state,
-      action: PayloadAction<OrderCardPositions>
+      action: PayloadAction<BurgerIngredient[]>
     ) => {
-      state.orderCardPositionsList.push(action.payload);
-    },
-    removeProfileOrderCardPosition: (state, action: PayloadAction<number>) => {
-      state.orderCardPositionsList = state.orderCardPositionsList.filter(
-        (orderCard: OrderCardPositions) => orderCard.id !== action.payload
-      );
-    },
-    clearProfileOrderCardPositionList: (state) => {
-      state.orderCardPositionsList = [];
-    },
+      state.orderCardPositionsList = state.ordersInfo.orders.map((order) => ({
+        number: order.number,
+        name: order.name,
+        status: order.status as string,
+        createdAt: order.createdAt,
+        ingredients: order.ingredients.map(
+          (id) => action.payload.find((item) => item._id === id)!
+        ),
+        price: order.ingredients.reduce(
+          (total, id) =>
+            total +
+            (action.payload.find((item) => item._id === id)?.price || 0),
+          0
+        ),
+        isUserProfile: false,
+      }));
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -66,9 +73,7 @@ export const orderFeedSlice = createSlice({
 });
 
 export const {
-  addProfileOrderCardPosition,
-  removeProfileOrderCardPosition,
-  clearProfileOrderCardPositionList,
+  createProfileOrderCardPositions
 } = orderFeedSlice.actions;
 
 export default orderFeedSlice.reducer;

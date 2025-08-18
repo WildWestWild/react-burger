@@ -54,7 +54,7 @@ const OrderCard: React.FC<OrderCardPositions> = ({
               return (
                 <div
                   className={styles.iconOuterWrapper}
-                  key={item._id}
+                  key={`${item._id}-${index}`}
                   style={{ left: `${index * 50 + 20}px`, zIndex: 10 - index }}
                 >
                   <div className={styles.iconInnerWrapper}>

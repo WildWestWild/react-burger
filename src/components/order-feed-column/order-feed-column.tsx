@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { useAppSelector } from "../../services";
 import styles from "./order-feed-column.module.css";
 import { OrderCardPositions, TWsOrder } from "../../services/socketMiddleware/socketActions";
 import OrderCard from "../order-feed-card/order-feed-card";
@@ -13,10 +12,6 @@ const OrderFeedColumn: FC<OrderFeedColumnProps> = ({
   orders,
   isUserProfile,
 }) => {
-  const { burgerIngredients } = useAppSelector(
-    (store) => store.burgerIngredient
-  );
-
   return (
     <div className={styles.columnForm}>
       <ul>
@@ -25,9 +20,9 @@ const OrderFeedColumn: FC<OrderFeedColumnProps> = ({
             (a, b) =>
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           )
-          .map((order, index) => (
+          .map((order) => (
             <OrderCard
-              key={index + 1}
+              key={order.number}
               number={order.number}
               name={order.name}
               status={order.status}

@@ -1,9 +1,4 @@
-import {
-  Routes,
-  Route,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import styles from "./app.module.css";
 import AppMain from "../../components/app-main/app-main";
 import AppHeader from "../../components/app-header/app-header";
@@ -22,8 +17,14 @@ import NotFound from "../not-found/not-found";
 import Modal from "../../components/model/model";
 import IngredientDetails from "../../components/ingredient-details/ingredient-details";
 import { JSX } from "react";
+import ProfileOrders from "../profile-orders/profile-order";
+import { FeedOrderDetailsCardWindow } from "../../components/feed-order-details-card/feed-order-details-card-window";
+import FeedOrderDetailsCardModal from "../../components/feed-order-details-card/feed-order-details-card-modal";
+import ProfileOrderDetailsCardModal from "../../components/profile-order-details-card-window/profile-order-details-card-modal";
+import { ProfileOrderDetailsCardWindow } from "../../components/profile-order-details-card-window/profile-order-details-card-window";
+import Feed from "../feed/feed";
 
-export function App() : JSX.Element {
+export function App(): JSX.Element {
   const location = useLocation();
   const navigate = useNavigate();
   const background = location.state && location.state.background;
@@ -78,7 +79,33 @@ export function App() : JSX.Element {
             />
           }
         />
-        <Route path="/ingredients/:id" element={<IngredientDetails isNotModal={true}/>}/>
+        <Route
+          path="/profile/orders"
+          element={
+            <ProtectedRouteElement
+              element={<ProfileOrders />}
+              block={BlockIfAuthFalse}
+            />
+          }
+        />
+        <Route path="/feed" element={<Feed />} />
+        <Route
+          path="/ingredients/:id"
+          element={<IngredientDetails isNotModal={true} />}
+        />
+        <Route
+          path="/feed/:number"
+          element={<FeedOrderDetailsCardWindow isNotModal={true} />}
+        />
+        <Route
+          path="/profile/orders/:number"
+          element={
+            <ProtectedRouteElement
+              element={<ProfileOrderDetailsCardWindow isNotModal={true} />}
+              block={BlockIfAuthFalse}
+            />
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {background && (
@@ -89,6 +116,28 @@ export function App() : JSX.Element {
               <Modal onClose={handleModalClose} title="Детали ингредиента">
                 <IngredientDetails isNotModal={false} />
               </Modal>
+            }
+          />
+        </Routes>
+      )}
+      {background && (
+        <Routes>
+          <Route
+            path="/feed/:number"
+            element={
+              <FeedOrderDetailsCardModal handleModalClose={handleModalClose} />
+            }
+          />
+        </Routes>
+      )}
+      {background && (
+        <Routes>
+          <Route
+            path="/profile/orders/:number"
+            element={
+              <ProfileOrderDetailsCardModal
+                handleModalClose={handleModalClose}
+              />
             }
           />
         </Routes>

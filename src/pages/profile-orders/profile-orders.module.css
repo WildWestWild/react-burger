@@ -6,16 +6,15 @@
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 100px;
+  margin-top: 20px;
 }
 
 .containerSmalltext {
-  margin-top: 10px;
+  margin-top: 40px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-self: flex-start;
-  max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -26,7 +25,9 @@
   justify-content: space-between;
   align-items: flex-start;
   width: 400px;
-  height: 250px;
+  height: 300px;
+  min-width: 400px;
+  margin-top: 80px;
 }
 
 .input {
@@ -46,4 +47,9 @@
   color: #122e69;
   font-size: large;
   cursor: pointer;
+}
+
+.ordersDataBlock{
+    margin-left: 20px !important;
+    width: 780px !important;
 }

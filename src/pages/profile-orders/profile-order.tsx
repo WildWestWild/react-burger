@@ -10,7 +10,7 @@ import {
 import { getAccessTokenFromCookie, retryIfAuthTokenNotFound } from "../../utils/tokens";
 import OrderFeedColumn from "../../components/order-feed-column/order-feed-column";
 import { twsConnect, twsDisconnect, twsOnConnected } from "../../services/socketMiddleware/socketActions";
-import { createProfileOrderCardPositions } from "../../services/socketMiddleware/orderFeedReducer";
+import { createProfileOrderCardPositions } from "../../services/socketMiddleware/orderFeedSlice";
 
 export type Order = {
   _id: string;

@@ -9,8 +9,8 @@ import { userResetSlice } from "./userReset/slice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { wsOrdersMiddleware, wsTOrdersMiddleware } from "./socketMiddleware";
-import { feedSlice } from "./socketMiddleware/feedReducer";
-import { orderFeedSlice } from "./socketMiddleware/orderFeedReducer";
+import { feedSlice } from "./socketMiddleware/feedSlice";
+import { orderFeedSlice } from "./socketMiddleware/orderFeedSlice";
 
 const persistConfig = {
   key: "root",

@@ -47,7 +47,7 @@ export const burgerIngredientSlice = createSlice({
       const ingredient = state.burgerIngredients.find(item => item._id === action.payload);
       if (ingredient) {
         ingredient.count += 1;
-      }
+      }       
     },
     decreaseIngredientCount: (state, action) => {
       const ingredient = state.burgerIngredients.find(item => item._id === action.payload);
@@ -83,8 +83,8 @@ export const burgerIngredientSlice = createSlice({
           return {
             ...payloadItem,
             count: oldItem ? oldItem.count : 0
-          }
-        });
+          }  
+        });   
         state.isLoading = false;
         state.error = '';
       })

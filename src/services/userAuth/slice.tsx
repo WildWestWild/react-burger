@@ -17,7 +17,7 @@ export type UserState = {
     user: User | null
 }
 
-export const initalState : UserState = {
+export const initialState : UserState = {
     isLoading: true,
     isRegistered: false,
     blockedPath : null,
@@ -29,7 +29,7 @@ export const initalState : UserState = {
 
 export const userSlice = createSlice({
     name: 'user',
-    initialState: initalState,
+    initialState: initialState,
     reducers:{
         setBlockPath: (state, action: PayloadAction<string | null>) => {
             state.blockedPath = action.payload;

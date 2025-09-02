@@ -13,7 +13,7 @@ export type UserResetState = {
     userReset: UserReset | null
 }
 
-export const initalState : UserResetState = {
+export const initialState : UserResetState = {
     isForgotPasswordCompleted: false,
     isLoading: false,
     error: null,
@@ -22,7 +22,7 @@ export const initalState : UserResetState = {
 
 export const userResetSlice = createSlice({
     name: 'userReset',
-    initialState: initalState,
+    initialState: initialState,
     reducers:{
         clearReset: (state) => {
             state.isLoading = false;

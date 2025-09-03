@@ -11,7 +11,7 @@ import {
 } from "./socketActions";
 import { BurgerIngredient } from "../burger-ingredients/slice";
 
-const initialState: WsOrdersState = {
+export const initialState: WsOrdersState = {
   connected: false,
   ordersInfo: {
     success: false,

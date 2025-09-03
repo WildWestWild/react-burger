@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../services";
 import OrderFeedColumn from "../../components/order-feed-column/order-feed-column";
 import { OrderStats } from "../../components/order-stats/order-stats";
 import { wsConnect, wsDisconnect } from "../../services/socketMiddleware/socketActions";
-import { createFeedOrderCardPositions } from "../../services/socketMiddleware/feedReducer";
+import { createFeedOrderCardPositions } from "../../services/socketMiddleware/feedSlice";
 
 const Feed: React.FC = () => {
 

@@ -40,7 +40,6 @@ export const burgerConstructorSlice = createSlice({
   reducers: {
     addIngredient: {
       reducer: (state, action: PayloadAction<Item>) => {
-        console.log("addIngredient", action.payload);
         state.burgerItems.ingredients.push(action.payload);
       },
       prepare: (ingredient: Item) => {

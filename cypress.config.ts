@@ -1,9 +1,9 @@
 import { defineConfig } from "cypress";
 
-export default defineConfig({
+module.exports = defineConfig({
   e2e: {
-    setupNodeEvents(on, config) {
-      // implement node event listeners here
-    },
+    baseUrl: "https://wildwestwild.github.io/react-burger",
+    viewportWidth: 1440,
+    viewportHeight: 900,
   },
 });

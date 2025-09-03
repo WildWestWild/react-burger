@@ -33,6 +33,7 @@ interface BurgerConstructorProps {
 const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ isModalOpen, setIsModelOpen, orderInformation }) => {
   const burgerPickedIngredients  = useAppSelector<Item[]>(store => store.burgerConstructor.burgerItems.ingredients);
   const burgerBun = useAppSelector<Item | null>(store => store.burgerConstructor.burgerItems.bun);
+  const isOrderLoading = useAppSelector<boolean>(store => store.orderDetails.isOrderLoading);
   const userAuth  = useAppSelector<UserState>(store => store.userAuth);
   const [isLoadingButtonDisabled, setLoadingButtonDisabled] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -141,7 +142,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ isModalOpen, setI
             <Button disabled={isLoadingButtonDisabled} htmlType="button" type="primary" size="medium" extraClass="ml-10" onClick={(e) => checkRights()}>
               Оформить заказ
             </Button>
-            {isModalOpen && number && (
+            {isModalOpen && number && !isOrderLoading && (
               <Modal title="" onClose={() => {
                 setIsModelOpen(false);
                 dispatch(clearOrderDetails());
